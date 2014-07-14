@@ -34,3 +34,11 @@ $string['title_of_resolution'] = 'Title of Resolution';
 $string['create_new_resolution'] = 'Create New Resolution';
 $string['resolution_text'] = 'Resolution Text';
 $string['resolution_page_header'] = 'Resolution Page';
+
+// Offices
+$string['office_page_header'] = 'Office Page Header';
+$string['create_new_office'] = 'Create New Office';
+$string['title_of_office'] = 'Title of Office';
+$string['number_of_openings'] = 'Number of Openings';
+$string['limit_to_college'] = 'Limit to College';
+

@@ -18,6 +18,7 @@ class block_sgelection extends block_list {
         $vote = html_writer::link( new moodle_url('/blocks/sgelection/vote.php'), 'Vote' );
         $create_ballot = html_writer::link( new moodle_url('/blocks/sgelection/candidates.php',  array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Candidate' );
         $create_resolution = html_writer::link( new moodle_url('/blocks/sgelection/resolutions.php',  array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Resolution' );
+        $create_office = html_writer::link( new moodle_url('/blocks/sgelection/offices.php',  array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Office' );
         $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Admin');
 
         $this->content->items[] = $vote;
@@ -27,6 +28,9 @@ class block_sgelection extends block_list {
         $this->content->icons[] = $OUTPUT->pix_icon('t/add', 'ballot', 'moodle', $icon_class);
 
         $this->content->items[] = $create_resolution;
+        $this->content->icons[] = $OUTPUT->pix_icon('t/add', 'ballot', 'moodle', $icon_class);
+        
+        $this->content->items[] = $create_office;
         $this->content->icons[] = $OUTPUT->pix_icon('t/add', 'ballot', 'moodle', $icon_class);
         
         $this->content->items[] = $administrate;
