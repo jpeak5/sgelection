@@ -1,7 +1,7 @@
 <?php
 
 require_once('../../config.php');
-require_once('sg_admin_form.php');
+require_once('admin_form.php');
 
 global $DB, $OUTPUT, $PAGE;
 

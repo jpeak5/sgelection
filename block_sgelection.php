@@ -16,7 +16,7 @@ class block_sgelection extends block_list {
         $icon_class = array('class' => 'icon');
 
         $vote = html_writer::link( new moodle_url('/blocks/sgelection/vote.php'), 'Vote' );
-        $create_ballot = html_writer::link( new moodle_url('/blocks/sgelection/candidates.php',  array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Candidate' );
+        $create_ballot = html_writer::link( new moodle_url('/blocks/sgelection/candidates.php'), 'Candidate' );
         $create_resolution = html_writer::link( new moodle_url('/blocks/sgelection/resolutions.php',  array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Resolution' );
         $create_office = html_writer::link( new moodle_url('/blocks/sgelection/offices.php',  array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Office' );
         $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Admin');

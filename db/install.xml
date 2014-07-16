@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/sgelection/db" VERSION="20140713" COMMENT="XMLDB file for Moodle blocks/sgelection"
+<XMLDB PATH="blocks/sgelection/db" VERSION="20140716" COMMENT="XMLDB file for Moodle blocks/sgelection"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -18,6 +18,7 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false" COMMENT="userid"/>
         <FIELD NAME="office" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="office"/>
         <FIELD NAME="affiliation" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="affiliation"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -37,8 +38,69 @@
     <TABLE NAME="block_sgelection_resolution" COMMENT="table for resolutions">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="eid" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false" COMMENT="election Identification - foreign key for election table"/>
         <FIELD NAME="title" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_sgelection_election" COMMENT="Election table">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="year" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="year election is taking place"/>
+        <FIELD NAME="sem_code" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="semester code for the year"/>
+        <FIELD NAME="start_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election begins"/>
+        <FIELD NAME="end_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election is over"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_sgelection_votes" COMMENT="votes cast for resolutions and candidates">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="college" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="college that the voter is from"/>
+        <FIELD NAME="major" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="major that the voter is in"/>
+        <FIELD NAME="candidate_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="foreign key for candidate"/>
+        <FIELD NAME="year" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="year the voter is in"/>
+        <FIELD NAME="full_time" TYPE="char" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="yes or no if the student is enrolled full time"/>
+        <FIELD NAME="ip_address" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="IP address where vote was"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="time that the vote was cast"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_sgelection_voters" COMMENT="Default comment for the table, please edit me">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="userid from user table of the voter"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="id from election table of the election the voter is participating in"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_sgelection_supp_info" COMMENT="extra information that can be attached to ballot">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="election the supp info belongs in"/>
+        <FIELD NAME="title" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="title of the supp info"/>
+        <FIELD NAME="text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="what goes in the body of the supp info"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="block_sgelection_officers" COMMENT="election officers">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="office_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="id of the office the officer currently holdsi"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="userid from users table of the officer"/>
+        <FIELD NAME="start_date" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="date the officer started"/>
+        <FIELD NAME="end_date" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="when the officers term in office ends"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
