@@ -22,8 +22,6 @@ class resolution_form extends moodleform {
         for($i = 1; $i <= count($options); ++$i) {
             $officeName[$options[$i]->name] = $options[$i]->name;
         }
-
-        $mform->addElement('select', 'office_candidate_is_running_for', get_string('office_candidate_is_running_for', 'block_sgelection'),$officeName);
         
         //hidden variables
         $mform->addElement('hidden', 'blockid');

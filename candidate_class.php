@@ -1,32 +1,5 @@
 <?php
-
-require_once('../../config.php');
 require_once('candidates_form.php');
-
-global $DB, $OUTPUT, $PAGE;
-
-$eid = required_param('eid', PARAM_INT);
-
-$username = optional_param('username', '', PARAM_ALPHANUM);
-$office = optional_param('office', '', PARAM_ALPHANUM);
-$affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
-
-$context = context_system::instance();
-
-$PAGE->set_context($context);
-$PAGE->set_url('/blocks/sgelection/candidates.php');
-$PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('candidate_page_header', 'block_sgelection'));
-
-$renderer = $PAGE->get_renderer('block_sgelection');
-
-require_login();
-
-// Breadcrumb trail bit
-$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/candidates.php', array('eid' => $eid));
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
-$editnode->make_active();
 
 $candidate = new candidate_form(new moodle_url('candidates.php', array('eid' => $eid)));
 
@@ -50,4 +23,28 @@ if($candidate->is_cancelled()) {
     echo $OUTPUT->header();
          $candidate->display();
     echo $OUTPUT->footer();
+}
+class candidate {
+    
+    public  $eid,
+            $username,
+            $office,
+            $affiliation;
+    
+    /*  Candidate constructor
+     *  Constructs a Candidate object to be inserted into Ballot when in editing mode
+     *  @param int $eid - election id
+     *  @param string $username - username of candidate
+     *  @param string $office - office candidate is running for
+     *  @param string $affiliation - affliation of candidate
+     * @return void / nothing
+     */
+    public function __construct($eid, $username, $office, $affiliation){
+        global $DB;
+        $this->eid      = $eid;
+        $this->username = $username;
+        $this->office   = $office;
+        $this->affiliation  = $affiliation;
+    }
+    
 }

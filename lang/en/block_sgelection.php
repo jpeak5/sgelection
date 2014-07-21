@@ -42,3 +42,9 @@ $string['title_of_office'] = 'Title of Office';
 $string['number_of_openings'] = 'Number of Openings';
 $string['limit_to_college'] = 'Limit to College';
 
+// Candidate Table
+$string['id'] = 'id';
+$string['userid'] = 'userid';
+$string['office'] = 'office';
+$string['affiliation'] = 'affiliation';
+$string['election_id'] = 'election_id';

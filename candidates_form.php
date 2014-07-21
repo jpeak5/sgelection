@@ -36,6 +36,7 @@ class candidate_form extends moodleform {
             $mform->createElement('cancel')
         );
         
+        
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
         
     }
