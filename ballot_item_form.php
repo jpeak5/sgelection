@@ -23,7 +23,7 @@ class ballot_item_form extends moodleform {
         $mform->addElement('select', 'office', get_string('office_candidate_is_running_for', 'block_sgelection'),$options);
         
         $buttons = array(
-            $mform->createElement('submit', 'save', get_string('savechanges')),
+            $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
             $mform->createElement('submit', 'delete', get_string('delete')),
             $mform->createElement('cancel')
         );
@@ -44,8 +44,12 @@ class ballot_item_form extends moodleform {
         for($i = 1; $i <= count($options); ++$i) {
             $officeName[$options[$i]->name] = $options[$i]->name;
         }
-        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
-        
+        $buttons = array(
+            $mform->createElement('submit', 'save_resolution', get_string('savechanges')),
+            $mform->createElement('submit', 'delete', get_string('delete')),
+            $mform->createElement('cancel')
+        );
+        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);        
         
         // add office header
         $mform->addElement('header', 'displayinfo', get_string('create_new_office', 'block_sgelection'));
@@ -65,7 +69,12 @@ class ballot_item_form extends moodleform {
             'Honors College' => 'Honors College');
         
         $mform->addElement('select', 'limit_to_college', get_string('limit_to_college', 'block_sgelection'), $attributes);
-        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
         
+        $buttons = array(
+            $mform->createElement('submit', 'save_office', get_string('savechanges')),
+            $mform->createElement('submit', 'delete', get_string('delete')),
+            $mform->createElement('cancel')
+        );
+        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);        
     }
 }

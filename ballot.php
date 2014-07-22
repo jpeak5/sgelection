@@ -3,6 +3,9 @@ require_once('../../config.php');
 require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
 require_once('ballot_item_form.php');
 require_once('candidate_item_form.php');
+require_once('candidate_class.php');
+require_once('resolution_class.php');
+require_once('office_class.php');
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -24,6 +27,7 @@ $limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_A
 require_login();
 global $DB, $PAGE;
 
+
 $renderer = $PAGE->get_renderer('block_sgelection');
 
 $ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('eid' => $eid)));
@@ -33,40 +37,25 @@ if($ballot_item_form->is_cancelled()) {
     $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $eid));
     redirect($ballot_url);
 } else if($fromform = $ballot_item_form->get_data()){
-    if($username !== ''){
-        var_dump($ballot_item_form->get_data());
-        $user = $DB->get_record('user', array('username' => $username));
-        $candidateData      = new stdClass();
-        $candidateData->userid     = $user->id;
-        $candidateData->office     = $office;
-        $candidateData->affiliation= $affiliation;
-        $candidateData->election_id= $eid;
-        if (! $id = $DB->insert_record('block_sgelection_candidate', $candidateData)) {
-            print_error('inserterror', 'block_sgelection');
-        }
+    // CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE 
+    if(isset($fromform->save_candidate)){
+        $candidateData      = new candidate($username, $office, $affiliation, $eid);
+        $candidateData->save();
         unset($username);
         $thisurl = new moodle_url('ballot.php', array('eid' => $eid));
         redirect($thisurl);
-    } else if($resolutionTitle !== ''){
-        $resolutionData      = new stdClass();
-        $resolutionData->title     = $resolutionTitle;
-        $resolutionData->text     = $resolutionText;
-        $resolutionData->election_id = $eid;
-
-        if (!$DB->insert_record('block_sgelection_resolution', $resolutionData)) {
-            print_error('inserterror', 'block_sgelection');
-        }
+    } 
+    // RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION  
+    else if(isset($fromform->save_resolution)){
+        $resolutionData      = new resolution($resolutionTitle,$resolutionText,$eid);
+        $resolutionData->save();
         $thisurl = new moodle_url('ballot.php', array('eid' => $eid));
         redirect($thisurl);
-    } else if($officeTitle !== ''){
-        $officeData      = new stdClass();
-        $officeData->name     = $officeTitle;
-        $officeData->number   = $numberOfOpenings;
-        $officeData->college  = $limitToCollege;
-
-        if (!$DB->insert_record('block_sgelection_office', $officeData)) {
-            print_error('inserterror', 'block_sgelection');
-        }
+    }
+    // OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE 
+    else if(isset($fromform->save_office)){
+        $officeData      = new office($officeTitle, $numberOfOpenings, $limitToCollege);
+        $officeData->save();
         $thisurl = new moodle_url('ballot.php', array('eid' => $eid));
         redirect($thisurl);
     }
