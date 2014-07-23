@@ -6,7 +6,7 @@ class ballot_item_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
-        
+        var_dump($this->_customdata);
         // ADD CANDIDATES HEADER
         $mform->addElement('header', 'displayinfo', get_string('create_new_candidate', 'block_sgelection'));
 

@@ -18,20 +18,24 @@ class block_sgelection extends block_list {
 
         $activeElections = get_active_elections();
         $activeElectionsLinks = array();
-        
+        $i=0;
         foreach($activeElections as $ae){
             $activeElectionsLinks[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $ae->id)), 'Ballot for ' . $ae->year . ' ' . $ae->sem_code );
-            $this->content->items[]= current($activeElectionsLinks);
+            $this->content->items[]= $activeElectionsLinks[$i];
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
+            $i++;
         }
 
         $vote = html_writer::link( new moodle_url('/blocks/sgelection/vote.php'), 'Vote' );
         $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Admin');
-        
+        $commissioner = html_writer::link(new moodle_url('/blocks/sgelection/commissioner.php'), 'Commissioner');
         $this->content->items[] = $vote;
         $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'vote', 'moodle', $icon_class);
         
         $this->content->items[] = $administrate;
+        $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
+        
+        $this->content->items[] = $commissioner;
         $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
 
         return $this->content;

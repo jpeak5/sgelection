@@ -6,6 +6,7 @@ require_once('candidate_item_form.php');
 require_once('candidate_class.php');
 require_once('resolution_class.php');
 require_once('office_class.php');
+require_once('election_class.php');
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -25,13 +26,24 @@ $numberOfOpenings = optional_param('number_of_openings', '', PARAM_ALPHANUM);
 $limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_ALPHANUM);
 
 require_login();
+
+$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
+$editurl = new moodle_url('/blocks/sgelection/ballot.php');
+$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
+$editnode->make_active();
+
 global $DB, $PAGE;
 
 
 $renderer = $PAGE->get_renderer('block_sgelection');
+$currentElection = $DB->get_record('block_sgelection_election', array('id' => $eid));
+$election = new election($currentElection->year, $currentElection->sem_code, $currentElection->start_date, $currentElection->end_date);
 
-$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('eid' => $eid)));
-$candidate_item_form = new candidate_item_form(new moodle_url('submit_ballot.php', array('eid' => $eid)));
+$candidatesToForm = $election->get_candidates($eid);
+$officesToForm = $election->get_offices();
+$resolutionsToForm = $election->get_resolutions();
+
+$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('eid' => $eid)), array('candidates' => $candidatesToForm, 'offices' => $officesToForm, 'resolutions' => $resolutionsToForm));
 
 if($ballot_item_form->is_cancelled()) {
     $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $eid));
@@ -64,10 +76,7 @@ if($ballot_item_form->is_cancelled()) {
 
 echo $OUTPUT->header();
 
+
 $ballot_item_form->display();
-
-echo $renderer->print_candidates_list();
-
-echo $renderer->print_resolutions_list();
 
 echo $OUTPUT->footer();

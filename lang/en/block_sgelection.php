@@ -48,3 +48,16 @@ $string['userid'] = 'userid';
 $string['office'] = 'office';
 $string['affiliation'] = 'affiliation';
 $string['election_id'] = 'election_id';
+
+// Administration
+$string['commissioner'] = 'commissioner';
+$string['fulltime'] = 'Full Time';
+$string['parttime'] = 'Part Time';
+$string['election_tool_administration'] = ' Election Tool Administration';
+
+// Commissioner Page / building election object
+$string['start_date'] = 'Start Date DD/MM/YYYY';
+$string['end_date'] = 'End Date DD/MM/YYYY';
+$string['sem_code'] = 'Semester Code';
+$string['year'] = 'Year';
+$string['new_election_options'] = 'Create New Election';

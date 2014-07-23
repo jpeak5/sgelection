@@ -34,7 +34,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
         // DWETODO
         // I think that the DB object should be passed to this function
         // possibly. 
-        public function print_candidates_list() {
+        public function print_candidates_list($ballot_item_form) {
             global $DB, $OUTPUT, $PAGE;
 
             $table = new html_table();
@@ -47,25 +47,28 @@ class block_sgelection_renderer extends plugin_renderer_base {
                 get_string('election_id', 'block_sgelection'),
             );
             
-            
-            $candidates = $DB->get_records('block_sgelection_candidate');
-            
+            $offices        = $DB->get_records('block_sgelection_office');
             $candidatesString = '';
-            $content = '';
-            foreach($candidates as $c){
-                var_dump($c);
-                // DWETODO -> ask someone / figure out how to map 
-                // all candidate usernames to an array
-                // probably faster than DB lookup everytime
-                $user = $DB->get_record('user', array('id' => $c->userid));
-                $candidatesString .= html_writer::start_div('candidate');
-                $candidatesString .= html_writer::tag('h1', $user->firstname); 
-                $candidatesString .= html_writer::end_div();
-                
-                
-            }
-            
+            foreach($offices as $office){
+                $candidates     = $DB->get_records('block_sgelection_candidate', array('office' => $office->id));
+                $candidatesString .= html_writer::start_div('generalbox');
+                $candidatesString .= html_writer::tag('h1', $office->name); 
+                $radioarray=array();
 
+                foreach($candidates as $c){
+                    // DWETODO -> ask someone / figure out how to map 
+                    // all candidate usernames to an array
+                    // probably faster than DB lookup everytime
+                    $user = $DB->get_record('user', array('id' => $c->userid));
+                    $candidatesString .= html_writer::tag('p', $user->firstname); 
+                    //$radioarray[] =& $ballot_item_form->createElement('radio', 'yesno', '', get_string('yes'), 1);
+                    //$ballot_item_form->addGroup($radioarray, 'radioar', '', array(' '), false);
+                    $candidatesString .= html_writer::start_div('candidate_affiliation');
+                    $candidatesString .= html_writer::tag('p', $c->affiliation); 
+                    $candidatesString .= html_writer::end_div();
+                }
+                $candidatesString .= html_writer::end_div();
+            }
             return $candidatesString;
     }
         // DWETODO
