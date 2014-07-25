@@ -28,8 +28,9 @@ if($commissioner_form->is_cancelled()){
     $courseurl = new moodle_url('/course/view.php', array('id' => $id));
     redirect($courseurl);
 } else if($fromform = $commissioner_form->get_data()){
-    $unixStartTime = strtotime($fromform->start_date);
-    $unixEndTime = strtotime($fromform->end_date);
+    echo 'hello';
+    $unixStartTime = $fromform->start_date;
+    $unixEndTime = $fromform->end_date;
     $electionData = new election($fromform->year, $fromform->sem_code, $unixStartTime, $unixEndTime);
     $electionData->save();
     $courseurl = new moodle_url('/course/view.php');

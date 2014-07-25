@@ -27,7 +27,6 @@ class sg_admin_form extends moodleform {
         $mform->setType('parttime', PARAM_INT);
         $mform->addRule('parttime', null, 'required', null, 'client');      
 
-        $mform->addElement('date_selector', 'assesstimefinish', get_string('to'));
 
         $select = $mform->addElement('select', 'colors', get_string('excluded_curriculum_code', 'block_sgelection'), array('red', 'blue', 'green'));
         $select->setMultiple(true);

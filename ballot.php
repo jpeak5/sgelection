@@ -37,13 +37,6 @@ global $DB, $PAGE;
 ?>
 
 <script type="text/javascript">
-
-/***********************************************
-* Limit number of checked checkboxes script- by JavaScript Kit (www.javascriptkit.com)
-* This notice must stay intact for usage
-* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and 100s more
-***********************************************/
-
 function checkboxlimit(checkgroup, limit){
 	var checkgroup=checkgroup;
 	var limit=limit;

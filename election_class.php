@@ -22,7 +22,7 @@ class election {
     }
     public function get_candidates($eid){
         global $DB;
-        return $DB->get_records('block_sgelection_candidate');
+        return $DB->get_records('block_sgelection_candidate', array('id'=>$eid));
     }
     
     public function get_offices(){

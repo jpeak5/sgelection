@@ -23,15 +23,9 @@ class commissioner_form extends moodleform {
         $mform->setType('sem_code', PARAM_INT);
         $mform->addRule('sem_code', null, 'required', null, 'client');     
         
-        $mform->addELement('text', 'start_date', get_string('start_date', 'block_sgelection'));
-        $mform->setType('start_date', PARAM_RAW);
-        $mform->addRule('start_date', null, 'required', null, 'client');      
-                
-        $mform->addELement('text', 'end_date', get_string('end_date', 'block_sgelection'));
-        $mform->setType('end_date', PARAM_RAW);
-        $mform->addRule('end_date', null, 'required', null, 'client');    
+        $mform->addElement('date_selector', 'start_date', get_string('start_date', 'block_sgelection'));
+        $mform->addElement('date_selector', 'end_date', get_string('end_date', 'block_sgelection'));
 
-        $mform->addElement('date_selector', 'assesstimefinish', get_string('to'));
         $this->add_action_buttons();
 
     }
