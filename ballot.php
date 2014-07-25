@@ -79,7 +79,7 @@ if($ballot_item_form->is_cancelled()) {
     $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $eid));
     redirect($ballot_url);
 } else if($fromform = $ballot_item_form->get_data()){
-    var_dump($fromform);
+
     // CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE 
     if(isset($fromform->save_candidate)){
         $params = array('username'=>$username, 'office'=>$office, 'affiliation'=>$affiliation, 'election_id'=>$eid);
@@ -103,7 +103,12 @@ if($ballot_item_form->is_cancelled()) {
     }
     // OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE 
     else if(isset($fromform->save_office)){
-        $officeData      = new office($officeTitle, $numberOfOpenings, $limitToCollege);
+        $params = array(
+            "name"    => $officeTitle,
+            "number"  => $numberOfOpenings,
+            "college" => $limitToCollege
+        );
+        $officeData      = new office($params);
         $officeData->save();
         $thisurl = new moodle_url('ballot.php', array('eid' => $eid));
         redirect($thisurl);
