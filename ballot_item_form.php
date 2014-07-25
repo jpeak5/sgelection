@@ -8,25 +8,27 @@ class ballot_item_form extends moodleform {
         $mform =& $this->_form;
         //var_dump($this->_customdata);
         // ADD CANDIDATES HEADER
-        $mform->addElement('header', 'displayinfo', get_string('create_new_candidate', 'block_sgelection'));
-
-        $attributes = array('size' => '50', 'maxlength' => '100');
-        $mform->addElement('text', 'username', get_string('paws_id_of_candidate', 'block_sgelection'), $attributes);
-        $mform->setType('username', PARAM_TEXT);
-        
-        //add office dropdown
-        $mform->addElement('text', 'affiliation', get_string('affiliation', 'block_sgelection'));
-        $mform->setType('affiliation', PARAM_TEXT);
-        // add affiliation dropdown
         $options = $DB->get_records_menu('block_sgelection_office');
-        $mform->addElement('select', 'office', get_string('office_candidate_is_running_for', 'block_sgelection'),$options);
-        
-        $buttons = array(
-            $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
-            $mform->createElement('submit', 'delete', get_string('delete')),
-            $mform->createElement('cancel')
-        );
-        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        if(count($options) > 0){
+            $mform->addElement('header', 'displayinfo', get_string('create_new_candidate', 'block_sgelection'));
+
+            $attributes = array('size' => '50', 'maxlength' => '100');
+            $mform->addElement('text', 'username', get_string('paws_id_of_candidate', 'block_sgelection'), $attributes);
+            $mform->setType('username', PARAM_TEXT);
+
+            //add office dropdown
+            $mform->addElement('text', 'affiliation', get_string('affiliation', 'block_sgelection'));
+            $mform->setType('affiliation', PARAM_TEXT);
+            // add affiliation dropdown
+            $mform->addElement('select', 'office', get_string('office_candidate_is_running_for', 'block_sgelection'),$options);
+
+            $buttons = array(
+                $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
+                $mform->createElement('submit', 'delete', get_string('delete')),
+                $mform->createElement('cancel')
+                );
+            $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        }
         
         // add resolution header
         $mform->addElement('header', 'displayinfo', get_string('create_new_resolution', 'block_sgelection'));
