@@ -16,7 +16,7 @@ class office_form extends moodleform {
         
         $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'number_of_openings', get_string('number_of_openings', 'block_sgelection'), $attributes);
-        $mform->setType('number_of_openings', PARAM_TEXT);
+        $mform->setType('number_of_openings', PARAM_INT);
         
         // Limit to College
         $attributes = array('Agriculture' => 'Agriculture', 'Art & Design' => 'Art & Design', 

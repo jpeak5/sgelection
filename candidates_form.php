@@ -13,7 +13,7 @@ class candidate_form extends moodleform {
 
         $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'username', get_string('paws_id_of_candidate', 'block_sgelection'), $attributes);
-        $mform->setType('username', PARAM_TEXT);
+        $mform->setType('username', PARAM_ALPHANUM);
         
         //add office dropdown
         $attributes = array('dave' => 'dave', 'elliott' => 'elliott');

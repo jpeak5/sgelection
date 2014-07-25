@@ -17,13 +17,13 @@ $PAGE->set_heading(get_string('candidate_page_header', 'block_sgelection'));
 $eid = required_param('eid', PARAM_INT);
 
 $username = optional_param('username', '', PARAM_ALPHANUM);
-$office = optional_param('office', '', PARAM_ALPHANUM);
+$office = optional_param('office', '', PARAM_INT);
 $affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
 $resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
 $resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
-$officeTitle = optional_param('title_of_office', '', PARAM_ALPHANUM);
-$numberOfOpenings = optional_param('number_of_openings', '', PARAM_ALPHANUM);
-$limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_ALPHANUM);
+$officeTitle = optional_param('title_of_office', '', PARAM_TEXT);
+$numberOfOpenings = optional_param('number_of_openings', '', PARAM_INT);
+$limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_INT);
 
 require_login();
 
