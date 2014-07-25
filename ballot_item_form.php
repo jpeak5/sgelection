@@ -6,7 +6,7 @@ class ballot_item_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
-        var_dump($this->_customdata);
+        //var_dump($this->_customdata);
         // ADD CANDIDATES HEADER
         $mform->addElement('header', 'displayinfo', get_string('create_new_candidate', 'block_sgelection'));
 
@@ -15,9 +15,8 @@ class ballot_item_form extends moodleform {
         $mform->setType('username', PARAM_TEXT);
         
         //add office dropdown
-        $attributes = array('dave' => 'dave', 'elliott' => 'elliott');
-        $mform->addElement('select', 'affiliation', get_string('affiliation', 'block_sgelection'), $attributes);
-        
+        $mform->addElement('text', 'affiliation', get_string('affiliation', 'block_sgelection'));
+        $mform->setType('affiliation', PARAM_TEXT);
         // add affiliation dropdown
         $options = $DB->get_records_menu('block_sgelection_office');
         $mform->addElement('select', 'office', get_string('office_candidate_is_running_for', 'block_sgelection'),$options);
@@ -70,11 +69,71 @@ class ballot_item_form extends moodleform {
         
         $mform->addElement('select', 'limit_to_college', get_string('limit_to_college', 'block_sgelection'), $attributes);
         
+        
+        
         $buttons = array(
             $mform->createElement('submit', 'save_office', get_string('savechanges')),
             $mform->createElement('submit', 'delete', get_string('delete')),
             $mform->createElement('cancel')
         );
-        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);        
+        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        
+        // add office header
+        $mform->addElement('header', 'displayinfo', get_string('ballot', 'block_sgelection'));
+        
+        $offices = $this->_customdata['offices'];
+        $i = 0;
+
+
+        foreach($offices as $o){
+            $candidates = $this->_customdata['candidates'];
+            $mform->addElement('html', html_writer::start_div('generalbox'));
+            $mform->addElement('html', html_writer::tag('h1', $o->name)); 
+            $radioarray=array();            
+                foreach($candidates as $c){
+                    $user = $DB->get_record('user', array('id' => $c->userid));
+                    // $radioarray[$i] =& $mform->createElement('radio', 'yesno'.$i, '', get_string('yes'), 1);
+                    // $mform->addGroup($radioarray, 'radioar'.$i, '', array(' '), false);
+                    
+                    $mform->addElement('checkbox', 'candidate_checkbox', $user->firstname, null);
+
+                    //$mform->addElement('html', html_writer::tag('p', $user->firstname)); 
+
+                    $mform->addElement('html', html_writer::start_div('candidate_affiliation'));
+                    $mform->addElement('html', html_writer::tag('p', $c->affiliation)); 
+                    $mform->addElement('html', html_writer::end_div());                
+            }
+             $mform->addElement('html', html_writer::end_div());
+             $i++;
+        }
+        
+        $resolutions = $this->_customdata['resolutions'];
+        
+        $j=0;
+        
+        foreach($resolutions as $r){
+            
+            $mform->addElement('html', html_writer::start_div('generalbox'));
+            
+            $mform->addElement('html', html_writer::tag('h1', $r->title));
+            
+            $mform->addElement('html', html_writer::tag('p',  $r->text)); 
+            
+            $resRadioArray=array();         
+            
+            $resRadioArray[$j] =& $mform->createElement('radio', 'resyesno'.$j, '', get_string('yes'), 1);
+            
+            $mform->addGroup($resRadioArray, 'resradioar'. $j, '', array(' '), false);
+
+        }
+        
+        $buttons = array(
+        $mform->createElement('submit', 'save_office', get_string('vote', 'block_sgelection')),
+        $mform->createElement('submit', 'delete', get_string('delete')),
+        $mform->createElement('cancel')
+        );
+        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        
     }
+    
 }

@@ -34,7 +34,37 @@ $editnode->make_active();
 
 global $DB, $PAGE;
 
+?>
 
+<script type="text/javascript">
+
+/***********************************************
+* Limit number of checked checkboxes script- by JavaScript Kit (www.javascriptkit.com)
+* This notice must stay intact for usage
+* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and 100s more
+***********************************************/
+
+function checkboxlimit(checkgroup, limit){
+	var checkgroup=checkgroup;
+	var limit=limit;
+	for (var i=0; i<checkgroup.length; i++){
+		checkgroup[i].onclick=function(){
+		var checkedcount=0;
+		for (var i=0; i<checkgroup.length; i++)
+			checkedcount+=(checkgroup[i].checked)? 1 : 0;
+		if (checkedcount>limit){
+			alert("You can only select a maximum of "+limit+" checkboxes");
+			this.checked=false;
+			}
+		}
+	}
+}
+
+</script>
+
+
+
+<?php
 $renderer = $PAGE->get_renderer('block_sgelection');
 $currentElection = $DB->get_record('block_sgelection_election', array('id' => $eid));
 $election = new election($currentElection->year, $currentElection->sem_code, $currentElection->start_date, $currentElection->end_date);
@@ -43,7 +73,7 @@ $candidatesToForm = $election->get_candidates($eid);
 $officesToForm = $election->get_offices();
 $resolutionsToForm = $election->get_resolutions();
 
-$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('eid' => $eid)), array('candidates' => $candidatesToForm, 'offices' => $officesToForm, 'resolutions' => $resolutionsToForm));
+$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('eid' => $eid)), array('candidates' => $candidatesToForm, 'offices' => $officesToForm, 'resolutions' => $resolutionsToForm),null,null,array('name' => 'ballot_form'));
 
 if($ballot_item_form->is_cancelled()) {
     $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $eid));
@@ -78,5 +108,13 @@ echo $OUTPUT->header();
 
 
 $ballot_item_form->display();
+?>
 
+<script type="text/javascript">
+
+//Syntax: checkboxlimit(checkbox_reference, limit)
+checkboxlimit(document.forms.ballot_form.candidate_checkbox, 2);
+
+</script>
+<?php
 echo $OUTPUT->footer();

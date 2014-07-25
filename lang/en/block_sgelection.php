@@ -54,10 +54,11 @@ $string['commissioner'] = 'commissioner';
 $string['fulltime'] = 'Full Time';
 $string['parttime'] = 'Part Time';
 $string['election_tool_administration'] = ' Election Tool Administration';
-
+$string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 // Commissioner Page / building election object
-$string['start_date'] = 'Start Date DD/MM/YYYY';
-$string['end_date'] = 'End Date DD/MM/YYYY';
+$string['start_date'] = 'Start Date MM/DD/YYYY';
+$string['end_date'] = 'End Date MM/DD/YYYY';
 $string['sem_code'] = 'Semester Code';
 $string['year'] = 'Year';
 $string['new_election_options'] = 'Create New Election';
+$string['ballot'] ='ballot';

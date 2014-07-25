@@ -3,7 +3,8 @@ class election {
     public  $year,
             $sem_code,
             $start_date,
-            $end_date;
+            $end_date,
+            $id;
     /*  office constructor
      *  Constructs a office object to be inserted into Ballot when in editing mode
      */
@@ -12,7 +13,6 @@ class election {
         $this->sem_code         = $sem_code;
         $this->start_date       = $start_date;
         $this->end_date         = $end_date;
-
     }
     public function save(){
         global $DB;

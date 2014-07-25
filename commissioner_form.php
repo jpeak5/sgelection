@@ -31,7 +31,7 @@ class commissioner_form extends moodleform {
         $mform->setType('end_date', PARAM_RAW);
         $mform->addRule('end_date', null, 'required', null, 'client');    
 
-
+        $mform->addElement('date_selector', 'assesstimefinish', get_string('to'));
         $this->add_action_buttons();
 
     }
