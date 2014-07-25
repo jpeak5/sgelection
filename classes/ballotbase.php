@@ -39,7 +39,6 @@ abstract class ballot_base {
     
     public function save(){
         global $DB;
-        mtrace(sprintf("about to save record to %s table", static::$tablename));
         if (! $id = $DB->insert_record(static::$tablename, $this)) {
             print_error('inserterror', 'block_sgelection');
         }
