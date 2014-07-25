@@ -81,7 +81,8 @@ if($ballot_item_form->is_cancelled()) {
 } else if($fromform = $ballot_item_form->get_data()){
     // CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE 
     if(isset($fromform->save_candidate)){
-        $candidateData      = new candidate($username, $office, $affiliation, $eid);
+        $params = array('username'=>$username, 'office'=>$office, 'affiliation'=>$affiliation, 'election_id'=>$eid);
+        $candidateData      = new candidate($params);
         $candidateData->save();
         unset($username);
         $thisurl = new moodle_url('ballot.php', array('eid' => $eid));

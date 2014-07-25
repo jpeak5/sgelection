@@ -16,33 +16,32 @@
 
 
 /**
- * Candidate class
+ * Base class for ballot elements classes
  *
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('candidates_form.php');
-require_once('classes/ballotbase.php');
 
-
-class candidate extends ballot_base{
+abstract class ballot_base {
     
-    public  $election_id,
-            $userid,
-            $office,
-            $affiliation;
-
-    static $tablename = "block_sgelection_candidate";
+    static $tablename;
     
-    /*  
-     * Candidate constructor
-     * Constructs a Candidate object to be inserted into Ballot when in editing mode
-     * @param $params array keyed with class var names
-     */
-    public function __construct($params){
-        parent::__construct($params);
+    public function __construct(array $params){
+        $vars = get_class_vars(get_class($this));
+
+        foreach($params as $k => $v){
+            if(in_array($k, array_keys($vars))){
+                $this->$k = $v;
+            }
+        }
+    }
+    
+    public function save(){
         global $DB;
-        $this->userid = $DB->get_field('user', 'id', array('username' => $params['username']));
+        mtrace(sprintf("about to save record to %s table", static::$tablename));
+        if (! $id = $DB->insert_record(static::$tablename, $this)) {
+            print_error('inserterror', 'block_sgelection');
+        }
     }
 }
