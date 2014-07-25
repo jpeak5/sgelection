@@ -19,8 +19,8 @@ $eid = required_param('eid', PARAM_INT);
 $username = optional_param('username', '', PARAM_ALPHANUM);
 $office = optional_param('office', '', PARAM_ALPHANUM);
 $affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
-$resolutionTitle = optional_param('title_of_resolution', '', PARAM_ALPHANUM);
-$resolutionText = optional_param('resolution_text', '', PARAM_ALPHANUM);
+$resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
+$resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
 $officeTitle = optional_param('title_of_office', '', PARAM_ALPHANUM);
 $numberOfOpenings = optional_param('number_of_openings', '', PARAM_ALPHANUM);
 $limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_ALPHANUM);
@@ -79,6 +79,7 @@ if($ballot_item_form->is_cancelled()) {
     $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $eid));
     redirect($ballot_url);
 } else if($fromform = $ballot_item_form->get_data()){
+    var_dump($fromform);
     // CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE 
     if(isset($fromform->save_candidate)){
         $params = array('username'=>$username, 'office'=>$office, 'affiliation'=>$affiliation, 'election_id'=>$eid);
@@ -90,7 +91,12 @@ if($ballot_item_form->is_cancelled()) {
     } 
     // RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION  
     else if(isset($fromform->save_resolution)){
-        $resolutionData      = new resolution($resolutionTitle,$resolutionText,$eid);
+        $params = array(
+            "election_id" => $eid,
+            "title" => $resolutionTitle,
+            "text" => $resolutionText
+            );
+        $resolutionData      = new resolution($params);
         $resolutionData->save();
         $thisurl = new moodle_url('ballot.php', array('eid' => $eid));
         redirect($thisurl);
