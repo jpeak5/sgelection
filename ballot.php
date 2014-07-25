@@ -28,7 +28,7 @@ $limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_A
 require_login();
 
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/ballot.php');
+$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('eid'=>$eid));
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
@@ -37,6 +37,13 @@ global $DB, $PAGE;
 ?>
 
 <script type="text/javascript">
+
+/***********************************************
+* Limit number of checked checkboxes script- by JavaScript Kit (www.javascriptkit.com)
+* This notice must stay intact for usage
+* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and 100s more
+***********************************************/
+
 function checkboxlimit(checkgroup, limit){
 	var checkgroup=checkgroup;
 	var limit=limit;
