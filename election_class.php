@@ -8,28 +8,31 @@ class election {
     /*  office constructor
      *  Constructs a office object to be inserted into Ballot when in editing mode
      */
-    public function __construct($year, $sem_code, $start_date, $end_date){
+    public function __construct($year, $sem_code, $start_date, $end_date, $id){
         $this->year             = $year;
         $this->sem_code         = $sem_code;
         $this->start_date       = $start_date;
         $this->end_date         = $end_date;
+        $this->id               = $id;
     }
-    public function save(){
+    public function create(){
         global $DB;
         if (!$DB->insert_record('block_sgelection_election', $this)) {
             print_error('inserterror', 'block_sgelection');
         }
     }
-    public function get_candidates($eid){
+
+    public function  get_ballot_item($type){
         global $DB;
-        return $DB->get_records('block_sgelection_candidate', array('id'=>$eid));
+        if($type == 'office'){
+            return $DB->get_records('block_sgelection_office');
+        }
+        return $DB->get_records("block_sgelection_{$type}",  array('election_id'=>$this->id));
     }
     
-    public function get_offices(){
+    public static function get_by_id($id){
         global $DB;
-        return $DB->get_records('block_sgelection_office');
+        $params = $DB->get_record('block_sgelection_election', array('id' => $id));
+        return new self($params->year, $params->sem_code, $params->start_date, $params->end_date, $params->id);
     }
-    public function get_resolutions(){
-        global $DB;
-        return $DB->get_records('block_sgelection_resolution');    }
 }

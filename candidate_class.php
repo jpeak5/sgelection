@@ -45,4 +45,31 @@ class candidate extends ballot_base{
         global $DB;
         $this->userid = $DB->get_field('user', 'id', array('username' => $params['username']));
     }
+    
+    public function getfullcandidate(){
+        global $DB;
+        $user = $DB->get_record('user', array('id'=>$this->id));
+        return candidate::mergecandidateuser($this, $user);
+    }
+    
+    public static function mergecandidateuser($candidate, $user){
+        $user->election_id  = $candidate->election_id;
+        $user->office       = $candidate->office;
+        $user->affiliation  = $candidate->affiliation;
+        return $user;
+    }
+    
+    public static function getfullcandidates($election){
+        global $DB;
+        $candidateids = $DB->get_fieldset_select('block_sgelection_candidate', 'userid', "election_id = ?", array($election->id));
+
+        $candidates = $DB->get_records_list('block_sgelection_candidate',  'userid', $candidateids);
+        $users = $DB->get_records_list('user', 'id', $candidateids);
+        
+        $fullcandidates = array();
+        foreach($candidates as $c){
+            $fullcandidates[] = candidate::mergecandidateuser($c, $users[$c->userid]);
+        }
+        return $fullcandidates;
+    }
 }

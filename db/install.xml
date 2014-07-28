@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/sgelection/db" VERSION="20140723" COMMENT="XMLDB file for Moodle blocks/sgelection"
+<XMLDB PATH="blocks/sgelection/db" VERSION="20140728" COMMENT="XMLDB file for Moodle blocks/sgelection"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -38,7 +38,7 @@
     <TABLE NAME="block_sgelection_resolution" COMMENT="table for resolutions">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="eid" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false" COMMENT="election Identification - foreign key for election table"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false" COMMENT="election Identification - foreign key for election table"/>
         <FIELD NAME="title" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>

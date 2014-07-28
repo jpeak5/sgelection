@@ -6,7 +6,7 @@ class ballot_item_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
-        //var_dump($this->_customdata);
+        $election = $this->_customdata['election']; 
         // ADD CANDIDATES HEADER
         $options = $DB->get_records_menu('block_sgelection_office');
         if(count($options) > 0){
@@ -88,18 +88,12 @@ class ballot_item_form extends moodleform {
 
 
         foreach($offices as $o){
-            $candidates = $this->_customdata['candidates'];
             $mform->addElement('html', html_writer::start_div('generalbox'));
             $mform->addElement('html', html_writer::tag('h1', $o->name)); 
-            $radioarray=array();            
-                foreach($candidates as $c){
-                    $user = $DB->get_record('user', array('id' => $c->userid));
-                    // $radioarray[$i] =& $mform->createElement('radio', 'yesno'.$i, '', get_string('yes'), 1);
-                    // $mform->addGroup($radioarray, 'radioar'.$i, '', array(' '), false);
+            $candidates = candidate::getfullcandidates($election);
+            foreach($candidates as $c){
                     
-                    $mform->addElement('checkbox', 'candidate_checkbox', $user->firstname, null);
-
-                    //$mform->addElement('html', html_writer::tag('p', $user->firstname)); 
+                    $mform->addElement('checkbox', 'candidate_checkbox', $c->firstname, null);
 
                     $mform->addElement('html', html_writer::start_div('candidate_affiliation'));
                     $mform->addElement('html', html_writer::tag('p', $c->affiliation)); 
