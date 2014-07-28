@@ -9,8 +9,8 @@ global $DB, $OUTPUT, $PAGE;
 $election_id = required_param('election_id', PARAM_INT);
 
 $username = optional_param('username', '', PARAM_ALPHANUM);
-$office = optional_param('office', '', PARAM_ALPHANUM);
-$affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
+$office = optional_param('office', '', PARAM_INT);
+$affiliation = optional_param('affiliation', '', PARAM_TEXT);
 
 $context = context_system::instance();
 

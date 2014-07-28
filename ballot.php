@@ -7,7 +7,7 @@ require_once('candidates_form.php');
 require_once('resolutions_form.php');
 
 require_once('candidate_class.php');
-require_once('resolution_class.php');
+
 
 require_once('election_class.php');
 
@@ -94,24 +94,13 @@ if($ballot_item_form->is_cancelled()) {
 
     // CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE 
     if(isset($fromform->save_candidate)){
-        $params = array('username'=>$username, 'office'=>$office, 'affiliation'=>$affiliation, 'election_id'=>$election_id);
-        $candidateData      = new candidate($params);
-        $candidateData->save();
-        unset($username);
-        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-        redirect($thisurl);
+        mtrace("OOPS!!! shouldn't get into save_candi anymore...");
+        die();
     } 
     // RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION  
     else if(isset($fromform->save_resolution)){
-        $params = array(
-            "election_id" => $election_id,
-            "title" => $resolutionTitle,
-            "text" => $resolutionText
-            );
-        $resolutionData      = new resolution($params);
-        $resolutionData->save();
-        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-        redirect($thisurl);
+        mtrace("OOPS!!! shouldn't get int resolution save anymore...");
+        die();
     }
     // OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE 
     else if(isset($fromform->save_office)){
