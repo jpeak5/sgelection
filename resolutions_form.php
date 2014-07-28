@@ -6,8 +6,8 @@ class resolution_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
+        // add resolution header
         
-        //add group for text areas
         $mform->addElement('header', 'displayinfo', get_string('create_new_resolution', 'block_sgelection'));
 
         $attributes = array('size' => '50', 'maxlength' => '100');
@@ -22,21 +22,12 @@ class resolution_form extends moodleform {
         for($i = 1; $i <= count($options); ++$i) {
             $officeName[$options[$i]->name] = $options[$i]->name;
         }
-        
-        //hidden variables
-        $mform->addElement('hidden', 'blockid');
-        $mform->setType('blockid', PARAM_INT);
-
-        $mform->addElement('hidden', 'courseid');
-        $mform->setType('courseid', PARAM_INT);
-        
         $buttons = array(
-            $mform->createElement('submit', 'save', get_string('savechanges')),
+            $mform->createElement('submit', 'save_resolution', get_string('savechanges')),
             $mform->createElement('submit', 'delete', get_string('delete')),
             $mform->createElement('cancel')
         );
-        
-        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);        
         
     }
 }

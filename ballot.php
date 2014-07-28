@@ -2,7 +2,10 @@
 require_once('../../config.php');
 require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
 require_once('ballot_item_form.php');
-require_once('candidate_item_form.php');
+require_once('offices_form.php');
+require_once('candidates_form.php');
+require_once('resolutions_form.php');
+
 require_once('candidate_class.php');
 require_once('resolution_class.php');
 require_once('office_class.php');
@@ -24,7 +27,7 @@ $resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
 $officeTitle = optional_param('title_of_office', '', PARAM_TEXT);
 $numberOfOpenings = optional_param('number_of_openings', '', PARAM_INT);
 $limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_INT);
-
+//$edit = optional_
 require_login();
 
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
@@ -70,6 +73,11 @@ $election = election::get_by_id($election_id);
 
 $officesToForm = $election->get_ballot_item('office');
 $resolutionsToForm = $election->get_ballot_item('resolution');
+
+// FORM and INDIVIDUAL FORM ITEMS
+$candidate_form = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)));
+$resolution_form = new resolution_form(new moodle_url('resolutions.php', array('election_id'=> $election_id)));
+$office_form = new office_form(new moodle_url('office.php', array('election_id'=> $election_id)));
 
 $ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), array('offices' => $officesToForm, 'resolutions' => $resolutionsToForm, 'election' => $election),null,null,array('name' => 'ballot_form'));
 
@@ -117,7 +125,12 @@ if($ballot_item_form->is_cancelled()) {
 echo $OUTPUT->header();
 
 
+$candidate_form->display();
+$resolution_form->display();        
+$office_form->display();
+
 $ballot_item_form->display();
+
 ?>
 
 <script type="text/javascript">
