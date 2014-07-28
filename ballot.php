@@ -77,41 +77,31 @@ function checkboxlimit(checkgroup, limit){
 $renderer = $PAGE->get_renderer('block_sgelection');
 $election = election::get_by_id($election_id);
 
-$officesToForm = $election->get_ballot_item('office');
+$officesToForm     = $election->get_ballot_item('office');
 $resolutionsToForm = $election->get_ballot_item('resolution');
-
-// FORM and INDIVIDUAL FORM ITEMS
-$candidate_form = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)));
-$resolution_form = new resolution_form(new moodle_url('resolutions.php', array('election_id'=> $election_id)));
-$office_form = new office_form(new moodle_url('offices.php', array('election_id'=> $election_id)));
-
-$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), array('offices' => $officesToForm, 'resolutions' => $resolutionsToForm, 'election' => $election),null,null,array('name' => 'ballot_form'));
+$customdata        = array(
+    'offices'     => $officesToForm, 
+    'resolutions' => $resolutionsToForm, 
+    'election'    => $election
+        );
+$ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), $customdata, null,null,array('name' => 'ballot_form'));
 
 if($ballot_item_form->is_cancelled()) {
     $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $election_id));
     redirect($ballot_url);
 } else if($fromform = $ballot_item_form->get_data()){
 
-    // CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE CANDIDATE 
-    if(isset($fromform->save_candidate)){
-        mtrace("OOPS!!! shouldn't get into save_candi anymore...");
-        die();
-    } 
-    // RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION  
-    else if(isset($fromform->save_resolution)){
-        mtrace("OOPS!!! shouldn't get int resolution save anymore...");
-        die();
-    }
-    // OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE 
-    else if(isset($fromform->save_office)){
-        mtrace("OOPS!!! shouldn't get here anymore...");
-        die();
-    }
 } else {
+
+
 }
 
 echo $OUTPUT->header();
 
+// FORM and INDIVIDUAL FORM ITEMS
+$candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)));
+$resolution_form = new resolution_form(new moodle_url('resolutions.php', array('election_id'=> $election_id)));
+$office_form     = new office_form(new moodle_url('offices.php', array('election_id'=> $election_id)));
 
 $candidate_form->display();
 $resolution_form->display();        

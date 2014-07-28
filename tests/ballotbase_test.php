@@ -57,4 +57,8 @@ class ballot_base_testcase extends advanced_testcase {
         $candidate = new candidate($params);
         $candidate->save();
     }
+    
+    public function test_getbyid(){
+        
+    }
 }

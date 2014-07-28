@@ -27,7 +27,17 @@ abstract class ballot_base {
     
     static $tablename;
     
-    public function __construct(array $params){
+    public function __construct($params = array()){
+        if(!empty($params)){
+            $this->instantiate($params);
+        }
+    }
+    
+    public function instantiate($params){
+        if(is_object($params)){
+            $params = (array)$params;
+        }
+        
         $vars = get_class_vars(get_class($this));
 
         foreach($params as $k => $v){
@@ -39,8 +49,24 @@ abstract class ballot_base {
     
     public function save(){
         global $DB;
-        if (! $id = $DB->insert_record(static::$tablename, $this)) {
-            print_error('inserterror', 'block_sgelection');
+        if(!isset($this->id)){
+            $id = $DB->insert_record(static::$tablename, $this);
+            if (!$id) {
+                print_error('inserterror', 'block_sgelection');
+            }else{
+                $this->id = $id;
+            }
+        }else{
+            return $DB->insert_record(static::$tablename, $this);
         }
+    }
+    
+    public static function getbyid($id){
+        global $DB;
+        $fields = array_keys($DB->get_columns(static::$tablename));
+        $sql = sprintf("SELECT %s FROM {%s} WHERE id = %s", implode(',', $fields), static::$tablename, $id);
+        $row = $DB->get_record_sql($sql);
+        $params = array_combine($fields, (array)$row);
+        return new static($params);
     }
 }

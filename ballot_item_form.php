@@ -22,8 +22,9 @@ class ballot_item_form extends moodleform {
 
             foreach($candidates as $c){
 
-                    $edit_candidate_button = $mform->createElement('submit', 'edit_candidate', get_string('edit'));
-                    $mform->addElement($edit_candidate_button);
+                    $editurl = new moodle_url('candidates.php', array('id'=>$c->id, 'election_id'=>$election->id));
+                    $edita   = html_writer::link($editurl, 'edit');
+                    $mform->addElement('static', 'edit_candidate', $edita);
                     $mform->addElement('checkbox', 'candidate_checkbox', $c->firstname, null);
                     $mform->addElement('html', html_writer::start_div('candidate_affiliation'));
                     $mform->addElement('html', html_writer::tag('p', $c->affiliation)); 
@@ -32,34 +33,34 @@ class ballot_item_form extends moodleform {
             $mform->addElement('html', html_writer::end_div());
             $i++;
         }
-        
+
         $resolutions = $this->_customdata['resolutions'];
-        
+
         $j=0;
-        
+
         foreach($resolutions as $r){
-            
+
             $mform->addElement('html', html_writer::start_div('generalbox'));
-            
+
             $mform->addElement('html', html_writer::tag('h1', $r->title));
-            
+
             $mform->addElement('html', html_writer::tag('p',  $r->text)); 
-            
+
             $resRadioArray=array();         
-            
+
             $resRadioArray[$j] =& $mform->createElement('radio', 'resyesno'.$j, '', get_string('yes'), 1);
-            
+
             $mform->addGroup($resRadioArray, 'resradioar'. $j, '', array(' '), false);
 
         }
-        
+
         $buttons = array(
         $mform->createElement('submit', 'vote', get_string('vote', 'block_sgelection')),
         $mform->createElement('submit', 'delete', get_string('delete')),
         $mform->createElement('cancel')
         );
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
-        
+
     }
-    
+
 }

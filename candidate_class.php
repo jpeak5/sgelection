@@ -28,24 +28,14 @@ require_once('classes/ballotbase.php');
 
 class candidate extends ballot_base{
     
-    public  $election_id,
+    public  $id,
+            $election_id,
             $userid,
             $office,
             $affiliation;
 
     static $tablename = "block_sgelection_candidate";
-    
-    /*  
-     * Candidate constructor
-     * Constructs a Candidate object to be inserted into Ballot when in editing mode
-     * @param $params array keyed with class var names
-     */
-    public function __construct($params){
-        parent::__construct($params);
-        global $DB;
-        $this->userid = $DB->get_field('user', 'id', array('username' => $params['username']));
-    }
-    
+
     public function getfullcandidate(){
         global $DB;
         $user = $DB->get_record('user', array('id'=>$this->id));

@@ -8,12 +8,12 @@ global $DB, $OUTPUT, $PAGE;
 
 $election_id = required_param('election_id', PARAM_INT);
 
-$username = optional_param('username', '', PARAM_ALPHANUM);
-$office = optional_param('office', '', PARAM_INT);
+$id          = optional_param('id', false, PARAM_INT);
+$username    = optional_param('username', '', PARAM_ALPHANUM);
+$office      = optional_param('office', '', PARAM_INT);
 $affiliation = optional_param('affiliation', '', PARAM_TEXT);
 
 $context = context_system::instance();
-
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/candidates.php');
 $PAGE->set_pagelayout('standard');
@@ -29,21 +29,27 @@ $editurl = new moodle_url('/blocks/sgelection/candidates.php', array('election_i
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$candidate = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)));
+$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)));
 
-if($candidate->is_cancelled()) {
+if($form->is_cancelled()) {
     $cand_url = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
     redirect($cand_url);
-} else if($fromform = $candidate->get_data()){
-        $params = array('username'=>$username, 'office'=>$office, 'affiliation'=>$affiliation, 'election_id'=>$election_id);
-        $candidateData      = new candidate($params);
-        $candidateData->save();
-        unset($username);
-        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-        redirect($thisurl);
+} else if($fromform = $form->get_data()){
+    $userid = $DB->get_field('user', 'id', array('username' => $username));
+    $fromform->userid = $userid;
+    $formData      = new candidate($fromform);
+    $formData->save();
+    unset($username);
+    $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
+    redirect($thisurl);
 } else {
     // form didn't validate or this is the first display
     echo $OUTPUT->header();
-         $candidate->display();
+    if($id){
+        $candidate = candidate::getbyid($id);
+        $candidate->username = $DB->get_field('user', 'username', array('id'=>$candidate->userid));
+        $form->set_data($candidate);
+    }
+    $form->display();
     echo $OUTPUT->footer();
 }

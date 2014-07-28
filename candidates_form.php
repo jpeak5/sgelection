@@ -11,6 +11,13 @@ class candidate_form extends moodleform {
         // ADD CANDIDATES HEADER
         $options = $DB->get_records_menu('block_sgelection_office');
         if(count($options) > 0){
+
+            $mform->addElement('hidden', 'id', null);
+            $mform->setType('id', PARAM_INT);
+
+            $mform->addElement('hidden', 'election_id', null);
+            $mform->setType('election_id', PARAM_INT);
+
             $mform->addElement('header', 'displayinfo', get_string('create_new_candidate', 'block_sgelection'));
 
             $attributes = array('size' => '50', 'maxlength' => '100');
