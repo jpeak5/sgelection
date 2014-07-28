@@ -8,7 +8,7 @@ require_once('resolutions_form.php');
 
 require_once('candidate_class.php');
 require_once('resolution_class.php');
-require_once('office_class.php');
+
 require_once('election_class.php');
 
 $context = context_system::instance();
@@ -24,9 +24,15 @@ $office = optional_param('office', '', PARAM_INT);
 $affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
 $resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
 $resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
-$officeTitle = optional_param('title_of_office', '', PARAM_TEXT);
-$numberOfOpenings = optional_param('number_of_openings', '', PARAM_INT);
-$limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_INT);
+
+
+// edit flags
+$edit_candidate = optional_param('edit_candidate', false, PARAM_INT);
+if($edit_candidate){
+    $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election_id));
+    redirect($url);
+}
+
 //$edit = optional_
 require_login();
 
@@ -77,7 +83,7 @@ $resolutionsToForm = $election->get_ballot_item('resolution');
 // FORM and INDIVIDUAL FORM ITEMS
 $candidate_form = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)));
 $resolution_form = new resolution_form(new moodle_url('resolutions.php', array('election_id'=> $election_id)));
-$office_form = new office_form(new moodle_url('office.php', array('election_id'=> $election_id)));
+$office_form = new office_form(new moodle_url('offices.php', array('election_id'=> $election_id)));
 
 $ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), array('offices' => $officesToForm, 'resolutions' => $resolutionsToForm, 'election' => $election),null,null,array('name' => 'ballot_form'));
 
@@ -109,15 +115,8 @@ if($ballot_item_form->is_cancelled()) {
     }
     // OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE 
     else if(isset($fromform->save_office)){
-        $params = array(
-            "name"    => $officeTitle,
-            "number"  => $numberOfOpenings,
-            "college" => $limitToCollege
-        );
-        $officeData      = new office($params);
-        $officeData->save();
-        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-        redirect($thisurl);
+        mtrace("OOPS!!! shouldn't get here anymore...");
+        die();
     }
 } else {
 }

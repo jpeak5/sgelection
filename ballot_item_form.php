@@ -21,7 +21,7 @@ class ballot_item_form extends moodleform {
             $candidates = candidate::getfullcandidates($election, $o);
 
             foreach($candidates as $c){
-                            
+
                     $edit_candidate_button = $mform->createElement('submit', 'edit_candidate', get_string('edit'));
                     $mform->addElement($edit_candidate_button);
                     $mform->addElement('checkbox', 'candidate_checkbox', $c->firstname, null);
