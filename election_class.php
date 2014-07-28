@@ -8,17 +8,22 @@ class election {
     /*  office constructor
      *  Constructs a office object to be inserted into Ballot when in editing mode
      */
-    public function __construct($year, $sem_code, $start_date, $end_date, $id){
+    public function __construct($year, $sem_code, $start_date, $end_date, $id=null){
         $this->year             = $year;
         $this->sem_code         = $sem_code;
         $this->start_date       = $start_date;
         $this->end_date         = $end_date;
         $this->id               = $id;
     }
-    public function create(){
+    public function save(){
         global $DB;
-        if (!$DB->insert_record('block_sgelection_election', $this)) {
-            print_error('inserterror', 'block_sgelection');
+        if($this->id){
+            $DB->update_record('block_sgelection_election', $this);
+        }
+        else{
+            if (!$DB->insert_record('block_sgelection_election', $this)) {
+                print_error('inserterror', 'block_sgelection');
+            }
         }
     }
 

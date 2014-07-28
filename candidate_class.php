@@ -59,17 +59,21 @@ class candidate extends ballot_base{
         return $user;
     }
     
-    public static function getfullcandidates($election){
+    public static function getfullcandidates($election, $office=null){
         global $DB;
-        $candidateids = $DB->get_fieldset_select('block_sgelection_candidate', 'userid', "election_id = ?", array($election->id));
-
-        $candidates = $DB->get_records_list('block_sgelection_candidate',  'userid', $candidateids);
-        $users = $DB->get_records_list('user', 'id', $candidateids);
+        $oid   = $office ? ' AND o.id = ' . $office->id : '';
+        $query = 'SELECT u.id, u.firstname, u.lastname, c.affiliation'
+               . ' FROM {block_sgelection_candidate} c'
+               . ' JOIN'
+               . ' {block_sgelection_election} e on c.election_id = election_id'
+               . ' JOIN'
+               . ' {block_sgelection_office} o on o.id = c.office'
+               . ' JOIN'
+               . ' {user} u on c.userid = u.id'
+               . ' WHERE e.id = ' . $election->id . $oid;
         
-        $fullcandidates = array();
-        foreach($candidates as $c){
-            $fullcandidates[] = candidate::mergecandidateuser($c, $users[$c->userid]);
-        }
-        return $fullcandidates;
+                
+        return $DB->get_records_sql($query);
     }
+    
 }

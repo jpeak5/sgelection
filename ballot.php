@@ -14,7 +14,7 @@ $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('candidate_page_header', 'block_sgelection'));
 
-$election_id = required_param('eid', PARAM_INT);
+$election_id = required_param('election_id', PARAM_INT);
 
 $username = optional_param('username', '', PARAM_ALPHANUM);
 $office = optional_param('office', '', PARAM_INT);
@@ -28,7 +28,7 @@ $limitToCollege = optional_param('limit_to_college', 'limit_to_college', PARAM_I
 require_login();
 
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('eid'=>$election_id));
+$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election_id));
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
@@ -71,10 +71,10 @@ $election = election::get_by_id($election_id);
 $officesToForm = $election->get_ballot_item('office');
 $resolutionsToForm = $election->get_ballot_item('resolution');
 
-$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php'), array('offices' => $officesToForm, 'resolutions' => $resolutionsToForm, 'election' => $election),null,null,array('name' => 'ballot_form'));
+$ballot_item_form = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), array('offices' => $officesToForm, 'resolutions' => $resolutionsToForm, 'election' => $election),null,null,array('name' => 'ballot_form'));
 
 if($ballot_item_form->is_cancelled()) {
-    $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $election_id));
+    $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $election_id));
     redirect($ballot_url);
 } else if($fromform = $ballot_item_form->get_data()){
 
@@ -84,7 +84,7 @@ if($ballot_item_form->is_cancelled()) {
         $candidateData      = new candidate($params);
         $candidateData->save();
         unset($username);
-        $thisurl = new moodle_url('ballot.php', array('eid' => $election_id));
+        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
     } 
     // RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION RESOLUTION  
@@ -96,7 +96,7 @@ if($ballot_item_form->is_cancelled()) {
             );
         $resolutionData      = new resolution($params);
         $resolutionData->save();
-        $thisurl = new moodle_url('ballot.php', array('eid' => $election_id));
+        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
     }
     // OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE OFFICE 
@@ -108,7 +108,7 @@ if($ballot_item_form->is_cancelled()) {
         );
         $officeData      = new office($params);
         $officeData->save();
-        $thisurl = new moodle_url('ballot.php', array('eid' => $election_id));
+        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
     }
 } else {

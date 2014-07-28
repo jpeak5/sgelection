@@ -20,7 +20,7 @@ class block_sgelection extends block_list {
         $activeElectionsLinks = array();
         $i=0;
         foreach($activeElections as $ae){
-            $activeElectionsLinks[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('eid' => $ae->id)), 'Ballot for ' . $ae->year . ' ' . $ae->sem_code );
+            $activeElectionsLinks[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $ae->year . ' ' . $ae->sem_code );
             $this->content->items[]= $activeElectionsLinks[$i];
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
             $i++;
