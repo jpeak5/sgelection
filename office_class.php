@@ -22,9 +22,9 @@
  */
 
 require_once('candidates_form.php');
-require_once('classes/ballotbase.php');
+require_once('classes/sgedatabaseobject.php');
 
-class office extends ballot_base {
+class office extends sge_database_object {
 
     public  $name,
             $number,

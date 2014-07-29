@@ -16,16 +16,17 @@
 
 
 /**
- * Tests for ballot_base class
+ * Tests for sge_database_object class
  *
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'classes/ballotbase.php';
+require_once 'classes/sgedatabaseobject.php';
 require_once 'candidate_class.php';
 
-class myclass extends ballot_base{
+class myclass extends sge_database_object {
+
     public $a;
     public $b;
     public $c;
@@ -33,7 +34,7 @@ class myclass extends ballot_base{
     static $tablename = "user";
 }
 
-class ballot_base_testcase extends advanced_testcase {
+class sge_database_object_testcase extends advanced_testcase {
 
     public function setup(){
         $this->resetAfterTest();
@@ -48,17 +49,59 @@ class ballot_base_testcase extends advanced_testcase {
     }
     
     public function test_save(){
+        global $DB;
         $params = array(
-            'username' => "admin",
+            'userid' => "2",
             'election_id'      => 3,
             'office'   => 4,
             'affiliation' => "Lions",
         );
         $candidate = new candidate($params);
+        
+        $this->assertEmpty($candidate->id);
+        $this->assertEquals(2, $candidate->userid);
+        $this->assertEquals(3, $candidate->election_id);
+        $this->assertEquals(4, $candidate->office);
+        $this->assertEquals('Lions', $candidate->affiliation);
+        
         $candidate->save();
+        $this->assertNotEmpty($candidate->id);
+        
+        $test = $DB->get_record(candidate::$tablename, array('id'=>$candidate->id));
+        $this->assertEquals(2, $test->userid);
+        $this->assertEquals(3, $test->election_id);
+        $this->assertEquals(4, $test->office);
+        $this->assertEquals('Lions', $test->affiliation);
+        
+        
+        // get an instance of candidate from the DB row.
+        $isntance = new candidate($test);
+        $isntance->affiliation = 'new affiliation';
+        
+        // save with new value.
+        $isntance->save();
+        
+        // ensure save persisted the updated value
+        $testupdate = $DB->get_record(candidate::$tablename, array('id'=>$isntance->id));
+        $this->assertEquals('new affiliation', $testupdate->affiliation);
     }
     
     public function test_getbyid(){
-        
+        $params = array(
+            'userid' => "2",
+            'election_id' => 3,
+            'office' => 4,
+            'affiliation' => "Lions",
+        );
+        $candidate = new candidate($params);
+        $candidate->save();
+        $test = candidate::getbyid($candidate->id);
+
+        $this->assertTrue(get_class($test) == 'candidate');
+        $this->assertNotEmpty($test);
+        $this->assertEquals(2, $test->userid);
+        $this->assertEquals(3, $test->election_id);
+        $this->assertEquals(4, $test->office);
+        $this->assertEquals('Lions', $test->affiliation);
     }
 }
