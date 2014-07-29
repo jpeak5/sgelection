@@ -57,7 +57,7 @@ abstract class ballot_base {
                 $this->id = $id;
             }
         }else{
-            return $DB->insert_record(static::$tablename, $this);
+            return $DB->update_record(static::$tablename, $this);
         }
     }
     

@@ -15,7 +15,7 @@ class candidate_form extends moodleform {
             $mform->addElement('hidden', 'id', null);
             $mform->setType('id', PARAM_INT);
 
-            $mform->addElement('hidden', 'election_id', null);
+            $mform->addElement('hidden', 'election_id', $election->id);
             $mform->setType('election_id', PARAM_INT);
 
             $mform->addElement('header', 'displayinfo', get_string('create_new_candidate', 'block_sgelection'));
