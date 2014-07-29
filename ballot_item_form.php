@@ -22,7 +22,7 @@ class ballot_item_form extends moodleform {
 
             foreach($candidates as $c){
 
-                    $editurl = new moodle_url('candidates.php', array('id'=>$c->id, 'election_id'=>$election->id));
+                    $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
                     $edita   = html_writer::link($editurl, 'edit');
                     $mform->addElement('static', 'edit_candidate', $edita);
                     $mform->addElement('checkbox', 'candidate_checkbox', $c->firstname, null);

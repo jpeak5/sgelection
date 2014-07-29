@@ -41,7 +41,7 @@ class candidate extends sge_database_object{
 
         $oid   = $office ? ' AND o.id = ' . $office->id : '';
         $uid   = $userid ? ' AND u.id = ' . $userid : '';
-        $query = 'SELECT u.id, u.firstname, u.lastname, c.affiliation'
+        $query = 'SELECT u.id, c.id AS cid, u.firstname, u.lastname, c.affiliation'
                . ' FROM {block_sgelection_candidate} c'
                . ' JOIN'
                . ' {block_sgelection_election} e on c.election_id = e.id'
