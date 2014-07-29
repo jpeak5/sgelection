@@ -22,9 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once('candidates_form.php');
-require_once('classes/sgedatabaseobject.php');
+require_once('classes/ballotitem.php');
 
-class resolution extends sge_database_object{
+class resolution extends ballot_item{
     
     public  $election_id,
             $title,

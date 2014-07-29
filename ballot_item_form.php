@@ -18,7 +18,7 @@ class ballot_item_form extends moodleform {
         foreach($offices as $o){
             $mform->addElement('html', html_writer::start_div('generalbox'));
             $mform->addElement('html', html_writer::tag('h1', $o->name)); 
-            $candidates = candidate::getfullcandidates($election, $o);
+            $candidates = candidate::get_full_candidates($election, $o);
 
             foreach($candidates as $c){
 

@@ -6,9 +6,9 @@ require_once('offices_form.php');
 require_once('candidates_form.php');
 require_once('resolutions_form.php');
 
+require_once('classes/office.php');
+require_once('classes/resolution.php');
 require_once('classes/candidate.php');
-
-
 require_once('classes/election.php');
 
 $context = context_system::instance();
@@ -77,8 +77,8 @@ function checkboxlimit(checkgroup, limit){
 $renderer = $PAGE->get_renderer('block_sgelection');
 $election = election::getbyid($election_id);
 
-$officesToForm     = $election->get_ballot_item('office');
-$resolutionsToForm = $election->get_ballot_item('resolution');
+$officesToForm     = office::get_all();
+$resolutionsToForm = resolution::get_ballot_items($election_id);
 $customdata        = array(
     'offices'     => $officesToForm, 
     'resolutions' => $resolutionsToForm, 
@@ -99,7 +99,7 @@ if($ballot_item_form->is_cancelled()) {
 echo $OUTPUT->header();
 
 // FORM and INDIVIDUAL FORM ITEMS
-$candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)));
+$candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)), array('election'=> $election));
 $resolution_form = new resolution_form(new moodle_url('resolutions.php', array('election_id'=> $election_id)));
 $office_form     = new office_form(new moodle_url('offices.php', array('election_id'=> $election_id)));
 

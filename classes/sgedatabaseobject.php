@@ -69,4 +69,9 @@ abstract class sge_database_object {
         $params = array_combine($fields, (array)$row);
         return new static($params);
     }
+
+    public static function get_all(){
+        global $DB;
+        return $DB->get_records(static::$tablename);
+    }
 }

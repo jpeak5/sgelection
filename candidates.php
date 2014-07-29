@@ -3,11 +3,12 @@
 require_once('../../config.php');
 require_once('candidates_form.php');
 require_once('classes/candidate.php');
+require_once('classes/election.php');
 
 global $DB, $OUTPUT, $PAGE;
 
 $election_id = required_param('election_id', PARAM_INT);
-
+$election    = election::getbyid($election_id);
 $id          = optional_param('id', false, PARAM_INT);
 $username    = optional_param('username', '', PARAM_ALPHANUM);
 $office      = optional_param('office', '', PARAM_INT);
@@ -29,7 +30,7 @@ $editurl = new moodle_url('/blocks/sgelection/candidates.php', array('election_i
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)));
+$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election));
 
 if($form->is_cancelled()) {
     $cand_url = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
