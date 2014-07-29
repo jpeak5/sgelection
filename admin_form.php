@@ -7,7 +7,7 @@ require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
 class sg_admin_form extends moodleform {
     
     function definition() {
-        
+        global $DB;
         $mform =& $this->_form;
         
         //add group for text areas
@@ -27,10 +27,17 @@ class sg_admin_form extends moodleform {
         $mform->setType('parttime', PARAM_INT);
         $mform->addRule('parttime', null, 'required', null, 'client');      
 
+        $curriculum_codes = $DB->get_records_sql_menu("select id, value from mdl_enrol_ues_usermeta WHERE name = 'user_major' GROUP BY value;");
+        $currCodesArray = array();
+        
+        foreach($curriculum_codes as $k => $v){
+            $currCodesArray[$v] = $v;
+        }
 
-        $select = $mform->addElement('select', 'colors', get_string('excluded_curriculum_code', 'block_sgelection'), array('red', 'blue', 'green'));
+        $select = $mform->addElement('select', 'excluded_curr_codes', get_string('excluded_curriculum_code', 'block_sgelection'), $currCodesArray);
+
         $select->setMultiple(true);
-
+        
         $this->add_action_buttons();
 
     }
