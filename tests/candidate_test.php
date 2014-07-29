@@ -63,28 +63,43 @@ class candidate_class_testcase extends advanced_testcase {
         $this->assertEquals($this->user1->firstname, $testcand1->firstname);
 
         $test2 = candidate::get_full_candidates($this->currentelection);
-        $this->assertEquals(2, count($test2));
-        $this->assertNotEmpty($test2[$this->cand2->userid]);
-        $this->assertNotEmpty($test2[$this->cand3->userid]);
+        $this->assertEquals(4, count($test2));
+
+        $eid  = $this->currentelection->id;
+        $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand2).$eid]);
+        $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand3).$eid]);
     }
 
     public function test_get_full_candidates_office(){
         $test2 = candidate::get_full_candidates(null, $this->office1);
 
         $this->assertEquals(2, count($test2));
-        $this->assertNotEmpty($test2[$this->cand1->userid]);
-        $this->assertNotEmpty($test2[$this->cand2->userid]);
+        $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand1).$this->oldelection->id]);
+        $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand2).$this->currentelection->id]);
+    }
+
+    public function test_get_full_candidates_election_office(){
+        $test = candidate::get_full_candidates($this->currentelection, $this->office2);
+        $eid  = $this->currentelection->id;
+
+        $this->assertEquals(3, count($test));
+        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand3).$eid]);
+        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand4).$eid]);
     }
 
     public function test_get_full_candidates_userid(){
-        
+        $test = candidate::get_full_candidates(null, null, $this->user1->id);
+        $this->assertEquals(2, count($test));
+        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand1).$this->oldelection->id]);
+        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand5).$this->currentelection->id]);
+        var_dump($test);
     }
-    
+
+    private function full_candidate_key_helper($candidate){
+        return $candidate->userid.$candidate->id;
+    }
+
     private function scenario(){
-        // user1
-        $this->user1 = $this->getDataGenerator()->create_user();
-        $this->user2 = $this->getDataGenerator()->create_user();
-        $this->user3 = $this->getDataGenerator()->create_user();
 
         // current election
         $eparams = new stdClass();
@@ -120,6 +135,13 @@ class candidate_class_testcase extends advanced_testcase {
         ));
         $this->office2->save();
 
+        //users
+        $this->user1 = $this->getDataGenerator()->create_user();
+        $this->user2 = $this->getDataGenerator()->create_user();
+        $this->user3 = $this->getDataGenerator()->create_user();
+        $this->user4 = $this->getDataGenerator()->create_user();
+        $this->user5 = $this->getDataGenerator()->create_user();
+        
         // candidate in old election
         $candparams1 = array(
             'election_id' => $this->oldelection->id,
@@ -149,5 +171,24 @@ class candidate_class_testcase extends advanced_testcase {
         );
         $this->cand3 = new candidate($candparams3);
         $this->cand3->save();
+
+        // candidate in current election
+        $candparams4 = array(
+            'election_id' => $this->currentelection->id,
+            'userid'      => $this->user4->id,
+            'office'      => $this->office2->id,
+            'affiliation' => 'Tigers'
+        );
+        $this->cand4 = new candidate($candparams4);
+        $this->cand4->save();
+
+        $candparams5 = array(
+            'election_id' => $this->currentelection->id,
+            'userid'      => $this->user1->id,
+            'office'      => $this->office2->id,
+            'affiliation' => 'Lions'
+        );
+        $this->cand5 = new candidate($candparams5);
+        $this->cand5->save();
     }
 }

@@ -51,7 +51,7 @@ class candidate extends sge_database_object{
 
         $wheres = count($clauses) > 0 ? "WHERE ".implode(' AND ', $clauses) : '';
 
-        $query = 'SELECT u.id, c.id AS cid, u.firstname, u.lastname, c.affiliation'
+        $query = 'SELECT CONCAT(u.id, c.id, e.id) AS uniq, u.id, c.id AS cid, u.firstname, u.lastname, c.affiliation'
                . ' FROM {block_sgelection_candidate} c'
                . ' JOIN'
                . ' {block_sgelection_election} e on c.election_id = e.id'
