@@ -1,7 +1,7 @@
 <?php
 require_once('../../config.php');
 require_once('commissioner_form.php');
-require_once('election_class.php');
+require_once('classes/election.php');
 
 global $DB, $OUTPUT, $PAGE;
 

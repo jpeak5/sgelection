@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once 'classes/candidate.php';
-require_once 'election_class.php';
+require_once 'classes/election.php';
 require_once 'office_class.php';
 
 class candidate_class_testcase extends advanced_testcase {

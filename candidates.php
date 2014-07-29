@@ -2,7 +2,7 @@
 
 require_once('../../config.php');
 require_once('candidates_form.php');
-require_once('candidate_class.php');
+require_once('classes/candidate.php');
 
 global $DB, $OUTPUT, $PAGE;
 

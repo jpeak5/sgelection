@@ -2,7 +2,7 @@
 
 require_once('../../config.php');
 require_once('resolutions_form.php');
-require_once('resolution_class.php');
+require_once('classes/resolution.php');
 
 global $DB, $OUTPUT, $PAGE;
 

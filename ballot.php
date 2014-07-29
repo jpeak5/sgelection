@@ -6,10 +6,10 @@ require_once('offices_form.php');
 require_once('candidates_form.php');
 require_once('resolutions_form.php');
 
-require_once('candidate_class.php');
+require_once('classes/candidate.php');
 
 
-require_once('election_class.php');
+require_once('classes/election.php');
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -75,7 +75,7 @@ function checkboxlimit(checkgroup, limit){
 
 <?php
 $renderer = $PAGE->get_renderer('block_sgelection');
-$election = election::get_by_id($election_id);
+$election = election::getbyid($election_id);
 
 $officesToForm     = $election->get_ballot_item('office');
 $resolutionsToForm = $election->get_ballot_item('resolution');
