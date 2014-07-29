@@ -24,12 +24,13 @@
  */
 require_once 'classes/candidate.php';
 require_once 'classes/election.php';
-require_once 'office_class.php';
+require_once 'classes/office.php';
 
 class candidate_class_testcase extends advanced_testcase {
     
     public function setup(){
         $this->resetAfterTest();
+        $this->scenario();
     }
     
     public function test_construct() {
@@ -54,17 +55,36 @@ class candidate_class_testcase extends advanced_testcase {
         $this->assertEquals($affiliation, $candidate->affiliation);
     }
     
-    public function test_get_full_candidates(){
+    public function test_get_full_candidates_election(){
+        $test1 = candidate::get_full_candidates($this->oldelection);
+        $this->assertEquals(1, count($test1));
+        $testcand1 = array_pop($test1);
+        $this->assertEquals($this->cand1->userid, $testcand1->id);
+        $this->assertEquals($this->user1->firstname, $testcand1->firstname);
 
+        $test2 = candidate::get_full_candidates($this->currentelection);
+        $this->assertEquals(2, count($test2));
+        $this->assertNotEmpty($test2[$this->cand2->userid]);
+        $this->assertNotEmpty($test2[$this->cand3->userid]);
+    }
 
+    public function test_get_full_candidates_office(){
+        $test2 = candidate::get_full_candidates(null, $this->office1);
+
+        $this->assertEquals(2, count($test2));
+        $this->assertNotEmpty($test2[$this->cand1->userid]);
+        $this->assertNotEmpty($test2[$this->cand2->userid]);
+    }
+
+    public function test_get_full_candidates_userid(){
+        
+    }
+    
+    private function scenario(){
         // user1
-        $user1 = $this->getDataGenerator()->create_user();
-
-        // user2
-        $user2 = $this->getDataGenerator()->create_user();
-
-        // user3
-        $user3 = $this->getDataGenerator()->create_user();
+        $this->user1 = $this->getDataGenerator()->create_user();
+        $this->user2 = $this->getDataGenerator()->create_user();
+        $this->user3 = $this->getDataGenerator()->create_user();
 
         // current election
         $eparams = new stdClass();
@@ -73,8 +93,8 @@ class candidate_class_testcase extends advanced_testcase {
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
 
-        $currentelection = new election($eparams);
-        $currentelection->save();
+        $this->currentelection = new election($eparams);
+        $this->currentelection->save();
 
         // not current election
         $eparams = new stdClass();
@@ -83,65 +103,51 @@ class candidate_class_testcase extends advanced_testcase {
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
 
-        $oldelection = new election($eparams);
-        $oldelection->save();
+        $this->oldelection = new election($eparams);
+        $this->oldelection->save();
 
-        $office1 = new office(array(
+        $this->office1 = new office(array(
             'name' => 'sweeper',
             'number' => 2,
             'college' => 'Ag'
         ));
-        $office1->save();
-        $office2 = new office(array(
+        $this->office1->save();
+
+        $this->office2 = new office(array(
             'name' => 'striker',
             'number' => 1,
             'college' => 'HUEC'
         ));
-        $office2->save();
+        $this->office2->save();
 
         // candidate in old election
         $candparams1 = array(
-            'election_id' => $oldelection->id,
-            'userid'      => $user1->id,
-            'office'      => $office1->id,
+            'election_id' => $this->oldelection->id,
+            'userid'      => $this->user1->id,
+            'office'      => $this->office1->id,
             'affiliation' => 'Lions'
         );
-        $cand1 = new candidate($candparams1);
-        $cand1->save();
+        $this->cand1 = new candidate($candparams1);
+        $this->cand1->save();
 
         // candidate in current election
         $candparams2 = array(
-            'election_id' => $currentelection->id,
-            'userid'      => $user2->id,
-            'office'      => $office1->id,
+            'election_id' => $this->currentelection->id,
+            'userid'      => $this->user2->id,
+            'office'      => $this->office1->id,
             'affiliation' => 'Lions'
         );
-        $cand2 = new candidate($candparams2);
-        $cand2->save();
+        $this->cand2 = new candidate($candparams2);
+        $this->cand2->save();
 
         // candidate in current election
         $candparams3 = array(
-            'election_id' => $currentelection->id,
-            'userid'      => $user3->id,
-            'office'      => $office2->id,
+            'election_id' => $this->currentelection->id,
+            'userid'      => $this->user3->id,
+            'office'      => $this->office2->id,
             'affiliation' => 'Lions'
         );
-        $cand3 = new candidate($candparams3);
-        $cand3->save();
-
-        $test1 = candidate::get_full_candidates($oldelection);
-        $this->assertEquals(1, count($test1));
-        $testcand1 = array_pop($test1);
-        $this->assertEquals($cand1->userid, $testcand1->id);
-        $this->assertEquals($user1->firstname, $testcand1->firstname);
-
-        $test2 = candidate::get_full_candidates($currentelection);
-        $this->assertEquals(2, count($test2));
-        $this->assertNotEmpty($test2[$cand2->userid]);
-        $this->assertNotEmpty($test2[$cand3->userid]);
-
-        $test2 = candidate::get_full_candidates($currentelection, $office1->id);
-        $this->assertEquals(1, count($test2));
-
+        $this->cand3 = new candidate($candparams3);
+        $this->cand3->save();
     }
 }

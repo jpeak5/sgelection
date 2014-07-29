@@ -26,7 +26,7 @@
 require_once('sgedatabaseobject.php');
 
 class candidate extends sge_database_object{
-    
+
     public  $id,
             $election_id,
             $userid,
@@ -34,13 +34,23 @@ class candidate extends sge_database_object{
             $affiliation;
 
     static $tablename = "block_sgelection_candidate";
-    
-    public static function get_full_candidates($election, $office=null, $userid=null){
+
+    public static function get_full_candidates($election=null, $office=null, $userid=null){
         global $DB;
         //mtrace(sprintf("fn args- election->id: %s, office->id: %s, userid: %s", $election->id, $office->id, $userid));
+        $eid   = $election ? 'e.id = ' . $election->id : '';
+        $oid   = $office   ? 'o.id = ' . $office->id : '';
+        $uid   = $userid   ? 'u.id = ' . $userid : '';
 
-        $oid   = $office ? ' AND o.id = ' . $office->id : '';
-        $uid   = $userid ? ' AND u.id = ' . $userid : '';
+        $clauses = array();
+        foreach(array($eid, $oid, $uid) as $clause){
+            if($clause != ''){
+                $clauses[] = $clause;
+            }
+        }
+
+        $wheres = count($clauses) > 0 ? "WHERE ".implode(' AND ', $clauses) : '';
+
         $query = 'SELECT u.id, c.id AS cid, u.firstname, u.lastname, c.affiliation'
                . ' FROM {block_sgelection_candidate} c'
                . ' JOIN'
@@ -48,10 +58,8 @@ class candidate extends sge_database_object{
                . ' JOIN'
                . ' {block_sgelection_office} o on o.id = c.office'
                . ' JOIN'
-               . ' {user} u on c.userid = u.id'
-               . ' WHERE e.id = ' . $election->id . $oid . $uid;
+               . ' {user} u on c.userid = u.id '. $wheres;
 
-        return $uid ? $DB->get_record_sql($query) : $DB->get_records_sql($query);
+        return $DB->get_records_sql($query);
     }
-    
 }

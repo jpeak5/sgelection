@@ -51,7 +51,6 @@ abstract class sge_database_object {
         global $DB;
         // @TODO make this less hacky;
         if(!isset($this->id) || $this->id <= 0){
-            mtrace("inserting new record");
             $id = $DB->insert_record(static::$tablename, $this);
             if (!$id) {
                 print_error('inserterror', 'block_sgelection');
