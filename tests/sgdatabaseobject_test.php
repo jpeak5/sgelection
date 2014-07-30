@@ -46,6 +46,30 @@ class sge_database_object_testcase extends advanced_testcase {
         $this->assertEquals('hello', $test->a);
         $this->assertEquals('world', $test->b);
         $this->assertEquals('!', $test->c);
+        $this->assertInstanceOf('myclass', $test);
+
+        $testempty = new myclass();
+        $this->assertEmpty($testempty->a);
+        $this->assertEmpty($testempty->b);
+        $this->assertEmpty($testempty->b);
+        $this->assertInstanceOf('myclass', $testempty);
+
+        $testempty->instantiate($params);
+        $this->assertEquals('hello', $testempty->a);
+        $this->assertEquals('world', $testempty->b);
+        $this->assertEquals('!', $testempty->c);
+        $this->assertInstanceOf('myclass', $testempty);
+
+        $paramobj = new stdClass();
+        $paramobj->a = 'hello';
+        $paramobj->b = 'world';
+        $paramobj->c = '!';
+
+        $testobj = new myclass($paramobj);
+        $this->assertEquals('hello', $testobj->a);
+        $this->assertEquals('world', $testobj->b);
+        $this->assertEquals('!', $testobj->c);
+        $this->assertInstanceOf('myclass', $testobj);
     }
     
     public function test_save(){
@@ -72,21 +96,22 @@ class sge_database_object_testcase extends advanced_testcase {
         $this->assertEquals(3, $test->election_id);
         $this->assertEquals(4, $test->office);
         $this->assertEquals('Lions', $test->affiliation);
-        
+        $this->assertInstanceOf('stdClass', $test);
         
         // get an instance of candidate from the DB row.
-        $isntance = new candidate($test);
-        $isntance->affiliation = 'new affiliation';
-        
+        $instance = new candidate($test);
+        $instance->affiliation = 'new affiliation';
+        $this->assertInstanceOf('candidate', $candidate);
+
         // save with new value.
-        $isntance->save();
+        $instance->save();
         
         // ensure save persisted the updated value
-        $testupdate = $DB->get_record(candidate::$tablename, array('id'=>$isntance->id));
+        $testupdate = $DB->get_record(candidate::$tablename, array('id'=>$instance->id));
         $this->assertEquals('new affiliation', $testupdate->affiliation);
     }
     
-    public function test_getbyid(){
+    public function test_get_by_id(){
         $params = array(
             'userid' => "2",
             'election_id' => 3,
@@ -95,9 +120,9 @@ class sge_database_object_testcase extends advanced_testcase {
         );
         $candidate = new candidate($params);
         $candidate->save();
-        $test = candidate::getbyid($candidate->id);
+        $test = candidate::get_by_id($candidate->id);
 
-        $this->assertTrue(get_class($test) == 'candidate');
+        $this->assertInstanceOf('candidate', $test);
         $this->assertNotEmpty($test);
         $this->assertEquals(2, $test->userid);
         $this->assertEquals(3, $test->election_id);

@@ -92,7 +92,6 @@ class candidate_class_testcase extends advanced_testcase {
         $this->assertEquals(2, count($test));
         $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand1).$this->oldelection->id]);
         $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand5).$this->currentelection->id]);
-        var_dump($test);
     }
 
     private function full_candidate_key_helper($candidate){
