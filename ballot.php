@@ -75,7 +75,7 @@ function checkboxlimit(checkgroup, limit){
 
 <?php
 $renderer = $PAGE->get_renderer('block_sgelection');
-$election = election::getbyid($election_id);
+$election = election::get_by_id($election_id);
 
 $officesToForm     = office::get_all();
 $resolutionsToForm = resolution::get_ballot_items($election_id);
