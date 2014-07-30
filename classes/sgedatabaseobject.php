@@ -62,7 +62,7 @@ abstract class sge_database_object {
         }
     }
     
-    public static function getbyid($id){
+    public static function get_by_id($id){
         global $DB;
         $fields = array_keys($DB->get_columns(static::$tablename));
         $sql = sprintf("SELECT %s FROM {%s} WHERE id = %s", implode(',', $fields), static::$tablename, $id);
