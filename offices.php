@@ -2,7 +2,7 @@
 
 require_once('../../config.php');
 require_once('offices_form.php');
-require_once('office_class.php');
+require_once('classes/office.php');
 
 global $DB, $OUTPUT, $PAGE;
 

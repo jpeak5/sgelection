@@ -9,7 +9,7 @@ global $DB, $OUTPUT, $PAGE;
 
 $election_id = required_param('election_id', PARAM_INT);
 $election    = election::get_by_id($election_id);
-$id          = optional_param('id', false, PARAM_INT);
+$id          = optional_param('id', 0, PARAM_INT);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -26,13 +26,19 @@ $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_
 $editurl = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
-
-$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election));
+$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election, 'id' => $id));
 
 if($form->is_cancelled()) {
-    $cand_url = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
+    $cand_url = new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $election_id));
     redirect($cand_url);
 } else if($fromform = $form->get_data()){
+    if(isset($fromform->delete)) {
+        $table = 'block_sgelection_candidate';
+        $conditions = array('id'=>$fromform->id);
+        $DB->delete_records($table, $conditions);
+        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
+        redirect($thisurl);    
+    }
     $userid = $DB->get_field('user', 'id', array('username' => $fromform->username));
     $fromform->userid = $userid;
     $formData      = new candidate($fromform);

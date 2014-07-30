@@ -8,6 +8,10 @@ class candidate_form extends moodleform {
         global $DB;
         $mform =& $this->_form;
         $election = $this->_customdata['election']; 
+        if(isset($this->_customdata['id'])){
+            $id = $this->_customdata['id'];
+        }
+
         // ADD CANDIDATES HEADER
         $options = $DB->get_records_menu('block_sgelection_office');
         if(count($options) > 0){
@@ -29,12 +33,19 @@ class candidate_form extends moodleform {
             $mform->setType('affiliation', PARAM_TEXT);
             // add affiliation dropdown
             $mform->addElement('select', 'office', get_string('office_candidate_is_running_for', 'block_sgelection'),$options);
-
-            $buttons = array(
-                $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
-                $mform->createElement('submit', 'delete', get_string('delete')),
-                $mform->createElement('cancel')
-                );
+            if(isset($this->_customdata['id'])){
+                $buttons = array(
+                    $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
+                    $mform->createElement('submit', 'delete', get_string('delete')),
+                    $mform->createElement('cancel')
+                    );
+            }
+            else{
+                $buttons = array(
+                    $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
+                    $mform->createElement('cancel')
+                    );
+            }
             $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
         }
     }
