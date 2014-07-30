@@ -78,12 +78,17 @@ class candidate extends sge_database_object{
     public static function validate_one_office_per_candidate_per_election($data, $fieldname){
 
         global $DB;
+
+        // Record already exists, so this will be an update.
+        $editmode = isset($data['id']) && $data['id'] > 0;
         $election = election::get_by_id($data['election_id']);
-        $eid = $election->id;
-        $userid = $DB->get_field('user', 'id', array('username'=>$data['username']));
-        $count = $DB->count_records(candidate::$tablename, array('election_id' => $eid, 'userid' => $userid));
-        if($count > 0){
-            // @TODO helper method to get a fuller candidate record, incl. office, election, etc
+        $eid      = $election->id;
+        $userid   = $DB->get_field('user', 'id', array('username'=>$data['username']));
+        $count    = $DB->count_records(candidate::$tablename, array('election_id' => $eid, 'userid' => $userid));
+
+        // Expected that one record will exist, if we are in edit mode.
+        if($count > 0 && !$editmode){
+            // @TODO helper method to get a fuller candidate record, incl. office, election, etc (maybe).
             $candidates = candidate::get_full_candidates($election, null, $userid);
             $a = new stdClass();
             $a->username = $data['username'];

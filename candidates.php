@@ -26,22 +26,16 @@ $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_
 $editurl = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
-$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election, 'id' => $id));
+
+$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election));
 
 if($form->is_cancelled()) {
-    $cand_url = new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $election_id));
+    $cand_url = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
     redirect($cand_url);
-} else if($fromform = $form->get_data()){
-    if(isset($fromform->delete)) {
-        $table = 'block_sgelection_candidate';
-        $conditions = array('id'=>$fromform->id);
-        $DB->delete_records($table, $conditions);
-        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-        redirect($thisurl);    
-    }
-    $userid = $DB->get_field('user', 'id', array('username' => $fromform->username));
-    $fromform->userid = $userid;
-    $formData      = new candidate($fromform);
+} else if($candidate = $form->get_data()){
+    $userid = $DB->get_field('user', 'id', array('username' => $candidate->username));
+    $candidate->userid = $userid;
+    $formData      = new candidate($candidate);
     $formData->save();
     unset($username);
     $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
@@ -54,6 +48,7 @@ if($form->is_cancelled()) {
         $candidate->username = $DB->get_field('user', 'username', array('id'=>$candidate->userid));
         $form->set_data($candidate);
     }
+
     $form->display();
     echo $OUTPUT->footer();
 }

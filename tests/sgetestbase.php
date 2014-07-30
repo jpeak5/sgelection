@@ -57,7 +57,7 @@ abstract class block_sgelection_base extends advanced_testcase{
                 $nokeys = array_values($offices);
                 $limit = count($nokeys);
                 $idx = rand(0,$limit);
-                $office = office::instantiate($nokeys[$idx]);
+                $office = new office($nokeys[$idx]);
             }
         }
         $c = new stdClass();

@@ -234,5 +234,14 @@ class candidate_class_testcase extends block_sgelection_base {
         $a->office .= sprintf(" and %s [id: %d] ", $office2->name, $office2->id);
         $expectedmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
         $this->assertEquals($expectedmsg, $result['username']);
+
+        $user3 = $this->getDataGenerator()->create_user();
+        $cand3 = $this->create_candidate($user3, $election);
+
+        $data['username'] = $user3->username;
+        $data['id']       = $cand3->id;
+
+        $result2 = $form->validation($data, $files);
+        $this->assertEmpty($result2);
     }
 }
