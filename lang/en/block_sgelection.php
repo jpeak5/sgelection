@@ -66,3 +66,4 @@ $string['ballot'] ='ballot';
 // errors
 $string['err_user_nonexist'] = 'User {$a} does not exist.';
 $string['err_user_nonunique'] = 'User {$a->username} already running for office {$a->office} in this election (id {$a->eid}).';
+$string['err_resolution_title_nonunique'] = 'A resolution with this title already exists.';

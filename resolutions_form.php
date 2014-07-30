@@ -27,17 +27,20 @@ class resolution_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
+        $election = $this->_customdata['election'];
+
         // add resolution header
-        
         $mform->addElement('header', 'displayinfo', get_string('create_new_resolution', 'block_sgelection'));
 
+        $mform->addElement('hidden', 'election_id', $election->id);
+        $mform->setType('election_id', PARAM_INT);
+
         $attributes = array('size' => '50', 'maxlength' => '100');
-        $mform->addElement('text', 'title_of_resolution', get_string('title_of_resolution', 'block_sgelection'), $attributes);
-        $mform->setType('title_of_resolution', PARAM_TEXT);
+        $mform->addElement('text', 'title', get_string('title_of_resolution', 'block_sgelection'), $attributes);
+        $mform->setType('title', PARAM_TEXT);
         
-        $attributes = array('size' => '50', 'maxlength' => '100');
-        $mform->addElement('textarea', 'resolution_text', get_string('resolution_text', 'block_sgelection'), $attributes);
-        $mform->setType('resolution_text', PARAM_TEXT);        
+        $mform->addElement('editor', 'text', get_string('resolution_text', 'block_sgelection'));
+        $mform->setType('text', PARAM_RAW);
 
         $buttons = array(
             $mform->createElement('submit', 'save_resolution', get_string('savechanges')),
@@ -45,6 +48,11 @@ class resolution_form extends moodleform {
             $mform->createElement('cancel')
         );
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);        
-        
+    }
+
+    public function validation($data, $files){
+        $errors = parent::validation($data, $files);
+        $errors += resolution::validate_unique_title($data);
+        return $errors;
     }
 }

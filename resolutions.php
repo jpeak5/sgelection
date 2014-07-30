@@ -23,19 +23,22 @@
 require_once('../../config.php');
 require_once('resolutions_form.php');
 require_once('classes/resolution.php');
+require_once('classes/election.php');
 
 global $DB, $OUTPUT, $PAGE;
 
-//next look for optional variables.
-$resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
-$resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
-
-$id = optional_param('id', 0, PARAM_INT);
 $election_id = required_param('election_id', PARAM_INT);
+$election    = election::get_by_id($election_id);
+$id = optional_param('id', 0, PARAM_INT);
+
 $context = context_system::instance();
 
+$fqurl         = new moodle_url('/blocks/sgelection/resolutions.php', array('election_id' => $election_id));
+$ballothomeurl = new moodle_url('ballot.php', array('election_id' => $election_id));
+$selfurl       = new moodle_url('resolutions.php', array('election_id' => $election_id));
+
 $PAGE->set_context($context);
-$PAGE->set_url('/blocks/sgelection/resolutions.php', array('election_id' => $election_id));
+$PAGE->set_url($fqurl);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('resolution_page_header', 'block_sgelection'));
 
@@ -43,29 +46,26 @@ require_login();
 
 // Breadcrumb trail bit
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/resolutions.php', array('election_id' => $election_id));
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
+$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $fqurl);
 $editnode->make_active();
 
-$resolution = new resolution_form(new moodle_url('resolutions.php', array('election_id' => $election_id)));
+$form = new resolution_form($selfurl, array('election_id'=>$election_id, 'election' => $election));
 
-if($resolution->is_cancelled()) {
-    $cancelurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-    redirect($cancelurl);
-} else if($fromform = $resolution->get_data()){
-        $params = array(
-            "election_id" => $election_id,
-            "title" => $resolutionTitle,
-            "text" => $resolutionText
-            );
-        $resolutionData      = new resolution($params);
-        $resolutionData->save();
-        $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-        redirect($thisurl);
-    } else {
-        // form didn't validate or this is the first display
-        $site = get_site();
-        echo $OUTPUT->header();
-        $resolution->display();
-        echo $OUTPUT->footer();
+if($form->is_cancelled()) {
+    redirect($ballothomeurl);
+
+} else if($fromform = $form->get_data()){
+        $resolution = new resolution($fromform);
+        $resolution->text = $fromform->text['text'];
+        $resolution->save();
+        redirect($ballothomeurl);
+} else {
+    // form didn't validate or this is the first display
+    echo $OUTPUT->header();
+    if($id > 0){
+        $resolution = resolution::get_by_id($id);
+        $form->setData($resolution);
+    }
+    $form->display();
+    echo $OUTPUT->footer();
 }

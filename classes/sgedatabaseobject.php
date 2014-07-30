@@ -75,4 +75,9 @@ abstract class sge_database_object {
         global $DB;
         return $DB->get_records(static::$tablename);
     }
+
+    public static function get_all_by_election_id($eid){
+        global $DB;
+        return $DB->get_records(static::$tablename, array('election_id' => $eid));
+    }
 }

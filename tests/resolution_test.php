@@ -19,17 +19,9 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'classes/sgedatabaseobject.php';
-abstract class ballot_item extends sge_database_object {
 
-    private $election_id;
+class resolution_testcase {
 
-    public function get_election_id(){
-        return $this->election_id;
-    }
-
-    public static function get_ballot_items($election_id){
-        global $DB;
-        return $DB->get_records(static::$tablename, array('election_id' => $election_id));
-    }
+    
+    
 }
