@@ -37,7 +37,14 @@ class candidate_form extends moodleform {
                 );
             $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
         }
-        
-        
+    }
+
+    function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+        $invaliduser = candidate::validate_username($data['username']);
+        if(null !== $invaliduser){
+            $errors['username'] = $invaliduser;
+        }
+        return $errors;
     }
 }

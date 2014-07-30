@@ -62,3 +62,6 @@ $string['sem_code'] = 'Semester Code';
 $string['year'] = 'Year';
 $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
+
+// errors
+$string['err_user_nonexist'] = 'User {$a} does not exist.';

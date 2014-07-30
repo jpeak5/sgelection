@@ -62,4 +62,14 @@ class candidate extends sge_database_object{
 
         return $DB->get_records_sql($query);
     }
+
+    public static function validate_username($username){
+        global $DB;
+        $userexists = $DB->record_exists('user', array('username'=>$username));
+        if($userexists){
+            return null;
+        }else{
+            return get_string('err_user_nonexist', 'block_sgelection',  $username);
+        }
+    }
 }
