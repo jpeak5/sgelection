@@ -19,25 +19,16 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once 'tests/sgetestbase.php';
 
-class candidates_form_testcase extends advanced_testcase {
+class candidates_form_testcase extends block_sgelection_base {
 
     public function setup(){
         $this->resetAfterTest();
     }
 
     public function test_validation(){
-        $form = new candidate_form();
 
-        $username = "cannot possibly exist";
-        $result   = $form->validation(array('username'=>$username), array());
-        $this->assertNotEmpty($result);
 
-        $message = get_string('err_user_nonexist', 'block_sgelection',  $username);
-        $this->assertEquals($message, $result['username']);
-
-        $user = $this->getDataGenerator()->create_user();
-        $validresult = $form->validation(array('username'=>$user->username), array());
-        $this->assertEmpty($validresult);
     }
 }

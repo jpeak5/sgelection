@@ -24,6 +24,7 @@
  */
 
 require_once('sgedatabaseobject.php');
+require_once('classes/office.php');
 
 class candidate extends sge_database_object{
 
@@ -51,7 +52,8 @@ class candidate extends sge_database_object{
 
         $wheres = count($clauses) > 0 ? "WHERE ".implode(' AND ', $clauses) : '';
 
-        $query = 'SELECT CONCAT(u.id, c.id, e.id) AS uniq, u.id, c.id AS cid, u.firstname, u.lastname, c.affiliation'
+        $query = 'SELECT CONCAT(u.id, c.id, e.id) AS uniq, u.id AS uid, c.id AS cid, e.id as eid,'
+               . ' o.id AS oid, u.firstname, u.lastname, c.affiliation'
                . ' FROM {block_sgelection_candidate} c'
                . ' JOIN'
                . ' {block_sgelection_election} e on c.election_id = e.id'
@@ -63,13 +65,39 @@ class candidate extends sge_database_object{
         return $DB->get_records_sql($query);
     }
 
-    public static function validate_username($username){
+    public static function validate_username($data, $fieldname){
         global $DB;
-        $userexists = $DB->record_exists('user', array('username'=>$username));
+        $userexists = $DB->record_exists('user', array('username'=>$data['username']));
         if($userexists){
-            return null;
+            return array();
         }else{
-            return get_string('err_user_nonexist', 'block_sgelection',  $username);
+            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data['username']));
         }
+    }
+
+    public static function validate_one_office_per_candidate_per_election($data, $fieldname){
+
+        global $DB;
+        $election = election::get_by_id($data['election_id']);
+        $eid = $election->id;
+        $userid = $DB->get_field('user', 'id', array('username'=>$data['username']));
+        $count = $DB->count_records(candidate::$tablename, array('election_id' => $eid, 'userid' => $userid));
+        if($count > 0){
+            // @TODO helper method to get a fuller candidate record, incl. office, election, etc
+            $candidates = candidate::get_full_candidates($election, null, $userid);
+            $a = new stdClass();
+            $a->username = $data['username'];
+            $election = election::get_by_id($eid);
+            $a->eid = $election->year." ".$election->sem_code;
+            $offices = array();
+            foreach($candidates as $c){
+                $offices[] = office::get_by_id($c->oid)->name . sprintf(" [id: %d] ", $c->oid);
+            }
+            $a->office = implode(' and ', $offices);
+            $errmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
+
+            return array($fieldname => $errmsg);
+        }
+        return array();
     }
 }

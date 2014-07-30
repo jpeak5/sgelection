@@ -51,11 +51,11 @@ class candidate_form extends moodleform {
     }
 
     function validation($data, $files) {
+
         $errors = parent::validation($data, $files);
-        $invaliduser = candidate::validate_username($data['username']);
-        if(null !== $invaliduser){
-            $errors['username'] = $invaliduser;
-        }
+        $errors += candidate::validate_username($data, 'username');
+        $errors += candidate::validate_one_office_per_candidate_per_election($data, 'username');
+
         return $errors;
     }
 }

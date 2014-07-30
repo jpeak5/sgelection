@@ -25,8 +25,9 @@
 require_once 'classes/candidate.php';
 require_once 'classes/election.php';
 require_once 'classes/office.php';
+require_once 'tests/sgetestbase.php';
 
-class candidate_class_testcase extends advanced_testcase {
+class candidate_class_testcase extends block_sgelection_base {
     
     public function setup(){
         $this->resetAfterTest();
@@ -59,7 +60,7 @@ class candidate_class_testcase extends advanced_testcase {
         $test1 = candidate::get_full_candidates($this->oldelection);
         $this->assertEquals(1, count($test1));
         $testcand1 = array_pop($test1);
-        $this->assertEquals($this->cand1->userid, $testcand1->id);
+        $this->assertEquals($this->cand1->userid, $testcand1->uid);
         $this->assertEquals($this->user1->firstname, $testcand1->firstname);
 
         $test2 = candidate::get_full_candidates($this->currentelection);
@@ -189,5 +190,49 @@ class candidate_class_testcase extends advanced_testcase {
         );
         $this->cand5 = new candidate($candparams5);
         $this->cand5->save();
+    }
+
+    public function test_validate_username(){
+        $username = "cannot possibly exist";
+        $election = $this->create_election();
+        $form = new candidate_form(null, array('election'=>$election));
+        $data = array('username'=>$username, 'election_id' => 1);
+        $files= array();
+
+        $result   = $form->validation($data, $files);
+        $this->assertNotEmpty($result);
+
+        $message = get_string('err_user_nonexist', 'block_sgelection',  $username);
+        $this->assertEquals($message, $result['username']);
+
+        $user = $this->getDataGenerator()->create_user();
+        $data['username'] = $user->username;
+        $validresult = $form->validation($data, $files);
+        $this->assertEmpty($validresult);
+    }
+
+    public function test_validate_one_office_per_candidate_per_election(){
+        $user     = $this->getDataGenerator()->create_user();
+        $election = $this->create_election(true);
+        $office   = $this->create_office();
+        $cand1    = $this->create_candidate($user, $election, $office);
+
+        $office2  = $this->create_office();
+        $cand2    = $this->create_candidate($user, $election, $office2);
+
+        $form     = new candidate_form(null, array('election'=>$election));
+        $data     = array('username'=>$user->username, 'election_id' => $election->id);
+        $files    = array();
+
+        $result   = $form->validation($data, $files);
+
+        $this->assertNotEmpty($result);
+        $a = new stdClass();
+        $a->username = $user->username;
+        $a->eid = $election->year." ".$election->sem_code;
+        $a->office = sprintf("%s [id: %d] ", $office->name, $office->id);
+        $a->office .= sprintf(" and %s [id: %d] ", $office2->name, $office2->id);
+        $expectedmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
+        $this->assertEquals($expectedmsg, $result['username']);
     }
 }
