@@ -8,11 +8,8 @@ require_once('classes/election.php');
 global $DB, $OUTPUT, $PAGE;
 
 $election_id = required_param('election_id', PARAM_INT);
-$election    = election::getbyid($election_id);
+$election    = election::get_by_id($election_id);
 $id          = optional_param('id', false, PARAM_INT);
-$username    = optional_param('username', '', PARAM_ALPHANUM);
-$office      = optional_param('office', '', PARAM_INT);
-$affiliation = optional_param('affiliation', '', PARAM_TEXT);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -36,7 +33,7 @@ if($form->is_cancelled()) {
     $cand_url = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
     redirect($cand_url);
 } else if($fromform = $form->get_data()){
-    $userid = $DB->get_field('user', 'id', array('username' => $username));
+    $userid = $DB->get_field('user', 'id', array('username' => $fromform->username));
     $fromform->userid = $userid;
     $formData      = new candidate($fromform);
     $formData->save();
@@ -47,7 +44,7 @@ if($form->is_cancelled()) {
     // form didn't validate or this is the first display
     echo $OUTPUT->header();
     if($id){
-        $candidate = candidate::getbyid($id);
+        $candidate = candidate::get_by_id($id);
         $candidate->username = $DB->get_field('user', 'username', array('id'=>$candidate->userid));
         $form->set_data($candidate);
     }
