@@ -19,9 +19,22 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once('classes/resolution.php');
 
-class resolution_testcase {
+class resolution_testcase extends block_sgelection_base {
 
-    
-    
+    public function test_validate_unique_title(){
+        $this->resetAfterTest();
+        $r1 = $this->create_resolution();
+        $r2 = $this->create_resolution();
+        $result = resolution::validate_unique_title((array)$r2);
+        $this->assertNotEmpty($result);
+        $this->assertEquals(
+                get_string('err_resolution_title_nonunique', 'block_sgelection'),
+                $result['title']
+                );
+        $r3 = $this->create_resolution(array('title' => 'uniq', 'text'=>'hello'));
+        $cleanresult = resolution::validate_unique_title((array)$r3);
+        $this->assertEmpty($cleanresult);
+    }
 }
