@@ -27,7 +27,9 @@ $string['create_new_candidate'] = 'Create a New Candidate';
 $string['paws_id_of_candidate'] = 'paws ID of Candidate';
 $string['office_candidate_is_running_for'] = 'Office the Candidate is running for';
 $string['affiliation'] = 'Affiliation';
-$string['candidate_page_header'] = 'Candidate Page';
+
+// Ballot
+$string['ballot_page_header'] = '{$a->year} {$a->sem_code} Ballot';
 
 // Resolutions
 $string['title_of_resolution'] = 'Title of Resolution';

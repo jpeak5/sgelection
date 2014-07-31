@@ -15,9 +15,13 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('candidate_page_header', 'block_sgelection'));
 
 $election_id = required_param('election_id', PARAM_INT);
+$election = election::get_by_id($election_id);
+
+$heading = get_string('ballot_page_header', 'block_sgelection', $election);
+$PAGE->set_heading($heading);
+$PAGE->set_title($heading);
 
 $username = optional_param('username', '', PARAM_ALPHANUM);
 $office = optional_param('office', '', PARAM_INT);
@@ -75,7 +79,6 @@ function checkboxlimit(checkgroup, limit){
 
 <?php
 $renderer = $PAGE->get_renderer('block_sgelection');
-$election = election::get_by_id($election_id);
 
 $officesToForm     = office::get_all();
 $resolutionsToForm = resolution::get_all(array('election_id' => $election_id));
