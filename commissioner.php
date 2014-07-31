@@ -22,22 +22,21 @@ $editurl = new moodle_url('/blocks/sgelection/commissioner.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$commissioner_form = new commissioner_form();
+$form = new commissioner_form();
 
-if($commissioner_form->is_cancelled()){
-    $courseurl = new moodle_url('/course/view.php', array('id' => $id));
-    redirect($courseurl);
-} else if($fromform = $commissioner_form->get_data()){
+if($form->is_cancelled()){
+    $url = new moodle_url('/');
+    redirect($url);
+} else if($fromform = $form->get_data()){
     $unixStartTime = $fromform->start_date;
     $unixEndTime = $fromform->end_date;
     $electionData = new election($fromform->year, $fromform->sem_code, $unixStartTime, $unixEndTime);
     $electionData->save();
-    $courseurl = new moodle_url('/course/view.php');
-    $thisurl = new moodle_url('commissioner.php');
-    redirect($thisurl);
+    $url = new moodle_url('/');
+    redirect($url);
 } else {
     $site = get_site();
     echo $OUTPUT->header();
-    $commissioner_form->display();
+    $form->display();
     echo $OUTPUT->footer();
 }
