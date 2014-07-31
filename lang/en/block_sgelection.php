@@ -58,7 +58,7 @@ $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 // Commissioner Page / building election object
 $string['start_date'] = 'Start Date';
 $string['end_date'] = 'End Date';
-$string['sem_code'] = 'Semester Code';
+$string['sem_code'] = 'Semester';
 $string['year'] = 'Year';
 $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
