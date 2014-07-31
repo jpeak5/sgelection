@@ -30,7 +30,7 @@ if($form->is_cancelled()){
 } else if($fromform = $form->get_data()){
     $unixStartTime = $fromform->start_date;
     $unixEndTime = $fromform->end_date;
-    $electionData = new election($fromform->year, $fromform->sem_code, $unixStartTime, $unixEndTime);
+    $electionData = new election($fromform);
     $electionData->save();
     $url = new moodle_url('/');
     redirect($url);
