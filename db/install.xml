@@ -18,7 +18,7 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="userid"/>
         <FIELD NAME="office" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="office"/>
         <FIELD NAME="affiliation" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="affiliation"/>
-        <FIELD NAME="election_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -37,8 +37,8 @@
     </TABLE>
     <TABLE NAME="block_sgelection_resolution" COMMENT="table for resolutions">
       <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="election_id" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false" COMMENT="election Identification - foreign key for election table"/>
+        <FIELD NAME="id" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="election Identification - foreign key for election table"/>
         <FIELD NAME="title" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
@@ -76,8 +76,8 @@
     <TABLE NAME="block_sgelection_voters" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="userid" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="userid from user table of the voter"/>
-        <FIELD NAME="election_id" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="id from election table of the election the voter is participating in"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="userid from user table of the voter"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="id from election table of the election the voter is participating in"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -86,7 +86,7 @@
     <TABLE NAME="block_sgelection_supp_info" COMMENT="extra information that can be attached to ballot">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="election_id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="election the supp info belongs in"/>
+        <FIELD NAME="election_id" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" COMMENT="election the supp info belongs in"/>
         <FIELD NAME="title" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="title of the supp info"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="what goes in the body of the supp info"/>
       </FIELDS>
