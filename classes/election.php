@@ -20,7 +20,8 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'sgedatabaseobject.php';
+require_once 'classes/sgedatabaseobject.php';
+
 class election extends sge_database_object{
     public  $year,
             $sem_code,
