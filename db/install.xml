@@ -99,8 +99,8 @@
         <FIELD NAME="id" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="office_id" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="id of the office the officer currently holdsi"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="userid from users table of the officer"/>
-        <FIELD NAME="start_date" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="date the officer started"/>
-        <FIELD NAME="end_date" TYPE="int" LENGTH="12" NOTNULL="true" SEQUENCE="false" COMMENT="when the officers term in office ends"/>
+        <FIELD NAME="start_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date the officer started"/>
+        <FIELD NAME="end_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="when the officers term in office ends"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
