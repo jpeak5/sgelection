@@ -34,7 +34,7 @@ class myclass extends sge_database_object {
     static $tablename = "user";
 }
 
-class sge_database_object_testcase extends advanced_testcase {
+class sge_database_object_testcase extends block_sgelection_base {
 
     public function setup(){
         $this->resetAfterTest();
@@ -128,5 +128,46 @@ class sge_database_object_testcase extends advanced_testcase {
         $this->assertEquals(3, $test->election_id);
         $this->assertEquals(4, $test->office);
         $this->assertEquals('Lions', $test->affiliation);
+    }
+
+    public function test_get_all_by_election_id(){
+        $election1 = $this->create_election();
+        $office1   = $this->create_office();
+        $office2   = $this->create_office();
+
+        $cand1     = $this->create_candidate(null, $election1, $office1);
+        $cand2     = $this->create_candidate(null, $election1, $office2);
+        $res1      = $this->create_resolution(null, $election1->id);
+        $res2      = $this->create_resolution(null, $election1->id);
+
+        $election2 = $this->create_election();
+        $cand3     = $this->create_candidate(null, $election2, $office1);
+        $cand4     = $this->create_candidate(null, $election2, $office2);
+        $res3      = $this->create_resolution(null, $election2->id);
+        $res4      = $this->create_resolution(null, $election2->id);
+
+        $elec1cnds = candidate::get_all_by_election_id($election1->id);
+        $this->assertContains($cand1->id, array_keys($elec1cnds));
+        $this->assertContains($cand2->id, array_keys($elec1cnds));
+        $this->assertNotContains($cand3->id, array_keys($elec1cnds));
+        $this->assertNotContains($cand4->id, array_keys($elec1cnds));
+
+        $elec1reso = resolution::get_all_by_election_id($election1->id);
+        $this->assertContains($res1->id, array_keys($elec1reso));
+        $this->assertContains($res2->id, array_keys($elec1reso));
+        $this->assertNotContains($res3->id, array_keys($elec1reso));
+        $this->assertNotContains($res4->id, array_keys($elec1reso));
+
+        $elec2cnds = candidate::get_all_by_election_id($election2->id);
+        $this->assertContains($cand3->id, array_keys($elec2cnds));
+        $this->assertContains($cand4->id, array_keys($elec2cnds));
+        $this->assertNotContains($cand1->id, array_keys($elec2cnds));
+        $this->assertNotContains($cand2->id, array_keys($elec2cnds));
+
+        $elec2reso = resolution::get_all_by_election_id($election2->id);
+        $this->assertContains($res3->id, array_keys($elec2reso));
+        $this->assertContains($res4->id, array_keys($elec2reso));
+        $this->assertNotContains($res1->id, array_keys($elec2reso));
+        $this->assertNotContains($res2->id, array_keys($elec2reso));
     }
 }
