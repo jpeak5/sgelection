@@ -20,9 +20,9 @@ class commissioner_form extends moodleform {
         $mform->addRule('year', null, 'required', null, 'client');      
 
         $mform->addELement('text', 'sem_code', get_string('sem_code', 'block_sgelection'));
-        $mform->setType('sem_code', PARAM_INT);
-        $mform->addRule('sem_code', null, 'required', null, 'client');     
-        
+        $mform->setType('sem_code', PARAM_TEXT);
+        $mform->addRule('sem_code', null, 'required', null, 'client');
+
         $mform->addElement('date_selector', 'start_date', get_string('start_date', 'block_sgelection'));
         $mform->addElement('date_selector', 'end_date', get_string('end_date', 'block_sgelection'));
 
