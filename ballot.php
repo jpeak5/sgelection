@@ -78,7 +78,7 @@ $renderer = $PAGE->get_renderer('block_sgelection');
 $election = election::get_by_id($election_id);
 
 $officesToForm     = office::get_all();
-$resolutionsToForm = resolution::get_ballot_items($election_id);
+$resolutionsToForm = resolution::get_all(array('election_id' => $election_id));
 $customdata        = array(
     'offices'     => $officesToForm, 
     'resolutions' => $resolutionsToForm, 

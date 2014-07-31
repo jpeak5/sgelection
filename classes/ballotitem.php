@@ -29,7 +29,6 @@ abstract class ballot_item extends sge_database_object {
     }
 
     public static function get_ballot_items($election_id){
-        global $DB;
-        return $DB->get_records(static::$tablename, array('election_id' => $election_id));
+        return static::get_all(array('election_id' => $election_id));
     }
 }

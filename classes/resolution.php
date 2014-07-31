@@ -35,7 +35,7 @@ class resolution extends ballot_item{
 
     public static function validate_unique_title($data){
         $title  = $data['title'];
-        $allres = resolution::get_all_by_election_id($data['election_id']);
+        $allres = resolution::get_all(array('election_id' => $data['election_id']));
         foreach($allres as $res){
             if($res->title == $title){
                 return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
