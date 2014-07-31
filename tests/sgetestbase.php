@@ -27,6 +27,10 @@ require_once 'classes/resolution.php';
 
 abstract class block_sgelection_base extends advanced_testcase{
 
+    public function setup(){
+        $this->resetAfterTest();
+    }
+
     protected function create_candidate($user = null, election $election = null, office $office = null){
 
         global $DB;
