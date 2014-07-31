@@ -37,7 +37,7 @@ if($form->is_cancelled()){
     $unixEndTime = $fromform->end_date;
     $electionData = new election($fromform);
     $electionData->save();
-    $url = new moodle_url('/');
+    $url = new moodle_url('ballot.php', array('election_id' => $electionData->id));
     redirect($url);
 } else {
     $site = get_site();
