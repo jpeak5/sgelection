@@ -38,6 +38,12 @@ class commissioner_form extends moodleform {
         $mform->addElement('date_selector', 'end_date', get_string('end_date', 'block_sgelection'), $datedefaults);
 
         $this->add_action_buttons();
+    }
 
+    public function validation($data, $files){
+        $errors = parent::validation($data, $files);
+        $errors += election::validate_unique($data, $files);
+        $errors += election::validate_start_end($data, $files);
+        return $errors;
     }
 }

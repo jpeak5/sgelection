@@ -29,10 +29,41 @@ class election extends sge_database_object{
             $end_date,
             $id,
             $ballot;
-    
+
     public static $tablename = 'block_sgelection_election';
 
     public function get_ballot(){
-        
+
+    }
+
+    public static function validate_unique($data, $files){
+        $elections = election::get_all(array('year' => $data['year']));
+        foreach($elections as $election){
+            if($election->sem_code == $data['sem_code']){
+                $found = $election->year. " " .$election->sem_code;
+                return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', $found));
+            }
+        }
+        return array();
+    }
+
+    public static function validate_start_end($data, $files){
+        $start = $data['start_date'];
+        $end   = $data['end_date'];
+
+        if($end > $start){
+            return array();
+        }
+        $a = new stdClass();
+        $fmt = self::get_date_format();
+        $a->start = strftime($fmt, $start);
+        $a->end   = strftime($fmt, $end);
+
+        $msg = get_string('err_start_end_disorder', 'block_sgelection', $a);
+        return array('start_date' => $msg);
+    }
+
+    public static function get_date_format(){
+        return "%F";
     }
 }
