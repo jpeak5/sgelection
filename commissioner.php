@@ -22,7 +22,12 @@ $editurl = new moodle_url('/blocks/sgelection/commissioner.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$form = new commissioner_form();
+$dt = new DateTime();
+$yearnow = $dt->format('Y');
+$data = array(
+    'yearnow' => $yearnow,
+);
+$form = new commissioner_form(null, $data);
 
 if($form->is_cancelled()){
     $url = new moodle_url('/');
