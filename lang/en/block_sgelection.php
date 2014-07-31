@@ -67,3 +67,5 @@ $string['ballot'] ='ballot';
 $string['err_user_nonexist'] = 'User {$a} does not exist.';
 $string['err_user_nonunique'] = 'User {$a->username} already running for office {$a->office} in this election (id {$a->eid}).';
 $string['err_resolution_title_nonunique'] = 'A resolution with this title already exists.';
+$string['err_election_nonunique'] = 'An election called <em>{$a}</em> already exists';
+$string['err_start_end_disorder'] = 'Start date {$a->start} must occur before end date {$a->end}.';
