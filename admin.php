@@ -6,7 +6,6 @@ require_once('admin_form.php');
 global $DB, $OUTPUT, $PAGE;
 
 //next look for optional variables.
-$id = optional_param('id', 0, PARAM_INT);
 $done = optional_param('done', 0, PARAM_TEXT);
 
 $context = context_system::instance();
@@ -19,7 +18,7 @@ $PAGE->set_heading(get_string('admin_page_header', 'block_sgelection'));
 require_login();
 
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/admin.php', array('id' => $id));
+$editurl = new moodle_url('/blocks/sgelection/admin.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 $sg_admin = new sg_admin_form();
