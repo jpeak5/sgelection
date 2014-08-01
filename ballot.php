@@ -83,8 +83,8 @@ $renderer = $PAGE->get_renderer('block_sgelection');
 $officesToForm     = office::get_all();
 $resolutionsToForm = resolution::get_all(array('election_id' => $election_id));
 $customdata        = array(
-    'offices'     => $officesToForm, 
-    'resolutions' => $resolutionsToForm, 
+    'offices'     => $officesToForm,
+    'resolutions' => $resolutionsToForm,
     'election'    => $election
         );
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), $customdata, null,null,array('name' => 'ballot_form'));
@@ -102,12 +102,12 @@ if($ballot_item_form->is_cancelled()) {
 echo $OUTPUT->header();
 
 // FORM and INDIVIDUAL FORM ITEMS
-$candidate_form  = new candidate_form(new moodle_url('candidates.php'), array('election'=> $election));
+$candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)), array('election'=> $election));
 $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
-$office_form     = new office_form(new moodle_url('offices.php', array('election_id'=> $election_id)));
+$office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election_id)), array('election_id'=> $election_id));
 
 $candidate_form->display();
-$resolution_form->display();        
+$resolution_form->display();
 $office_form->display();
 
 $ballot_item_form->display();

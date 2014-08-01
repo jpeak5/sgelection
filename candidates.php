@@ -15,7 +15,7 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/candidates.php');
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('candidate_page_header', 'block_sgelection'));
+$PAGE->set_heading(get_string('ballot_page_header', 'block_sgelection', $election));
 
 $renderer = $PAGE->get_renderer('block_sgelection');
 
@@ -27,11 +27,10 @@ $editurl = new moodle_url('/blocks/sgelection/candidates.php', array('election_i
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election));
+$form = new candidate_form(new moodle_url('candidates.php', array('election_id' => $election_id)), array('election' => $election, 'id'=>$id));
 
 if($form->is_cancelled()) {
-    $cand_url = new moodle_url('/blocks/sgelection/candidates.php', array('election_id' => $election_id));
-    redirect($cand_url);
+    redirect(sge::ballot_url($election_id));
 } else if($candidate = $form->get_data()){
     $userid = $DB->get_field('user', 'id', array('username' => $candidate->username));
     $candidate->userid = $userid;

@@ -24,20 +24,20 @@
  */
 
 abstract class sge_database_object {
-    
+
     static $tablename;
-    
+
     public function __construct($params = array()){
         if(!empty($params)){
             $this->instantiate($params);
         }
     }
-    
+
     public function instantiate($params){
         if(is_object($params)){
             $params = (array)$params;
         }
-        
+
         $vars = get_class_vars(get_class($this));
 
         foreach($params as $k => $v){
@@ -46,7 +46,7 @@ abstract class sge_database_object {
             }
         }
     }
-    
+
     public function save(){
         global $DB;
         // @TODO make this less hacky;
@@ -61,7 +61,7 @@ abstract class sge_database_object {
             return $DB->update_record(static::$tablename, $this);
         }
     }
-    
+
     public static function get_by_id($id){
         global $DB;
         $fields = array_keys($DB->get_columns(static::$tablename));
@@ -74,5 +74,11 @@ abstract class sge_database_object {
     public static function get_all($params = array()){
         global $DB;
         return $DB->get_records(static::$tablename, $params);
+    }
+
+    public function delete(){
+        global $DB;
+        $DB->delete_records(static::$tablename, array('id'=>$this->id));
+        unset($this);
     }
 }

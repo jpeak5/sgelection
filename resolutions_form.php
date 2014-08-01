@@ -28,7 +28,8 @@ class resolution_form extends moodleform {
         global $DB;
         $mform =& $this->_form;
         $election = $this->_customdata['election'];
-        var_dump($this->_customdata);
+        $id = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
+
         // add resolution header
         $mform->addElement('header', 'displayinfo', get_string('create_new_resolution', 'block_sgelection'));
 
@@ -38,16 +39,18 @@ class resolution_form extends moodleform {
         $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'title', get_string('title_of_resolution', 'block_sgelection'), $attributes);
         $mform->setType('title', PARAM_TEXT);
-        
+
         $mform->addElement('editor', 'text_editor', get_string('resolution_text', 'block_sgelection'));
         $mform->setType('text', PARAM_RAW);
 
         $buttons = array(
             $mform->createElement('submit', 'save_resolution', get_string('savechanges')),
-            $mform->createElement('submit', 'delete', get_string('delete')),
             $mform->createElement('cancel')
         );
-        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);        
+        $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        if($id){
+            $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'resolution', 'election_id'=>$election->id)), "Delete"));
+        }
     }
 
     public function validation($data, $files){

@@ -21,7 +21,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('candidates_form.php');
 require_once('classes/sgedatabaseobject.php');
 
 class office extends sge_database_object {
@@ -30,6 +29,19 @@ class office extends sge_database_object {
             $number,
             $college,
             $id;
-    
+
     static $tablename = "block_sgelection_office";
+
+    public static function validate_unique_office($data){
+
+        $name   = $data['name'];
+        $alloff = self::get_all();
+        unset($alloff[$data['id']]);
+        foreach($alloff as $off){
+            if($off->name == $name){
+                return array('name'=> get_string('err_office_name_nonunique', 'block_sgelection'));
+            }
+        }
+        return array();
+    }
 }

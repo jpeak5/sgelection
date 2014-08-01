@@ -14,33 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- *
+ * General purpose delete script.
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('candidates_form.php');
-require_once('classes/ballotitem.php');
+require_once(dirname(__FILE__) . '/../../config.php');
+require_once 'lib.php';
 
-class resolution extends ballot_item{
+sge::require_db_classes();
 
-    public  $election_id,
-            $title,
-            $text,
-            $id;
+$id    = required_param('id', PARAM_INT);
+$class = required_param('class', PARAM_ALPHANUMEXT);
+$eid   = required_param('election_id', PARAM_INT);
 
-    static $tablename = "block_sgelection_resolution";
-
-    public static function validate_unique_title($data){
-        $title  = $data['title'];
-        $allres = resolution::get_all(array('election_id' => $data['election_id']));
-        foreach($allres as $res){
-            if($res->title == $title){
-                return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
-            }
-        }
-        return array();
-    }
-}
+//require_capability
+$object = $class::get_by_id($id);
+$object->delete();
+redirect(new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$eid)));

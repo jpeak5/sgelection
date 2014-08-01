@@ -8,7 +8,8 @@ class candidate_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
-        $election = $this->_customdata['election']; 
+        $election = $this->_customdata['election'];
+        $id = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
 
         // ADD CANDIDATES HEADER
         $options = $DB->get_records_menu('block_sgelection_office');
@@ -34,10 +35,12 @@ class candidate_form extends moodleform {
 
             $buttons = array(
                 $mform->createElement('submit', 'save_candidate', get_string('savechanges')),
-                $mform->createElement('submit', 'delete', get_string('delete')),
                 $mform->createElement('cancel')
                 );
             $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+            if($id){
+                $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'candidate', 'election_id'=>$election->id)), "Delete"));
+            }
         }
     }
 

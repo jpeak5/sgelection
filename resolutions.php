@@ -30,37 +30,36 @@ $editurl = new moodle_url('/blocks/sgelection/resolutions.php', array('election_
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$form = new resolution_form(new moodle_url('resolutions.php', array('election_id' => $election_id)), array('election' => $election));
+$form = new resolution_form(new moodle_url('resolutions.php', array('election_id' => $election_id)), array('election' => $election, 'id'=>$id));
 
 if($form->is_cancelled()) {
     $cancelurl = new moodle_url('ballot.php', array('election_id' => $election_id));
     redirect($cancelurl);
 } else if($fromform = $form->get_data()){
-    var_dump($fromform);
+
         $resolution      = new resolution($fromform);
         $resolution->text = $fromform->text_editor['text'];
         $resolution->save();
         $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
-    } else {
-        // form didn't validate or this is the first display
-        //$site = get_site();
-        if($id){
-            
-                $editor_options = array(
-            'trusttext' => true,
-            'subdirs' => 1,
-            'maxfiles' => EDITOR_UNLIMITED_FILES,
-            'accepted_types' => '*',
-            'context' => $context
-        );
-                
-            $resolution = resolution::get_by_id($id);
-            $resolution = file_prepare_standard_editor($resolution, 'text', $editor_options);
-            var_dump($resolution);
-            $form->set_data($resolution);
-        }
-        echo $OUTPUT->header();
-        $form->display();
-        echo $OUTPUT->footer();
+} else {
+    // form didn't validate or this is the first display
+    //$site = get_site();
+    if($id){
+
+            $editor_options = array(
+        'trusttext' => true,
+        'subdirs' => 1,
+        'maxfiles' => EDITOR_UNLIMITED_FILES,
+        'accepted_types' => '*',
+        'context' => $context
+    );
+
+        $resolution = resolution::get_by_id($id);
+        $resolution = file_prepare_standard_editor($resolution, 'text', $editor_options);
+        $form->set_data($resolution);
+    }
+    echo $OUTPUT->header();
+    $form->display();
+    echo $OUTPUT->footer();
 }

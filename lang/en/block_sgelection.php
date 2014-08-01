@@ -71,3 +71,4 @@ $string['err_user_nonunique'] = 'User {$a->username} already running for office 
 $string['err_resolution_title_nonunique'] = 'A resolution with this title already exists.';
 $string['err_election_nonunique'] = 'An election called <em>{$a}</em> already exists';
 $string['err_start_end_disorder'] = 'Start date {$a->start} must occur before end date {$a->end}.';
+$string['err_office_name_nonunique'] = "An Office with this name already exists";

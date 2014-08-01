@@ -31,4 +31,17 @@ class sge {
             return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
         }
     }
+
+    public static function require_db_classes(){
+        global $CFG;
+        //$files = scandir($CFG->wwwroot.'/blocks/sgelection/classes');
+        $files = array('election', 'office', 'candidate', 'ballot', 'ballotitem', 'resolution', 'sgedatabaseobject');
+        foreach($files as $f){
+            require_once 'classes/'.$f.".php";
+        }
+    }
+
+    public static function ballot_url($eid){
+        return new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$eid));
+    }
 }
