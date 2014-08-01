@@ -28,7 +28,7 @@ class resolution_form extends moodleform {
         global $DB;
         $mform =& $this->_form;
         $election = $this->_customdata['election'];
-
+        var_dump($this->_customdata);
         // add resolution header
         $mform->addElement('header', 'displayinfo', get_string('create_new_resolution', 'block_sgelection'));
 
@@ -39,7 +39,7 @@ class resolution_form extends moodleform {
         $mform->addElement('text', 'title', get_string('title_of_resolution', 'block_sgelection'), $attributes);
         $mform->setType('title', PARAM_TEXT);
         
-        $mform->addElement('editor', 'text', get_string('resolution_text', 'block_sgelection'));
+        $mform->addElement('editor', 'text_editor', get_string('resolution_text', 'block_sgelection'));
         $mform->setType('text', PARAM_RAW);
 
         $buttons = array(
