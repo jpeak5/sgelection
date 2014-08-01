@@ -32,7 +32,7 @@ if($form->is_cancelled()){
 
     set_config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes), 'block_sgelection');
 
-    redirect('/mdl27/blocks/sgelection/admin.php?done=true');
+    redirect(new moodle_url('/blocks/sgelection/admin.php?done=true'));
 } else {
     // form didn't validate or this is the first display
     $site = get_site();
