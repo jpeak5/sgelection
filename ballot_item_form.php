@@ -17,6 +17,9 @@ class ballot_item_form extends moodleform {
 
         $i = 0;
 
+        $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
+                $mform->addElement('static', 'preview_ballot', 'preview ballot as a student');
+
         foreach($offices as $o){
 
             $mform->addElement('html', html_writer::tag('h1', $o->name));

@@ -43,19 +43,19 @@ $editurl = new moodle_url('/blocks/sgelection/officelist.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-$form = new office_form();
+$form = new office_form(new moodle_url('offices.php',array('election_id'=>$election_id)));
 echo $OUTPUT->header();
 $form->display();
 
 $offices = office::get_all();
 $table = new html_table();
-$table->head = array('Office', 'Edit', 'Delete');
+$table->head = array('Office', 'College', '# seats', 'Edit', 'Delete');
 
 foreach($offices as $o){
     $name = $o->name;
     $link = html_writer::link(new moodle_url('offices.php', array('id'=>$o->id, 'election_id'=>$election_id)), 'edit');
     $dlet = html_writer::link(new moodle_url('delete.php',  array('id'=>$o->id, 'election_id'=>$election_id, 'class' => 'office')), 'delete');
-    $table->data[] = new html_table_row(array($name, $link, $dlet));
+    $table->data[] = new html_table_row(array($name, $o->college, $o->number, $link, $dlet));
 }
 
 echo html_writer::table($table);

@@ -23,10 +23,14 @@ class office_form extends moodleform {
         $mform->setType('number', PARAM_INT);
 
         // Limit to College
-        $attributes = array('None' => 'none','Agriculture' => 'Agriculture', 'Art & Design' => 'Art & Design',
-            'Business, E. J. Ourso' => 'Business, E. J. Ourso', 'Coast and Environment' => 'Coast and Environment',
-            'Continuing Education' => 'Continuing Education', 'Engineering' => 'Engineering', 'Graduate School' => 'Graduate School',
-            'Honors College' => 'Honors College');
+        $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
+        $colleges = $DB->get_records_sql($sql);
+//        $attributes = array('None' => 'none','Agriculture' => 'Agriculture', 'Art & Design' => 'Art & Design',
+//            'Business, E. J. Ourso' => 'Business, E. J. Ourso', 'Coast and Environment' => 'Coast and Environment',
+//            'Continuing Education' => 'Continuing Education', 'Engineering' => 'Engineering', 'Graduate School' => 'Graduate School',
+//            'Honors College' => 'Honors College');
+        $attributes = array(''=>'none');
+        $attributes += array_combine(array_keys($colleges), array_keys($colleges));
 
         $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
 
