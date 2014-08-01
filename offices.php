@@ -28,8 +28,6 @@ $selfurl       = new moodle_url('/blocks/sgelection/offices.php', array('electio
 $form = new office_form($selfurl, array('election_id'=>$election_id, 'id'=>$id));
 
 if($form->is_cancelled()) {
-    var_dump(sge::ballot_url($election_id));
-    die();
     redirect(sge::ballot_url($election_id));
 } else if($fromform = $form->get_data()){
         $office = new office($fromform);
