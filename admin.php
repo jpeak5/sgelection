@@ -19,14 +19,8 @@ $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_
 $editurl = new moodle_url('/blocks/sgelection/admin.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
+
 $form = new sg_admin_form();
-$form->set_data(get_config('block_sgelection'));
-if($done == true){
-    $sgsettingsuccess = $OUTPUT->notification('changes saved', 'notifysuccess');
-}
-else{
-    $sgsettingsuccess = '';
-}
 
 if($form->is_cancelled()){
     redirect('/');
@@ -42,8 +36,9 @@ if($form->is_cancelled()){
 } else {
     // form didn't validate or this is the first display
     $site = get_site();
+    $form->set_data(get_config('block_sgelection'));
     echo $OUTPUT->header();
-    echo $sgsettingsuccess;
+    echo $done == true ? $OUTPUT->notification('changes saved', 'notifysuccess') : '';
     $form->display();
     echo $OUTPUT->footer();
 }
