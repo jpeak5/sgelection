@@ -19,8 +19,8 @@ $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_
 $editurl = new moodle_url('/blocks/sgelection/admin.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
-$sg_admin = new sg_admin_form();
-$sg_admin->set_data(get_config('block_sgelection'));
+$form = new sg_admin_form();
+$form->set_data(get_config('block_sgelection'));
 if($done == true){
     $sgsettingsuccess = $OUTPUT->notification('changes saved', 'notifysuccess');
 }
@@ -28,22 +28,22 @@ else{
     $sgsettingsuccess = '';
 }
 
-if($sg_admin->is_cancelled()){
+if($form->is_cancelled()){
     redirect('/');
-} else if($fromform = $sg_admin->get_data()){
+} else if($fromform = $form->get_data()){
     //We need to add code to appropriately act on and store the submitted data
     set_config('commissioner', $fromform->commissioner, 'block_sgelection');
     set_config('fulltime', $fromform->fulltime, 'block_sgelection');
     set_config('parttime', $fromform->parttime, 'block_sgelection');
 
     set_config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes), 'block_sgelection');
-    
+
     redirect('/mdl27/blocks/sgelection/admin.php?done=true');
 } else {
     // form didn't validate or this is the first display
     $site = get_site();
     echo $OUTPUT->header();
     echo $sgsettingsuccess;
-    $sg_admin->display();
+    $form->display();
     echo $OUTPUT->footer();
 }
