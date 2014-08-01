@@ -43,6 +43,7 @@ class sg_admin_form extends moodleform {
 
     public function validation($data, $files){
         $errors = parent::validation($data, $files);
-        $errors += sge::validate_username($data, $fieldname);
+        $errors += sge::validate_username($data, 'commissioner');
+        return $errors;
     }
 }

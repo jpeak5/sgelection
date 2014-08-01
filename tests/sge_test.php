@@ -30,11 +30,11 @@ class sge_testcase extends sge_database_object_testcase {
         $fieldname      = 'uname';
 
         $baddata = array(
-            'username' => $nosuchusername,
+            $fieldname => $nosuchusername,
         );
 
         $guddata = array(
-            'username' => $validusername,
+            $fieldname => $validusername,
         );
 
         $badresult = sge::validate_username($baddata, $fieldname);
