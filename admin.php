@@ -8,9 +8,7 @@ global $DB, $OUTPUT, $PAGE;
 //next look for optional variables.
 $done = optional_param('done', 0, PARAM_TEXT);
 
-$context = context_system::instance();
-
-$PAGE->set_context($context);
+$PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/sgelection/admin.php');
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('admin_page_header', 'block_sgelection'));
