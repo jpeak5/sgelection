@@ -90,8 +90,7 @@ $customdata        = array(
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), $customdata, null,null,array('name' => 'ballot_form'));
 
 if($ballot_item_form->is_cancelled()) {
-    $ballot_url = new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $election_id));
-    redirect($ballot_url);
+    redirect(sge::ballot_url($election_id));
 } else if($fromform = $ballot_item_form->get_data()){
 
 } else {

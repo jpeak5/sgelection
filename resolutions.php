@@ -33,8 +33,7 @@ $editnode->make_active();
 $form = new resolution_form(new moodle_url('resolutions.php', array('election_id' => $election_id)), array('election' => $election, 'id'=>$id));
 
 if($form->is_cancelled()) {
-    $cancelurl = new moodle_url('ballot.php', array('election_id' => $election_id));
-    redirect($cancelurl);
+    redirect(sge::ballot_url($election_id));
 } else if($fromform = $form->get_data()){
 
         $resolution      = new resolution($fromform);
