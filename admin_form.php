@@ -40,4 +40,9 @@ class sg_admin_form extends moodleform {
 
         $this->add_action_buttons();
     }
+
+    public function validation($data, $files){
+        $errors = parent::validation($data, $files);
+        $errors += sge::validate_username($data, $fieldname);
+    }
 }

@@ -2,6 +2,7 @@
 global $CFG;
 require_once("{$CFG->libdir}/formslib.php");
 require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
+require_once 'lib.php';
 
 class candidate_form extends moodleform {
     function definition() {
@@ -43,7 +44,7 @@ class candidate_form extends moodleform {
     function validation($data, $files) {
 
         $errors = parent::validation($data, $files);
-        $errors += candidate::validate_username($data, 'username');
+        $errors += sge::validate_username($data, 'username');
         $errors += candidate::validate_one_office_per_candidate_per_election($data, 'username');
 
         return $errors;

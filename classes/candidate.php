@@ -65,16 +65,6 @@ class candidate extends sge_database_object{
         return $DB->get_records_sql($query);
     }
 
-    public static function validate_username($data, $fieldname){
-        global $DB;
-        $userexists = $DB->record_exists('user', array('username'=>$data['username']));
-        if($userexists){
-            return array();
-        }else{
-            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data['username']));
-        }
-    }
-
     public static function validate_one_office_per_candidate_per_election($data, $fieldname){
 
         global $DB;
