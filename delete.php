@@ -28,8 +28,9 @@ sge::require_db_classes();
 $id    = required_param('id', PARAM_INT);
 $class = required_param('class', PARAM_ALPHANUMEXT);
 $eid   = required_param('election_id', PARAM_INT);
+$rtn   = required_param('rtn', PARAM_ALPHAEXT);
 
 //require_capability
 $object = $class::get_by_id($id);
 $object->delete();
-redirect(new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$eid)));
+redirect(new moodle_url(sprintf('/blocks/sgelection/%s.php',$rtn), array('election_id'=>$eid)));

@@ -54,7 +54,7 @@ $table->head = array('Office', 'College', '# seats', 'Edit', 'Delete');
 foreach($offices as $o){
     $name = $o->name;
     $link = html_writer::link(new moodle_url('offices.php', array('id'=>$o->id, 'election_id'=>$election_id, 'rtn'=>'officelist')), 'edit');
-    $dlet = html_writer::link(new moodle_url('delete.php',  array('id'=>$o->id, 'election_id'=>$election_id, 'class' => 'office')), 'delete');
+    $dlet = html_writer::link(new moodle_url('delete.php',  array('id'=>$o->id, 'election_id'=>$election_id, 'class' => 'office', 'rtn'=>'officelist')), 'delete');
     $table->data[] = new html_table_row(array($name, $o->college, $o->number, $link, $dlet));
 }
 
