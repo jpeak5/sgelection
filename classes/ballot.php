@@ -22,6 +22,7 @@
 
 class ballot {
 
+    public $election;
     public $candidates;
     public $resolutions;
     public $voter;
