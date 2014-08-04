@@ -41,9 +41,11 @@ class ballot {
     }
 
     public function get_candidates(){
-        if(!$this->voter_college()){
-            throw new Exception("User college is not registered");
+        if(!$this->voter->college()){
+            throw new Exception("User college is not set; required to vote.");
         }
+
+        $candidates = candidate::get_full_candidates($this->election->id, null, null, $this->voter->college);
     }
 
     public function get_resolutions(){
@@ -62,10 +64,5 @@ class ballot {
 
     private function record_voter_meta(){
 
-    }
-
-    private function voter_college(){
-        global $DB;
-        return $DB->get_field('enrol_ues_usermeta', 'value', array('name'=>'user_college', 'userid'=>$this->voter->id));
     }
 }

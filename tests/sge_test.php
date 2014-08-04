@@ -46,4 +46,14 @@ class sge_testcase extends sge_database_object_testcase {
         $badmsg    = get_string('err_user_nonexist', 'block_sgelection', $nosuchusername);
         $this->assertEquals($badmsg, $badresult['uname']);
     }
+
+    public function test_trim_prefix(){
+        $prefix   = 'user_';
+        $word     = 'field';
+        $totrim   = $word;
+        $toignore = $word;
+
+        $this->assertEquals($word, sge::trim_prefix($totrim, $prefix));
+        $this->assertEquals($word, sge::trim_prefix($toignore, $prefix));
+    }
 }

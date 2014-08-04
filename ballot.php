@@ -10,6 +10,9 @@ require_once('classes/office.php');
 require_once('classes/resolution.php');
 require_once('classes/candidate.php');
 require_once('classes/election.php');
+require_once('classes/voter.php');
+
+global $USER;
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -28,6 +31,12 @@ $office = optional_param('office', '', PARAM_INT);
 $affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
 $resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
 $resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
+
+$voter = new voter($USER->id);
+$objections = $voter->can_vote($election);
+if(!empty($objections)){
+    print_continue("You do not have the right to vote in this election");
+}
 
 
 // edit flags

@@ -66,4 +66,9 @@ class election extends sge_database_object{
     public static function get_date_format(){
         return "%F";
     }
+
+    public function polls_are_open() {
+        return array();
+    }
+
 }
