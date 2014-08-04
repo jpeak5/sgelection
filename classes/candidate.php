@@ -36,12 +36,13 @@ class candidate extends sge_database_object{
 
     static $tablename = "block_sgelection_candidate";
 
-    public static function get_full_candidates($election=null, $office=null, $userid=null){
+    public static function get_full_candidates($election=null, $office=null, $userid=null, $college=null){
         global $DB;
         //mtrace(sprintf("fn args- election->id: %s, office->id: %s, userid: %s", $election->id, $office->id, $userid));
         $eid   = $election ? 'e.id = ' . $election->id : '';
         $oid   = $office   ? 'o.id = ' . $office->id : '';
         $uid   = $userid   ? 'u.id = ' . $userid : '';
+        $col   = $college  ? sprintf('(o.college = %s OR o.college IS NULL', $college) : '';
 
         $clauses = array();
         foreach(array($eid, $oid, $uid) as $clause){

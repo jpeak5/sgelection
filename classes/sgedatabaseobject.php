@@ -23,29 +23,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-abstract class sge_database_object {
+require_once 'sgeobject.php';
+
+abstract class sge_database_object extends sge_object{
 
     static $tablename;
-
-    public function __construct($params = array()){
-        if(!empty($params)){
-            $this->instantiate($params);
-        }
-    }
-
-    public function instantiate($params){
-        if(is_object($params)){
-            $params = (array)$params;
-        }
-
-        $vars = get_class_vars(get_class($this));
-
-        foreach($params as $k => $v){
-            if(in_array($k, array_keys($vars))){
-                $this->$k = $v;
-            }
-        }
-    }
 
     public function save(){
         global $DB;

@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
@@ -24,6 +24,8 @@ class ballot {
 
     public $candidates;
     public $resolutions;
+    public $voter;
+    private $ispreview;
 
     /**
      * Uses user attribute to limit ballot elements.
@@ -31,21 +33,39 @@ class ballot {
      * return ballot_item[]
      */
 //    public function filter_by_user($user){
-        
+
 //    }
 
     public function sort_by(){
-        
+
     }
 
-    public function get_candidates($voter){
-        
+    public function get_candidates(){
+        if(!$this->voter_college()){
+            throw new Exception("User college is not registered");
+        }
     }
 
     public function get_resolutions(){
-        
+
     }
 
-    
+    public function record_votes(){
+        if($this->preview){
+            return;
+        }
+    }
 
+    private function mark_user_as_voted(){
+
+    }
+
+    private function record_voter_meta(){
+
+    }
+
+    private function voter_college(){
+        global $DB;
+        return $DB->get_field('enrol_ues_usermeta', 'value', array('name'=>'user_college', 'userid'=>$this->voter->id));
+    }
 }
