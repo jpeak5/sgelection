@@ -49,8 +49,7 @@
     <TABLE NAME="block_sgelection_election" COMMENT="Election table">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="year" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="year election is taking place"/>
-        <FIELD NAME="sem_code" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="semester code for the year"/>
+        <FIELD NAME="semester" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="semester in which election is taking place"/>
         <FIELD NAME="start_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election begins"/>
         <FIELD NAME="end_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election is over"/>
       </FIELDS>

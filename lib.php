@@ -44,4 +44,74 @@ class sge {
     public static function ballot_url($eid){
         return new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$eid));
     }
+
+    /**
+     * Strip the given prefix from the given word.
+     *
+     * Specifically designed as a helper method to
+     * map friendly attribute names to ues db field names.
+     *
+     * @param string $word string to trim perfix from
+     * @param $prefix prefix to trim from word
+     * @return string
+     */
+    public static function trim_prefix($word, $prefix){
+        $len = strlen($prefix);
+        if(substr_compare($word, $prefix, 0, $len) == 0){
+                $word = substr($word, $len);
+        }
+        return $word;
+    }
+
+    public static function is_commissioner(voter $v) {
+        $commissioner = get_config('block_sgelection', 'commissioner');
+        if($v->username == $commissioner){
+            return array();
+        }
+        $msg = (sprintf("trying to match voter %s with commissioner %s", $v->username, $commissioner));
+        return array('commissionercheck'=>$msg);
+    }
+
+    public static function is_faculty_advisor(voter $v) {
+        $advisor = get_config('block_sgelection', 'facadvisor');
+        if($v->username == $advisor){
+            return array();
+        }
+        $msg = (sprintf("trying to match voter %s with advisor %s", $v->username, $advisor));
+        return array('advisorcheck'=>$msg);
+    }
+
+    public static function get_possible_semesters() {
+        global $DB;
+        $sql = "SELECT * FROM {enrol_ues_semesters} WHERE grades_due > :time";
+        return $DB->get_records_sql($sql, array('time'=>time()));
+    }
+
+    public static function get_possible_semesters_menu($possiblesemesters){
+        $semesters = array();
+        foreach($possiblesemesters as $s){
+            $semesters[$s->id] = self::get_semester_name($s);
+        }
+        return $semesters;
+    }
+
+    public static function get_year_range_from_semesters($semesters){
+        $now = new DateTime();
+        $yearnow = $now->format('Y');
+        $min = $max = (int)$yearnow;
+
+        foreach($semesters as $s){
+            $start = (int)strftime('%y', $s->classes_start);
+            $end   = (int)strftime('%y', $s->grades_due);
+            $min = $start < $min ? $start : $min;
+            $max = $end   > $max ? $end   : $max;
+        }
+
+        return array($min, $max);
+    }
+
+    public static function get_semester_name($s){
+        $namelements = array($s->year, $s->name, $s->campus, $s->campus);
+        return implode(' ', $namelements);
+    }
 }

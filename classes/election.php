@@ -23,8 +23,7 @@
 require_once 'classes/sgedatabaseobject.php';
 
 class election extends sge_database_object{
-    public  $year,
-            $sem_code,
+    public  $semester,
             $start_date,
             $end_date,
             $id,
@@ -37,10 +36,10 @@ class election extends sge_database_object{
     }
 
     public static function validate_unique($data, $files){
-        $elections = election::get_all(array('year' => $data['year']));
+        $elections = election::get_all(array('semester' => $data['semester']));
         foreach($elections as $election){
-            if($election->sem_code == $data['sem_code']){
-                $found = $election->year. " " .$election->sem_code;
+            if($election->semester == $data['semester']){
+                $found = sge::get_semester_name($election->semester);
                 return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', $found));
             }
         }
