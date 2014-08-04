@@ -103,7 +103,7 @@ echo $OUTPUT->header();
 // FORM and INDIVIDUAL FORM ITEMS
 $candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)), array('election'=> $election));
 $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
-$office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election_id)), array('election_id'=> $election_id));
+$office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election_id)), array('election_id'=> $election_id, 'rtn'=>'ballot'));
 
 $candidate_form->display();
 $resolution_form->display();

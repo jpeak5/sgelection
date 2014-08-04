@@ -11,6 +11,9 @@ class office_form extends moodleform {
         $eid = $this->_customdata['election_id'];
         $id = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
 
+        $mform->addElement('hidden', 'rtn', $this->_customdata['rtn']);
+        $mform->setType('rtn', PARAM_ALPHAEXT);
+
         // add office header
         $mform->addElement('header', 'displayinfo', get_string('create_new_office', 'block_sgelection'));
 

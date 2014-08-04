@@ -9,6 +9,7 @@ global $DB, $OUTPUT, $PAGE;
 
 $id = optional_param('id', 0, PARAM_INT);
 $election_id = required_param('election_id', PARAM_INT);
+$rtn = required_param('rtn', PARAM_ALPHAEXT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/sgelection/offices.php');
@@ -23,16 +24,17 @@ $editurl  = new moodle_url('/blocks/sgelection/offices.php', array('id' => $id))
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
+$rtnurl = new moodle_url($rtn.".php", array('election_id'=>$election_id));
 $ballothomeurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election_id));
 $selfurl       = new moodle_url('/blocks/sgelection/offices.php', array('election_id'=>$election_id));
-$form = new office_form($selfurl, array('election_id'=>$election_id, 'id'=>$id));
+$form = new office_form($selfurl, array('election_id'=>$election_id, 'id'=>$id, 'rtn'=>$rtn));
 
 if($form->is_cancelled()) {
     redirect(sge::ballot_url($election_id));
 } else if($fromform = $form->get_data()){
         $office = new office($fromform);
         $office->save();
-        redirect($ballothomeurl);
+        redirect($rtnurl);
 } else {
     echo $OUTPUT->header();
 
