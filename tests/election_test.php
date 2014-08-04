@@ -25,14 +25,11 @@ class election_testcase extends block_sgelection_base {
 
     public function test_validate_unique(){
         $e1 = $this->create_election();
-        $e2 = $this->create_election();
-
-        $e3 = new election(array(
-            'year' => $e1->year,
-            'sem_code' => $e1->sem_code
+        $e2 = new election(array(
+            'semester' => $e1->semester
         ));
 
-        $result = election::validate_unique((array)$e3, null);
+        $result = election::validate_unique((array)$e2, null);
         $this->assertNotEmpty($result);
     }
 

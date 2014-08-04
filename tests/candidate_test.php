@@ -28,12 +28,12 @@ require_once 'classes/office.php';
 require_once 'tests/sgetestbase.php';
 
 class candidate_class_testcase extends block_sgelection_base {
-    
+
     public function setup(){
         $this->resetAfterTest();
         $this->scenario();
     }
-    
+
     public function test_construct() {
 
         $user = $this->getDataGenerator()->create_user(array('username'=>'ima-winna'));
@@ -42,7 +42,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $office = 4;
         $affiliation = 'Lions';
 
-        
+
         $params = array(
             'userid' => $user->id,
             'election_id'      => $eid,
@@ -55,7 +55,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $this->assertEquals($office, $candidate->office);
         $this->assertEquals($affiliation, $candidate->affiliation);
     }
-    
+
     public function test_get_full_candidates_election(){
         $test1 = candidate::get_full_candidates($this->oldelection);
         $this->assertEquals(1, count($test1));
@@ -103,8 +103,7 @@ class candidate_class_testcase extends block_sgelection_base {
 
         // current election
         $eparams = new stdClass();
-        $eparams->year = 2014;
-        $eparams->sem_code = 123;
+        $eparams->semester = 1;
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
 
@@ -113,8 +112,7 @@ class candidate_class_testcase extends block_sgelection_base {
 
         // not current election
         $eparams = new stdClass();
-        $eparams->year = 2014;
-        $eparams->sem_code = 456;
+        $eparams->semester = 2;
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
 
@@ -141,7 +139,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $this->user3 = $this->getDataGenerator()->create_user();
         $this->user4 = $this->getDataGenerator()->create_user();
         $this->user5 = $this->getDataGenerator()->create_user();
-        
+
         // candidate in old election
         $candparams1 = array(
             'election_id' => $this->oldelection->id,
@@ -214,6 +212,7 @@ class candidate_class_testcase extends block_sgelection_base {
     public function test_validate_one_office_per_candidate_per_election(){
         $user     = $this->getDataGenerator()->create_user();
         $election = $this->create_election(true);
+
         $office   = $this->create_office();
         $cand1    = $this->create_candidate($user, $election, $office);
 
@@ -229,7 +228,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $this->assertNotEmpty($result);
         $a = new stdClass();
         $a->username = $user->username;
-        $a->eid = $election->year." ".$election->sem_code;
+        $a->eid = sge::get_semester_name($election->semester);
         $a->office = sprintf("%s [id: %d] ", $office->name, $office->id);
         $a->office .= sprintf(" and %s [id: %d] ", $office2->name, $office2->id);
         $expectedmsg = get_string('err_user_nonunique', 'block_sgelection', $a);

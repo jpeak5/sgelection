@@ -83,8 +83,9 @@ class candidate extends sge_database_object{
             $candidates = candidate::get_full_candidates($election, null, $userid);
             $a = new stdClass();
             $a->username = $data['username'];
-            $election = election::get_by_id($eid);
-            $a->eid = $election->year." ".$election->sem_code;
+
+            $semester = $DB->get_record('enrol_ues_semesters', array('id'=>$election->semester));
+            $a->eid = sge::get_semester_name($semester);
             $offices = array();
             foreach($candidates as $c){
                 $offices[] = office::get_by_id($c->oid)->name . sprintf(" [id: %d] ", $c->oid);

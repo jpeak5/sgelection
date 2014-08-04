@@ -111,6 +111,10 @@ class sge {
     }
 
     public static function get_semester_name($s){
+        if(is_numeric($s)){
+            global $DB;
+            $s = $DB->get_record('enrol_ues_semesters', array('id'=>$s));
+        }
         $namelements = array($s->year, $s->name, $s->campus, $s->campus);
         return implode(' ', $namelements);
     }

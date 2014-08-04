@@ -13,10 +13,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * Local test helpers, generators
- * 
+ *
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -80,14 +80,8 @@ abstract class block_sgelection_base extends advanced_testcase{
         }
         global $DB;
         $e = new stdClass();
-        $e->year = rand(2010, 2020);
-
-        $bin_rand  = rand(0,1);
-
-        // @TODO fix the DDL to allow values 
-        $sem_codes = array('Fall', 'Spring');
-        // $e->sem_code  = $sem_codes[$bin_rand];
-        $e->sem_code = $bin_rand;
+        $semester = $this->create_semester();
+        $e->semester = $semester->id;
 
         $halfinterval  = rand(86400, 31536000);
         $e->start_date = time() - $halfinterval;
@@ -96,6 +90,19 @@ abstract class block_sgelection_base extends advanced_testcase{
         $id = $DB->insert_record('block_sgelection_election', $e);
         $e->id = $id;
         return new election($e);
+    }
+
+    public function create_semester(){
+        global $DB;
+        $s = new stdClass();
+        $s->year = rand(2012, 2016);
+        $s->name = array_rand(array('Fall', 'Summer', 'Spring'), 1);
+        $s->campus = 'Main';
+        $s->classes_start = rand(1407000000, 1408000000);
+        $s->grade_due     = rand(1408000001, 1409000000);
+
+        $s->id = $DB->insert_record('enrol_ues_semesters', $s);
+        return $s;
     }
 
     public function create_office($params = null){
