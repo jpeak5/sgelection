@@ -32,15 +32,24 @@ class sge {
         }
     }
 
+    /**
+     * helper fn to make requiring many classes easier.
+     * @global type $CFG
+     */
     public static function require_db_classes(){
         global $CFG;
         //$files = scandir($CFG->wwwroot.'/blocks/sgelection/classes');
-        $files = array('election', 'office', 'candidate', 'ballot', 'ballotitem', 'resolution', 'sgedatabaseobject');
+        $files = array('election', 'office', 'candidate', 'ballot', 'ballotitem', 'resolution', 'sgedatabaseobject', 'voter', 'sgeobject');
         foreach($files as $f){
             require_once 'classes/'.$f.".php";
         }
     }
 
+    /**
+     * Helper function to easily build this commonly-used destination.
+     * @param int $eid
+     * @return \moodle_url
+     */
     public static function ballot_url($eid){
         return new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$eid));
     }
@@ -63,6 +72,13 @@ class sge {
         return $word;
     }
 
+    /**
+     * Is the input voter the elections commissioner ?
+     * @param voter $v
+     * @return array Array composed of a single k=>v element,
+     * much like the elements in the @see moodleform::validation() errors array.
+     * Empty if the check returns true.
+     */
     public static function is_commissioner(voter $v) {
         $commissioner = get_config('block_sgelection', 'commissioner');
         if($v->username == $commissioner){
@@ -72,6 +88,13 @@ class sge {
         return array('commissionercheck'=>$msg);
     }
 
+    /**
+     * Is the input voter the SG Faculty advisor?
+     * @param voter $v
+     * @return array Array composed of a single k=>v element,
+     * much like the elements in the @see moodleform::validation() errors array.
+     * Empty if the check returns true.
+     */
     public static function is_faculty_advisor(voter $v) {
         $advisor = get_config('block_sgelection', 'facadvisor');
         if($v->username == $advisor){
@@ -81,6 +104,15 @@ class sge {
         return array('advisorcheck'=>$msg);
     }
 
+    /**
+     * Get all rows in the enrol_ues_semesters table having grades_due > now().
+     *
+     * These are used when creating a new election; a new election will either fall in
+     * the current semester or in a future semester.
+     * 
+     * @global type $DB
+     * @return stdClass[]
+     */
     public static function get_possible_semesters() {
         global $DB;
         $sql = "SELECT * FROM {enrol_ues_semesters} WHERE grades_due > :time";

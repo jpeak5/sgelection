@@ -1,5 +1,4 @@
 <?php
-require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
 require_once 'lib.php';
 
 class block_sgelection extends block_list {
