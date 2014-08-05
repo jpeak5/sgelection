@@ -22,9 +22,11 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+global $CFG;
 require_once('sgedatabaseobject.php');
 require_once('classes/office.php');
+require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
+ues::require_daos();
 
 class candidate extends sge_database_object{
 
@@ -83,13 +85,14 @@ class candidate extends sge_database_object{
             $candidates = candidate::get_full_candidates($election, null, $userid);
             $a = new stdClass();
             $a->username = $data['username'];
+            $a->eid      = $election->id;
 
-            $semester = $DB->get_record('enrol_ues_semesters', array('id'=>$election->semester));
-            $a->eid = sge::get_semester_name($semester);
+            $a->semestername = sge::election_fullname($election);
             $offices = array();
             foreach($candidates as $c){
                 $offices[] = office::get_by_id($c->oid)->name . sprintf(" [id: %d] ", $c->oid);
             }
+            // @todo There should never be more than one office in the db per cand/election.
             $a->office = implode(' and ', $offices);
             $errmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
 

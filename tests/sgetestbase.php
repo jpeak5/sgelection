@@ -81,8 +81,8 @@ abstract class block_sgelection_base extends advanced_testcase{
         global $DB;
         $e = new stdClass();
         $semester = $this->create_semester();
-        $e->semester = $semester->id;
-
+        $e->semesterid = $semester->id;
+        $e->name       = array_rand(array("Spring", "Summer", "Fall"));
         $halfinterval  = rand(86400, 31536000);
         $e->start_date = time() - $halfinterval;
         $e->end_date   = $current ? time() + $halfinterval : $e->start_date + $halfinterval;

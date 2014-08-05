@@ -109,20 +109,30 @@ class sge {
      *
      * These are used when creating a new election; a new election will either fall in
      * the current semester or in a future semester.
-     * 
+     *
      * @global type $DB
-     * @return stdClass[]
+     * @return ues_semester[]
      */
     public static function get_possible_semesters() {
         global $DB;
         $sql = "SELECT * FROM {enrol_ues_semesters} WHERE grades_due > :time";
-        return $DB->get_records_sql($sql, array('time'=>time()));
+        $raw = $DB->get_records_sql($sql, array('time'=>time()));
+        $ues = array();
+        foreach($raw as $sem){
+            $ues[] = ues_semester::upgrade($sem);
+        }
+        return $ues;
     }
 
+    /**
+     *
+     * @param ues_semester[] $possiblesemesters
+     * @return type
+     */
     public static function get_possible_semesters_menu($possiblesemesters){
         $semesters = array();
         foreach($possiblesemesters as $s){
-            $semesters[$s->id] = self::get_semester_name($s);
+            $semesters[$s->id] = (string)$s;
         }
         return $semesters;
     }
@@ -142,13 +152,12 @@ class sge {
         return array($min, $max);
     }
 
-    public static function get_semester_name($s){
-        if(is_numeric($s)){
-            global $DB;
-            $s = $DB->get_record('enrol_ues_semesters', array('id'=>$s));
-        }
-        $namelements = array($s->year, $s->name, $s->campus, $s->campus);
-        return implode(' ', $namelements);
+    public static function election_fullname($election){
+        $semester = ues_semester::by_id($election->semesterid);
+        $a = new stdClass();
+        $a->sem  = (string)$semester;
+        $a->name = $election->name;
+        return get_string('election_fullname', 'block_sgelection', $a);
     }
     
     public static function get_college_selection_box($mform){
