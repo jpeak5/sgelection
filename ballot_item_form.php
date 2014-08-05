@@ -11,31 +11,35 @@ class ballot_item_form extends moodleform {
         $mform =& $this->_form;
 
         $election = $this->_customdata['election'];
-
-
-        $offices = $this->_customdata['offices'];
+        $offices  = $this->_customdata['offices'];
+        $college  = $this->_customdata['college'];
+        $privuser = $this->_customdata['privuser'];
 
         $i = 0;
 
-        $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
-        
-        $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
-        sge::get_college_selection_box($mform);
-        
-        $mform->addElement('select', 'PT_or_FT', get_string('ptorft', 'block_sgelection'), array('pt'=>'pt', 'ft'=>'ft'));
+        if($privuser){
+            // Preview section
+            $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
+            $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
+            sge::get_college_selection_box($mform);
+            $ptftparams = array(voter::VOTER_PART_TIME=>'pt', voter::VOTER_FULL_TIME=>'ft');
+            $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
+            $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
+        }
+
         foreach($offices as $o){
 
             $mform->addElement('static', 'office title',  html_writer::tag('h1', $o->name));
 
-            $candidates = candidate::get_full_candidates($election, $o);
+            $candidates = candidate::get_full_candidates($election, $o, null, $college);
 
             foreach($candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');
-                
+
                 $mform->addElement('static', 'edit_candidate', $edita);
                 $mform->addElement('checkbox', 'candidate_checkbox ' , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'ballot_item'));
-                $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation); 
+                $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation);
                 $mform->addElement('html', '<div class="candidatebox"></div>');
             }
             $i++;

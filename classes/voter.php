@@ -28,6 +28,10 @@ class voter extends sge_object {
 
     public $firstname, $lastname, $username, $userid, $major, $college, $year, $degree;
 
+    const VOTER_NO_TIME   = 0;
+    const VOTER_PART_TIME = 1;
+    const VOTER_FULL_TIME = 2;
+
     public function __construct($userid){
         if(!is_numeric($userid)){
             throw new Exception(sprintf("rar! userid {$userid} is not an int!!!"));
@@ -74,6 +78,22 @@ class voter extends sge_object {
         $sql = sprintf("SELECT sum(credit_hours) FROM {enrol_ues_students} WHERE userid = :userid AND status = 'enrolled'");
 
         return $DB->get_record_sql($sql, array('userid'=>$this->userid));
+    }
+
+    public function courseload(){
+        global $DB;
+        $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid));
+        $parttime = get_config('block_sgelection', 'parttime');
+        $fulltime = get_config('block_sgelection', 'fulltime');
+
+        if($hours < $parttime){
+            return self::VOTER_NO_TIME;
+        }elseif($parttime <= $hours && $hours < $fulltime){
+            return self::VOTER_PART_TIME;
+        }else{
+            return self::VOTER_FULL_TIME;
+        }
+
     }
 
     public function right_college() {
