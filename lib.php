@@ -105,6 +105,16 @@ class sge {
     }
 
     /**
+     * This is wierd- consider moving the is_{usertype} into the voter class.
+     * @param type $userid
+     * @return type
+     */
+    public static function is_privileged_user($userid){
+        $voter = new voter($userid);
+        return empty(sge::is_commissioner($voter)) || empty(sge::is_faculty_advisor($voter)) || is_siteadmin();
+    }
+
+    /**
      * Get all rows in the enrol_ues_semesters table having grades_due > now().
      *
      * These are used when creating a new election; a new election will either fall in
@@ -159,7 +169,7 @@ class sge {
         $a->name = $election->name;
         return get_string('election_fullname', 'block_sgelection', $a);
     }
-    
+
     public static function get_college_selection_box($mform){
         global $DB;
         $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
