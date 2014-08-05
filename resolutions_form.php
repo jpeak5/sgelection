@@ -49,7 +49,7 @@ class resolution_form extends moodleform {
         );
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
         if($id){
-            $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'resolution', 'election_id'=>$election->id)), "Delete"));
+            $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'resolution', 'election_id'=>$election->id, 'rtn'=>'ballot')), "Delete"));
         }
     }
 
