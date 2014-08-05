@@ -26,7 +26,8 @@ class election_testcase extends block_sgelection_base {
     public function test_validate_unique(){
         $e1 = $this->create_election();
         $e2 = new election(array(
-            'semester' => $e1->semester
+            'semesterid' => $e1->semesterid,
+            'name' => $e1->name
         ));
 
         $result = election::validate_unique((array)$e2, null);
@@ -35,8 +36,8 @@ class election_testcase extends block_sgelection_base {
 
     public function test_validate_start_end(){
         $e1 = new election(array(
-            'year' => 2014,
-            'sem_code' => "Spring",
+            'semesterid' => 2,
+            'name' => "Spring",
             'start_date' => 1234,
             'end_date'   => 1233
         ));

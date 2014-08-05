@@ -20,6 +20,7 @@ $string['green'] = 'green';
 $string['pictureselect'] = 'Picture Select';
 $string['picturedesc'] = 'Picture Description';
 $string['displaydate'] = 'Display Date';
+$string['election_fullname'] = '{$a->sem} [{$a->name}]';
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
@@ -61,6 +62,7 @@ $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 $string['start_date'] = 'Start Date';
 $string['end_date'] = 'End Date';
 $string['semester'] = 'Semester';
+$string['name'] = 'Name';
 $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
 

@@ -20,9 +20,13 @@ class commissioner_form extends moodleform {
 
         //add page title element.
         // TUTORIAL : Add Form Elements - Advanced Blocks, doesn't have setType, might be an error
-        $mform->addELement('select', 'semester', get_string('semester', 'block_sgelection'), $this->_customdata['semesters']);
-        $mform->setType('semester', PARAM_INT);
-        $mform->addRule('semester', null, 'required', null, 'client');
+        $mform->addELement('select', 'semesterid', get_string('semester', 'block_sgelection'), $this->_customdata['semesters']);
+        $mform->setType('semesterid', PARAM_INT);
+        $mform->addRule('semesterid', null, 'required', null, 'client');
+
+        $mform->addELement('text', 'name', get_string('name', 'block_sgelection'));
+        $mform->setType('name', PARAM_TEXT);
+        $mform->addRule('name', null, 'required', null, 'client');
 
         $mform->addElement('date_selector', 'start_date', get_string('start_date', 'block_sgelection'), $datedefaults);
         $mform->addRule('start_date', null, 'required', null, 'client');

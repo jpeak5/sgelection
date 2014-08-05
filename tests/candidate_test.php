@@ -26,6 +26,7 @@ require_once 'classes/candidate.php';
 require_once 'classes/election.php';
 require_once 'classes/office.php';
 require_once 'tests/sgetestbase.php';
+require_once 'lib.php';
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
@@ -105,7 +106,8 @@ class candidate_class_testcase extends block_sgelection_base {
 
         // current election
         $eparams = new stdClass();
-        $eparams->semester = 1;
+        $eparams->name      = 'current';
+        $eparams->semesterid = 1;
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
 
@@ -114,7 +116,8 @@ class candidate_class_testcase extends block_sgelection_base {
 
         // not current election
         $eparams = new stdClass();
-        $eparams->semester = 2;
+        $eparams->name      = 'past';
+        $eparams->semesterid = 2;
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
 
@@ -231,7 +234,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $a = new stdClass();
         $a->username = $user->username;
         $a->eid = $election->id;
-        $a->semestername = (string)ues_semester::by_id($election->semester);
+        $a->semestername = sge::election_fullname($election);
         $a->office = sprintf("%s [id: %d] ", $office->name, $office->id);
         $a->office .= sprintf(" and %s [id: %d] ", $office2->name, $office2->id);
         $expectedmsg = get_string('err_user_nonunique', 'block_sgelection', $a);

@@ -151,4 +151,12 @@ class sge {
 
         return array($min, $max);
     }
+
+    public static function election_fullname($election){
+        $semester = ues_semester::by_id($election->semesterid);
+        $a = new stdClass();
+        $a->sem  = (string)$semester;
+        $a->name = $election->name;
+        return get_string('election_fullname', 'block_sgelection', $a);
+    }
 }

@@ -26,7 +26,8 @@ ues::require_daos();
 
 class election extends sge_database_object {
     // @TODO rename 'semester' field to 'semesterid', in line with other fk fields.
-    public  $semester,
+    public  $semesterid,
+            $name,
             $start_date,
             $end_date,
             $id,
@@ -39,16 +40,12 @@ class election extends sge_database_object {
     }
 
     public static function validate_unique($data, $files){
-        /**
-         * @TODO There could be more than one election per semester.
-         * Ensure that we add a field to further discriminate one
-         * election from another, perhaps a 'name' field.
-         */
-        $elections = election::get_all(array('semester' => $data['semester']));
+
+        $elections = election::get_all(array('semesterid' => $data['semesterid']));
         foreach($elections as $election){
-            if($election->semester == $data['semester']){
-                $semester = ues_semester::by_id($election->semester);
-                $found = (string)$semester;
+            $semester = ues_semester::by_id($election->semesterid);
+            if($semester->id == $data['semesterid'] && $election->name == $data['name']){
+                $found = sge::election_fullname($election);
                 return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', $found));
             }
         }
