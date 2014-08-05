@@ -1,5 +1,7 @@
 <?php
 require_once 'lib.php';
+require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
+ues::require_daos();
 
 class block_sgelection extends block_list {
 
@@ -20,7 +22,7 @@ class block_sgelection extends block_list {
         $activeElectionsLinks = array();
         $i=0;
         foreach($activeElections as $ae){
-            $semester = sge::get_semester_name($ae->semester);
+            $semester = (string)ues_semester::by_id($ae->semester);
             $activeElectionsLinks[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester );
             $this->content->items[]= $activeElectionsLinks[$i];
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
