@@ -31,7 +31,9 @@ $string['affiliation'] = 'Affiliation';
 
 // Ballot
 $string['ballot_page_header'] = '{$a} Ballot';
- $string['preview_ballot'] = 'Preview Ballot';
+$string['preview_ballot'] = 'Preview Ballot';
+$string['preview'] = 'Preview';
+
 // Resolutions
 $string['title_of_resolution'] = 'Title of Resolution';
 $string['create_new_resolution'] = 'Create New Resolution';
