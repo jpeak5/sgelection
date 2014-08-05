@@ -20,7 +20,6 @@ $string['green'] = 'green';
 $string['pictureselect'] = 'Picture Select';
 $string['picturedesc'] = 'Picture Description';
 $string['displaydate'] = 'Display Date';
-$string['election_fullname'] = '{$a->sem} [{$a->name}]';
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
@@ -64,14 +63,17 @@ $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 $string['start_date'] = 'Start Date';
 $string['end_date'] = 'End Date';
 $string['semester'] = 'Semester';
-$string['name'] = 'Name';
 $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
 
 // errors
 $string['err_user_nonexist'] = 'User {$a} does not exist.';
-$string['err_user_nonunique'] = 'User {$a->username} already running for office {$a->office} in the {$a->semestername} election (election id $a->eid).';
+$string['err_user_nonunique'] = 'User {$a->username} already running for office {$a->office} in this election (id {$a->eid}).';
 $string['err_resolution_title_nonunique'] = 'A resolution with this title already exists.';
 $string['err_election_nonunique'] = 'An election called <em>{$a}</em> already exists';
 $string['err_start_end_disorder'] = 'Start date {$a->start} must occur before end date {$a->end}.';
 $string['err_office_name_nonunique'] = "An Office with this name already exists";
+
+//results
+$string['results_page_header'] = 'Results';
+        
