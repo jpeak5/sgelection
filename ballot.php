@@ -34,6 +34,9 @@ require_once('classes/candidate.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
 
+require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
+ues::require_daos();
+
 global $USER;
 
 $context = context_system::instance();
@@ -43,8 +46,9 @@ $PAGE->set_pagelayout('standard');
 
 $election_id = required_param('election_id', PARAM_INT);
 $election = election::get_by_id($election_id);
+$semester = (string)ues_semester::by_id($election->semester);
 
-$heading = get_string('ballot_page_header', 'block_sgelection', sge::get_semester_name($election->semester));
+$heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 

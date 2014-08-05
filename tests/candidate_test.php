@@ -26,6 +26,8 @@ require_once 'classes/candidate.php';
 require_once 'classes/election.php';
 require_once 'classes/office.php';
 require_once 'tests/sgetestbase.php';
+require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
+ues::require_daos();
 
 class candidate_class_testcase extends block_sgelection_base {
 
@@ -228,7 +230,8 @@ class candidate_class_testcase extends block_sgelection_base {
         $this->assertNotEmpty($result);
         $a = new stdClass();
         $a->username = $user->username;
-        $a->eid = sge::get_semester_name($election->semester);
+        $a->eid = $election->id;
+        $a->semestername = (string)ues_semester::by_id($election->semester);
         $a->office = sprintf("%s [id: %d] ", $office->name, $office->id);
         $a->office .= sprintf(" and %s [id: %d] ", $office2->name, $office2->id);
         $expectedmsg = get_string('err_user_nonunique', 'block_sgelection', $a);

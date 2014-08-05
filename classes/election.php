@@ -21,8 +21,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once 'classes/sgedatabaseobject.php';
+require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
+ues::require_daos();
 
-class election extends sge_database_object{
+class election extends sge_database_object {
+    // @TODO rename 'semester' field to 'semesterid', in line with other fk fields.
     public  $semester,
             $start_date,
             $end_date,
@@ -36,10 +39,16 @@ class election extends sge_database_object{
     }
 
     public static function validate_unique($data, $files){
+        /**
+         * @TODO There could be more than one election per semester.
+         * Ensure that we add a field to further discriminate one
+         * election from another, perhaps a 'name' field.
+         */
         $elections = election::get_all(array('semester' => $data['semester']));
         foreach($elections as $election){
             if($election->semester == $data['semester']){
-                $found = sge::get_semester_name($election->semester);
+                $semester = ues_semester::by_id($election->semester);
+                $found = (string)$semester;
                 return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', $found));
             }
         }
