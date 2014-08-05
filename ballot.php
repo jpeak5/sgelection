@@ -44,7 +44,7 @@ $PAGE->set_pagelayout('standard');
 $election_id = required_param('election_id', PARAM_INT);
 $election = election::get_by_id($election_id);
 
-$heading = get_string('ballot_page_header', 'block_sgelection', $election);
+$heading = get_string('ballot_page_header', 'block_sgelection', sge::get_semester_name($election->semester));
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 

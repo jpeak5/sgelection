@@ -29,8 +29,8 @@ $string['office_candidate_is_running_for'] = 'Office the Candidate is running fo
 $string['affiliation'] = 'Affiliation';
 
 // Ballot
-$string['ballot_page_header'] = '{$a->year} {$a->sem_code} Ballot';
-
+$string['ballot_page_header'] = '{$a} Ballot';
+ $string['preview_ballot'] = 'Preview Ballot';
 // Resolutions
 $string['title_of_resolution'] = 'Title of Resolution';
 $string['create_new_resolution'] = 'Create New Resolution';
