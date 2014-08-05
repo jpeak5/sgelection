@@ -92,6 +92,7 @@ class candidate extends sge_database_object{
             foreach($candidates as $c){
                 $offices[] = office::get_by_id($c->oid)->name . sprintf(" [id: %d] ", $c->oid);
             }
+            // @todo There should never be more than one office in the db per cand/election.
             $a->office = implode(' and ', $offices);
             $errmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
 
