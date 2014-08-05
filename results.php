@@ -45,6 +45,8 @@ $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
 require_login();
 echo $OUTPUT->header();
 $votes = votes::get_all();
+var_dump($votes);
+
 $vote_count = $DB->get_records_sql('select candidate_id, count(*) as count from mdl_block_sgelection_votes GROUP BY candidate_id;', null);
 var_dump($vote_count);
 $table = new html_table();
