@@ -36,12 +36,15 @@ if($form->is_cancelled()){
     $url = new moodle_url('/');
     redirect($url);
 } else if($fromform = $form->get_data()){
-    $electionData = new election($fromform);
-    $electionData->save();
-    redirect(new moodle_url('ballot.php', array('election_id' => $electionData->id)));
+    $election = new election($fromform);
+    $election->save();
+    redirect(new moodle_url('ballot.php', array('election_id' => $election->id)));
 } else {
-    $site = get_site();
     echo $OUTPUT->header();
+    if($id > 0){
+        $election = election::get_by_id($id);
+        $form->set_data($election);
+    }
     $form->display();
     echo $OUTPUT->footer();
 }
