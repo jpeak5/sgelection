@@ -121,6 +121,23 @@ class block_sgelection_renderer extends plugin_renderer_base {
             html_writer::link(new moodle_url('/blocks/sgelection/offices.php', array('eid' => $eid)), 'Add Office')
          ) . '<br />';
     }
-    
-    
+
+    public function get_debug_info($priv, voter $voter=null, $election){
+        $debug = html_writer::tag('h3', 'Debugging');
+        $table = new html_table();
+        $table->head = array('Name', 'Value');
+        $table->data[] = new html_table_row(array('Privileged user', (int)$priv));
+        if(null !== $voter){
+            $votername = sprintf("%s [%s, %s]", $voter->username, $voter->lastname, $voter->firstname);
+            $table->data[] = new html_table_row(array('Voter name', $votername));
+            $table->data[] = new html_table_row(array('Voter college', $voter->college));
+            $table->data[] = new html_table_row(array('Voter major', $voter->major));
+            $table->data[] = new html_table_row(array('Voter year', $voter->year));
+            $table->data[] = new html_table_row(array('Voter degree', $voter->degree));
+            $table->data[] = new html_table_row(array('Voter hours', $voter->courseload()));
+        }
+        $table->data[] = new html_table_row(array('Election', sge::election_fullname($election)));
+        return $debug.html_writer::table($table);
+    }
+
 }
