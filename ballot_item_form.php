@@ -28,11 +28,10 @@ class ballot_item_form extends moodleform {
         }
 
         foreach($offices as $o){
-
-            $mform->addElement('static', 'office title',  html_writer::tag('h1', $o->name));
-
             $candidates = candidate::get_full_candidates($election, $o, null, $college);
-
+            if(count($candidates) > 0){
+                $mform->addElement('static', 'office title',  html_writer::tag('h1', $o->name));
+            }
             foreach($candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');

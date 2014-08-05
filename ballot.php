@@ -122,6 +122,10 @@ $customdata        = array(
     'college'     => $college,
     'privuser'    => $privileged_user,
         );
+if(null !== $voter){
+    $customdata['college'] = $voter->college;
+    $customdata['courseload'] = $voter->courseload();
+}
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election->id)), $customdata, null,null,array('name' => 'ballot_form'));
 
 if($ballot_item_form->is_cancelled()) {
