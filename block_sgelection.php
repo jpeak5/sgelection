@@ -47,4 +47,27 @@ class block_sgelection extends block_list {
     public function instance_allow_multiple() {
         return false;
     }
+
+    public function cron() {
+        global $DB;
+        $DB->delete_records('block_sgelection_hours');
+        $sql = "SELECT "
+                . " ustu.userid as userid, sum(ustu.credit_hours) hours"
+                . " FROM {enrol_ues_students} as ustu"
+                . "    JOIN {enrol_ues_sections} usec ON usec.id = ustu.sectionid"
+                . "    JOIN {enrol_ues_semesters} usem ON usem.id = usec.semesterid"
+                . " WHERE ustu.status = 'enrolled'"
+                . "    AND usem.id = :semid"
+                . " GROUP BY ustu.userid;";
+        try{
+            $hours = $DB->get_records_sql($sql, array('semid'=>1));
+        }catch(Exception $e){
+            var_dump($e);
+            //email_to_user($user, $from, $sql, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname)
+        }
+        foreach($hours as $row){
+            $DB->insert_record('block_sgelection_hours', $row);
+        }
+        return true;
+    }
 }
