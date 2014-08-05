@@ -48,6 +48,11 @@ class block_sgelection extends block_list {
         return false;
     }
 
+    /**
+     * @TODO add some logic to ensure that this only runs in the week before the election.
+     * @global type $DB
+     * @return boolean
+     */
     public function cron() {
         global $DB;
         $DB->delete_records('block_sgelection_hours');
@@ -63,6 +68,7 @@ class block_sgelection extends block_list {
             $hours = $DB->get_records_sql($sql, array('semid'=>1));
         }catch(Exception $e){
             var_dump($e);
+            // @TODO send email to admins in case of any failure.
             //email_to_user($user, $from, $sql, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname)
         }
         foreach($hours as $row){
