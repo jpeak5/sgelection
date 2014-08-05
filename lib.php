@@ -150,4 +150,13 @@ class sge {
         $namelements = array($s->year, $s->name, $s->campus, $s->campus);
         return implode(' ', $namelements);
     }
+    
+    public static function get_college_selection_box($mform){
+        global $DB;
+        $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
+        $colleges = $DB->get_records_sql($sql);
+        $attributes = array(''=>'none');
+        $attributes += array_combine(array_keys($colleges), array_keys($colleges));
+        $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
+    }
 }
