@@ -44,10 +44,10 @@ class candidate extends sge_database_object{
         $eid   = $election ? 'e.id = ' . $election->id : '';
         $oid   = $office   ? 'o.id = ' . $office->id : '';
         $uid   = $userid   ? 'u.id = ' . $userid : '';
-        $col   = $college  ? sprintf('(o.college = %s OR o.college IS NULL', $college) : '';
+        $col   = $college  ? sprintf('(o.college = \'%s\' OR o.college = \'\')', $college) : '';
 
         $clauses = array();
-        foreach(array($eid, $oid, $uid) as $clause){
+        foreach(array($eid, $oid, $uid, $col) as $clause){
             if($clause != ''){
                 $clauses[] = $clause;
             }
