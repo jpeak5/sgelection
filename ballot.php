@@ -52,12 +52,19 @@ $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 
 $voter = new voter($USER->id);
-$objections = $voter->can_vote($election);
+$privileged_user = sge::is_privileged_user($voter->userid); // really awkward.
+
+$objections = $voter->can_vote($election); // try to work this into priv_user better.
 if(!empty($objections)){
-    print_continue("You do not have the right to vote in this election");
+    $voter = null;
+    $OUTPUT->continue_button("You do not have the right to vote in this election");
 }
 
+$preview = optional_param('preview', '', PARAM_ALPHA); //@TODO check the type of submit button.
+$ptft    = $privileged_user ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : $voter->courseload();
+$college = optional_param('college', '', PARAM_ALPHA);
 
+// is this used anymore ? delete
 // edit flags
 $edit_candidate = optional_param('edit_candidate', false, PARAM_INT);
 if($edit_candidate){
@@ -113,7 +120,9 @@ $resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
 $customdata        = array(
     'offices'     => $officesToForm,
     'resolutions' => $resolutionsToForm,
-    'election'    => $election
+    'election'    => $election,
+    'college'     => $college,
+    'privuser'    => $privileged_user,
         );
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election->id)), $customdata, null,null,array('name' => 'ballot_form'));
 
