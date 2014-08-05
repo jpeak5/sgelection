@@ -132,7 +132,7 @@ class sge {
     public static function get_possible_semesters_menu($possiblesemesters){
         $semesters = array();
         foreach($possiblesemesters as $s){
-            $semesters[$s->id] = self::get_semester_name($s);
+            $semesters[$s->id] = (string)$s;
         }
         return $semesters;
     }
