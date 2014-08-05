@@ -43,6 +43,7 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
+require_login();
 
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = sge::election_fullname($election);
@@ -71,9 +72,6 @@ if($edit_candidate){
     $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election->id));
     redirect($url);
 }
-
-//$edit = optional_
-require_login();
 
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
 $editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election->id));
@@ -134,7 +132,7 @@ if($ballot_item_form->is_cancelled()) {
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
     }else{
 
-echo $OUTPUT->header();
+    }
 
     // insert into votes and voters tables.
 } else {
@@ -158,11 +156,8 @@ echo $OUTPUT->header();
     $ballot_item_form->display();
     echo $OUTPUT->footer();
 
-$candidate_form->display();
-$resolution_form->display();
-$office_form->display();
+}
 
-$ballot_item_form->display();
 
 ?>
 
@@ -173,4 +168,3 @@ checkboxlimit(document.forms.ballot_form.candidate_checkbox, 2);
 
 </script>
 <?php
-echo $OUTPUT->footer();
