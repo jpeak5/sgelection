@@ -44,19 +44,12 @@ $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
 
-$election_id = required_param('election_id', PARAM_INT);
-$election = election::get_by_id($election_id);
+$election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = sge::election_fullname($election);
 
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
-
-$username = optional_param('username', '', PARAM_ALPHANUM);
-$office = optional_param('office', '', PARAM_INT);
-$affiliation = optional_param('affiliation', '', PARAM_ALPHANUM);
-$resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
-$resolutionText = optional_param('resolution_text', '', PARAM_TEXT);
 
 $voter = new voter($USER->id);
 $objections = $voter->can_vote($election);
@@ -68,7 +61,7 @@ if(!empty($objections)){
 // edit flags
 $edit_candidate = optional_param('edit_candidate', false, PARAM_INT);
 if($edit_candidate){
-    $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election_id));
+    $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election->id));
     redirect($url);
 }
 
@@ -76,7 +69,7 @@ if($edit_candidate){
 require_login();
 
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election_id));
+$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election->id));
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
@@ -116,29 +109,45 @@ function checkboxlimit(checkgroup, limit){
 $renderer = $PAGE->get_renderer('block_sgelection');
 
 $officesToForm     = office::get_all();
-$resolutionsToForm = resolution::get_all(array('election_id' => $election_id));
+$resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
 $customdata        = array(
     'offices'     => $officesToForm,
     'resolutions' => $resolutionsToForm,
     'election'    => $election
         );
-$ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election_id)), $customdata, null,null,array('name' => 'ballot_form'));
+$ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election->id)), $customdata, null,null,array('name' => 'ballot_form'));
 
 if($ballot_item_form->is_cancelled()) {
-    redirect(sge::ballot_url($election_id));
+    redirect(sge::ballot_url($election->id));
 } else if($fromform = $ballot_item_form->get_data()){
 
-} else {
-
-
-}
+    if($preview && $privileged_user){
+        redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
+    }else{
 
 echo $OUTPUT->header();
 
-// FORM and INDIVIDUAL FORM ITEMS
-$candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election_id)), array('election'=> $election));
-$resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
-$office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election_id)), array('election_id'=> $election_id, 'rtn'=>'ballot'));
+    // insert into votes and voters tables.
+} else {
+    echo $OUTPUT->header();
+    echo $renderer->get_debug_info($privileged_user, $voter, $election);
+    $formdata = new stdClass();
+    if(!$preview && $privileged_user){
+        // FORM and INDIVIDUAL FORM ITEMS
+        $candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election->id)), array('election'=> $election));
+        $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
+        $office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election->id)), array('election_id'=> $election->id, 'rtn'=>'ballot'));
+
+        $candidate_form->display();
+        $resolution_form->display();
+        $office_form->display();
+    }else{
+        $formdata->college = $college;
+        $formdata->ptft    = $ptft;
+    }
+    $ballot_item_form->set_data($formdata);
+    $ballot_item_form->display();
+    echo $OUTPUT->footer();
 
 $candidate_form->display();
 $resolution_form->display();
