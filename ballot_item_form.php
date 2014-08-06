@@ -37,25 +37,30 @@ class ballot_item_form extends moodleform {
                 $edita   = html_writer::link($editurl, 'edit');
 
                 $mform->addElement('static', 'edit_candidate', $edita);
-                $mform->addElement('checkbox', 'candidate_checkbox ' , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'ballot_item'));
+                $mform->addElement('checkbox', 'candidate_checkbox_'.$c->cid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'ballot_item'));
                 $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation);
                 $mform->addElement('html', '<div class="candidatebox"></div>');
             }
             $i++;
         }
         $resolutions = $this->_customdata['resolutions'];
-        $j=0;
+
         foreach($resolutions as $r){
             $mform->addElement('static','title',  html_writer::tag('h1', $r->title));
-            
+
             $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
             $edita   = html_writer::link($editurl, 'edit');
             $mform->addElement('static', 'edit_candidate', $edita);
-            
-            
-            //$mform->addElement('html', html_writer::tag('p',  $r->text)); 
+
+
+            //$mform->addElement('html', html_writer::tag('p',  $r->text));
             $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
-            $mform->addElement('checkbox', 'candidate_checkbox' . $j , 'Yes', null,  array('class'=>'ballot_item'));
+            $radioarray=array();
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), 1);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), 0);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('abstain'), -1);
+            $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
+
         }
 
         $buttons = array(
