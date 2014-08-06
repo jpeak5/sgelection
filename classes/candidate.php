@@ -25,6 +25,7 @@
 global $CFG;
 require_once('sgedatabaseobject.php');
 require_once('classes/office.php');
+require_once('classes/election.php');
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
@@ -38,7 +39,7 @@ class candidate extends sge_database_object{
 
     static $tablename = "block_sgelection_candidate";
 
-    public static function get_full_candidates($election=null, $office=null, $userid=null, $college=null){
+    public static function get_full_candidates(election $election=null, office $office=null, $userid=null, $college=null){
         global $DB;
         //mtrace(sprintf("fn args- election->id: %s, office->id: %s, userid: %s", $election->id, $office->id, $userid));
         $eid   = $election ? 'e.id = ' . $election->id : '';
@@ -56,7 +57,7 @@ class candidate extends sge_database_object{
         $wheres = count($clauses) > 0 ? "WHERE ".implode(' AND ', $clauses) : '';
 
         $query = 'SELECT CONCAT(u.id, c.id, e.id) AS uniq, u.id AS uid, c.id AS cid, e.id as eid,'
-               . ' o.id AS oid, u.firstname, u.lastname, c.affiliation'
+               . ' o.id AS oid, o.name as office, o.college as college, u.firstname, u.lastname, c.affiliation'
                . ' FROM {block_sgelection_candidate} c'
                . ' JOIN'
                . ' {block_sgelection_election} e on c.election_id = e.id'
@@ -66,6 +67,22 @@ class candidate extends sge_database_object{
                . ' {user} u on c.userid = u.id '. $wheres;
 
         return $DB->get_records_sql($query);
+    }
+
+    public static function candidates_by_office(election $election = null){
+
+        $candidates = self::get_full_candidates($election);
+
+        $officetocandidates = array();
+        foreach($candidates as $c){
+            if(!isset($officetocandidates[$c->oid])){
+                $officetocandidates[$c->oid] = office::get_by_id($c->oid);
+                $officetocandidates[$c->oid]->candidates = array();
+                assert(get_class($officetocandidates[$c->oid]) === 'office');
+            }
+            $officetocandidates[$c->oid]->candidates[$c->cid] = $c;
+        }
+        return $officetocandidates;
     }
 
     public static function validate_one_office_per_candidate_per_election($data, $fieldname){

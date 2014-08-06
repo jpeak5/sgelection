@@ -10,10 +10,9 @@ class ballot_item_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $election = $this->_customdata['election'];
-        $offices  = $this->_customdata['offices'];
-        $college  = $this->_customdata['college'];
-        $privuser = $this->_customdata['privuser'];
+        $election   = $this->_customdata['election'];
+        $privuser   = $this->_customdata['privuser'];
+        $candidates = $this->_customdata['candidates'];
 
         $i = 0;
 
@@ -27,12 +26,11 @@ class ballot_item_form extends moodleform {
             $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
         }
 
-        foreach($offices as $o){
-            $candidates = candidate::get_full_candidates($election, $o, null, $college);
-            if(count($candidates) > 0){
-                $mform->addElement('static', 'office title',  html_writer::tag('h1', $o->name));
+        foreach($candidates as $officeid => $office){
+            if(count($office->candidates) > 0){
+                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name));
             }
-            foreach($candidates as $c){
+            foreach($office->candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');
 
@@ -59,6 +57,8 @@ class ballot_item_form extends moodleform {
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), 1);
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), 0);
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('abstain', 'block_sgelection'), -1);
+
+            $mform->setDefault('resvote_'.$r->id, -1);
             $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
 
         }
