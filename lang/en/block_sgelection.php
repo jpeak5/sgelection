@@ -40,6 +40,8 @@ $string['create_new_resolution'] = 'Create New Resolution';
 $string['resolution_text'] = 'Resolution Text';
 $string['resolution_page_header'] = 'Resolution Page';
 $string['ptorft'] = 'Part Time or Full Time';
+$string['abstain'] = 'abstain';
+
 // Offices
 $string['office_page_header'] = 'Office Page Header';
 $string['create_new_office'] = 'Create New Office';
