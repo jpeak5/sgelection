@@ -47,19 +47,29 @@ $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
 
 require_login();
 echo $OUTPUT->header();
-$votes = votes::get_all();
+$offices = office::get_all();
+foreach($offices as $o){
+    $votes = vote::get_all();
 
-$candidate_vote_count = $DB->get_records_sql('select typeid, count(*) as count from mdl_block_sgelection_votes WHERE type = "candidate" GROUP BY typeid;', null);
-$candidate_table = new html_table();
-$candidate_table->head = array('Candidate Name', 'number of votes');
+    $candidate_vote_count = $DB->get_records_sql(''
+            . 'SELECT typeid, count(*) '
+            . 'AS COUNT FROM mdl_block_sgelection_votes '
+            . 'WHERE type = "candidate" '
+            . 'GROUP BY typeid;', null);
+    
+    $candidate_table = new html_table();
+    $candidate_table->head = array('Candidate Name', 'number of votes');
 
-foreach($candidate_vote_count as $c){
-    $candidate = candidate::get_by_id($c->typeid);
-    $candidateUser = $DB->get_record('user', array('id'=>$candidate->userid));
-    //$candidate = candidate::get_full_candidates($c->typeid);
-    var_dump($candidate);
-    $candidate_table->data[] = new html_table_row(array($candidateUser->firstname . ' ' . $candidateUser->lastname, $c->count));
-    //$candidate->firstname . ' ' . $candidate->lastname
+    foreach($candidate_vote_count as $c){
+        $candidate = candidate::get_by_id($c->typeid);
+        $candidateUser = $DB->get_record('user', array('id'=>$candidate->userid));
+        //$candidate = candidate::get_full_candidates($c->typeid);
+        var_dump($candidate);
+        $candidate_table->data[] = new html_table_row(array($candidateUser->firstname . ' ' . $candidateUser->lastname, $c->count));
+        //$candidate->firstname . ' ' . $candidate->lastname
+    }
+    echo html_writer::table($candidate_table);
+
 }
 
 $resolution_vote_count = $DB->get_records_sql('select typeid, count(*) as count from mdl_block_sgelection_votes WHERE type = "resolution" GROUP BY typeid;', null);
@@ -71,6 +81,5 @@ foreach($resolution_vote_count as $r){
     $resolution_table->data[] = new html_table_row(array($resolution->title, $r->count));
 }
 
-echo html_writer::table($candidate_table);
 echo html_writer::table($resolution_table);
 echo $OUTPUT->footer();
