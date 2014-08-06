@@ -61,11 +61,7 @@
     <TABLE NAME="block_sgelection_votes" COMMENT="votes cast for resolutions and candidates">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="college" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="college that the voter is from"/>
-        <FIELD NAME="major" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="major that the voter is in"/>
-        <FIELD NAME="year" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="year the voter is in"/>
-        <FIELD NAME="full_time" TYPE="char" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="yes or no if the student is enrolled full time"/>
-        <FIELD NAME="ip_address" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="IP address where vote was"/>
+        <FIELD NAME="voterid" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="FK to voters table for meta"/>
         <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="time that the vote was cast"/>
         <FIELD NAME="typeid" TYPE="int" LENGTH="6" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="type" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
@@ -75,7 +71,23 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="block_sgelection_voters" COMMENT="Default comment for the table, please edit me">
+    <TABLE NAME="block_sgelection_voters" COMMENT="pseudo-anonymous voter metadata">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="college" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="college that the voter is from"/>
+        <FIELD NAME="major" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="major that the voter is in"/>
+        <FIELD NAME="year" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="year the voter is in"/>
+        <FIELD NAME="courseload" TYPE="char" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="yes or no if the student is enrolled full time"/>
+        <FIELD NAME="ip_address" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="IP address where vote was"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+        
+        
+        
+    <TABLE NAME="block_sgelection_voted" COMMENT="Default comment for the table, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="userid from user table of the voter"/>

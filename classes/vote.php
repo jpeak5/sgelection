@@ -25,12 +25,10 @@ class vote extends sge_database_object {
     public static $tablename = 'block_sgelection_votes';
 
     public $id,
-            $college,
-            $major,
-            $candidate_id,
-            $year,
-            $fulltime,
-            $ip_address,
-            $time;
+            $voterid,
+            $time,
+            $typeid,
+            $type,
+            $vote;
 
 }

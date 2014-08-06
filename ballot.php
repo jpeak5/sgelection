@@ -33,6 +33,7 @@ require_once('classes/resolution.php');
 require_once('classes/candidate.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
+require_once('classes/vote.php');
 
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
@@ -61,6 +62,7 @@ if(!empty($objections)){
     $OUTPUT->continue_button("You do not have the right to vote in this election");
 }
 
+$vote    = optional_param('vote', '', PARAM_ALPHA);
 $preview = optional_param('preview', '', PARAM_ALPHA); //@TODO check the type of submit button.
 $ptft    = $privileged_user ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : $voter->courseload();
 $college = optional_param('college', '', PARAM_ALPHA);
@@ -114,6 +116,7 @@ function checkboxlimit(checkgroup, limit){
 $renderer = $PAGE->get_renderer('block_sgelection');
 
 $officesToForm     = office::get_all();
+$candidatesbyoffice = candidate::candidates_by_office($election);
 $resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
 $customdata        = array(
     'offices'     => $officesToForm,
@@ -121,6 +124,7 @@ $customdata        = array(
     'election'    => $election,
     'college'     => $college,
     'privuser'    => $privileged_user,
+    'candidates'  => $candidatesbyoffice,
         );
 if(null !== $voter){
     $customdata['college'] = $voter->college;
@@ -134,8 +138,34 @@ if($ballot_item_form->is_cancelled()) {
 
     if($preview && $privileged_user){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
-    }else{
+    }elseif(strlen($vote) > 0){
+        $alreadyvoted = $DB->record_exists('block_sgelection_voted', array('userid'=>$voter->userid, 'election_id' => $election->id), '*', IGNORE_MISSING);
 
+        if($alreadyvoted){
+            print_error("You have already voted in this election!");
+            $OUTPUT->continue_button("/");
+        }
+        // live vote
+        $cand_ids = array();
+        foreach($candidatesbyoffice as $office => $o){
+            $cand_ids += $o->candidates;
+        }
+
+        $voter->save();
+        foreach($cand_ids as $cid => $acnd){
+            $fieldname = 'candidate_checkbox_'.$cid;
+            if(isset($fromform->$fieldname)){
+
+                $vote = new vote(array('voterid'=>$voter->id));
+                $vote->time = time();
+                $vote->typeid = $cid;
+                $vote->type = 'candidate';
+                $vote->vote = 1;
+                $vote->save();
+            }
+        }
+        $voter->mark_as_voted($election);
+        redirect('/');
     }
 
     // insert into votes and voters tables.

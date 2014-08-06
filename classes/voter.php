@@ -24,13 +24,25 @@
 require_once 'sgeobject.php';
 require_once 'lib.php';
 
-class voter extends sge_object {
+class voter extends sge_database_object {
 
-    public $firstname, $lastname, $username, $userid, $major, $college, $year, $degree;
+    public static $tablename = 'block_sgelection_voters';
 
-    const VOTER_NO_TIME   = 0;
-    const VOTER_PART_TIME = 1;
-    const VOTER_FULL_TIME = 2;
+    public
+            $firstname,
+            $lastname,
+            $username,
+            $userid,
+            $college,
+            $major,
+            $year,
+            $courseload,
+            $ip_address,
+            $hours;
+
+    const VOTER_NO_TIME   = 'X';
+    const VOTER_PART_TIME = 'P';
+    const VOTER_FULL_TIME = 'F';
 
     public function __construct($userid){
         if(!is_numeric($userid)){
@@ -51,7 +63,8 @@ class voter extends sge_object {
             $name = sge::trim_prefix($pair->name, 'user_');
             $params->$name = $pair->value;
         }
-
+        $params->ip_address = getremoteaddr();
+        $params->courseload = $this->courseload();
         parent::__construct($params);
     }
 
@@ -85,19 +98,47 @@ class voter extends sge_object {
         $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid));
         $parttime = get_config('block_sgelection', 'parttime');
         $fulltime = get_config('block_sgelection', 'fulltime');
+        $this->hours = $hours ? $hours : 0;
 
         if($hours < $parttime){
-            return self::VOTER_NO_TIME;
+            $courseload = self::VOTER_NO_TIME;
         }elseif($parttime <= $hours && $hours < $fulltime){
-            return self::VOTER_PART_TIME;
+            $courseload = self::VOTER_PART_TIME;
         }else{
-            return self::VOTER_FULL_TIME;
+            $courseload = self::VOTER_FULL_TIME;
         }
 
+        $this->courseload = $courseload;
+        return $this->courseload;
+    }
+
+    public static function courseload_string($courseload){
+        $parttime = get_config('block_sgelection', 'parttime');
+        $fulltime = get_config('block_sgelection', 'fulltime');
+        switch($courseload){
+            case 'X':
+                return sprintf("Less than part-time enrollment (%s hours)",$parttime);
+                break;
+            case 'P':
+                return sprintf("Part-time enrollment (%s hours)",$parttime);
+                break;
+            case 'F':
+                return sprintf("Full-time enrollment (%s hours)",$fulltime);
+                break;
+        }
     }
 
     public function right_college() {
         return array();
+    }
+
+    public function mark_as_voted(election $election) {
+        $row = new stdClass();
+        $row->userid = $this->userid;
+        $row->election_id = $election->id;
+
+        global $DB;
+        return $DB->insert_record('block_sgelection_voted', $row);
     }
 
 }

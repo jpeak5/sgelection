@@ -35,11 +35,12 @@ $string['preview_ballot'] = 'Preview Ballot';
 $string['preview'] = 'Preview';
 
 // Resolutions
+$string['abstain'] = 'Abstain';
 $string['title_of_resolution'] = 'Title of Resolution';
 $string['create_new_resolution'] = 'Create New Resolution';
 $string['resolution_text'] = 'Resolution Text';
 $string['resolution_page_header'] = 'Resolution Page';
-$string['ptorft'] = 'Part Time or Full Time';
+
 // Offices
 $string['office_page_header'] = 'Office Page Header';
 $string['create_new_office'] = 'Create New Office';
@@ -78,3 +79,6 @@ $string['err_office_name_nonunique'] = "An Office with this name already exists"
 
 //results
 $string['results_page_header'] = 'Results';
+
+// voter
+$string['ptorft'] = 'Part Time or Full Time';
