@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,11 +20,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once 'sgeobject.php';
-require_once 'sgedatabaseobject.php';
-require_once 'lib.php';
+class vote extends sge_database_object {
 
-class votes extends sge_database_object {
-    public $id, $college, $major, $candidate_id, $year, $full_time, $ip_address, $time;
-    static $tablename = "block_sgelection_votes";
+    public static $tablename = 'block_sgelection_votes';
+
+    public $id,
+            $college,
+            $major,
+            $candidate_id,
+            $year,
+            $fulltime,
+            $ip_address,
+            $time;
+
 }
