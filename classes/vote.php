@@ -19,6 +19,7 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once('sgedatabaseobject.php');
 
 class vote extends sge_database_object {
 
