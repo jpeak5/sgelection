@@ -152,7 +152,7 @@ if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 } else if($fromform = $ballot_item_form->get_data()){
 
-    if($preview && $privileged_user){
+    if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
     }elseif(strlen($vote) > 0){
         $alreadyvoted = $DB->record_exists('block_sgelection_voted', array('userid'=>$voter->userid, 'election_id' => $election->id), '*', IGNORE_MISSING);
@@ -187,7 +187,7 @@ if($ballot_item_form->is_cancelled()) {
     // insert into votes and voters tables.
 } else {
     echo $OUTPUT->header();
-    echo $renderer->get_debug_info($privileged_user, $voter, $election);
+    echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
     $formdata = new stdClass();
     if(!$preview && $voter->candoanything){
         // FORM and INDIVIDUAL FORM ITEMS
