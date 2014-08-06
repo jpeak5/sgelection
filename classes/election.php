@@ -73,7 +73,9 @@ class election extends sge_database_object {
     }
 
     public function polls_are_open() {
-        return array();
+        $time = time();
+        $open = $this->start_date <= $time && $this->end_date >= $time;
+        return $open;
     }
 
 }

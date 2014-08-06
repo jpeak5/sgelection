@@ -38,8 +38,9 @@ require_once('classes/vote.php');
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
-global $USER;
+global $USER, $DB, $PAGE;
 
+// Begin initialize PAGE.
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
@@ -53,34 +54,52 @@ $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 
-$voter = new voter($USER->id);
-$privileged_user = sge::is_privileged_user($voter->userid); // really awkward.
-
-$objections = $voter->can_vote($election); // try to work this into priv_user better.
-if(!empty($objections)){
-    $voter = null;
-    $OUTPUT->continue_button("You do not have the right to vote in this election");
-}
-
-$vote    = optional_param('vote', '', PARAM_ALPHA);
-$preview = optional_param('preview', '', PARAM_ALPHA); //@TODO check the type of submit button.
-$ptft    = $privileged_user ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : $voter->courseload();
-$college = optional_param('college', '', PARAM_ALPHA);
-
-// is this used anymore ? delete
-// edit flags
-$edit_candidate = optional_param('edit_candidate', false, PARAM_INT);
-if($edit_candidate){
-    $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election->id));
-    redirect($url);
-}
-
 $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
 $editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election->id));
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
+// End PAGE init.
 
-global $DB, $PAGE;
+
+
+// Initialize incoming params.
+$vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
+
+// Need to group these better logically and conceptually in order to isolate them from the live election activity.
+$preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true                               : false;
+$ptft    = $preview && $voter->candoanything ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : false;
+$college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA)              : false;
+
+
+// Begin security checks.
+$voter   = new voter($USER->id);
+
+// Establish SG admin status.
+$voter->candoanything = sge::voter_can_do_anything($voter, $election);
+
+// Are the polls open ?
+if(!$voter->candoanything && !$election->polls_are_open()){
+    print_error("polls are not open yet");
+}
+
+// At least part time enrollment?
+if(!$voter->candoanything && !$voter->at_least_parttime()){
+    print_error("You need to be at least a parttime student to vote");
+}
+
+if(!$voter->candoanything && $preview){
+    print_error("Only the SG Commissioner can preview the ballot.");
+}
+
+
+// is this used anymore ? delete
+// edit flags
+//$edit_candidate = optional_param('edit_candidate', false, PARAM_INT);
+//if($edit_candidate){
+//    $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election->id));
+//    redirect($url);
+//}
+
 
 ?>
 
@@ -111,20 +130,17 @@ function checkboxlimit(checkgroup, limit){
 </script>
 
 
-
 <?php
 $renderer = $PAGE->get_renderer('block_sgelection');
 
-$officesToForm     = office::get_all();
 $candidatesbyoffice = candidate::candidates_by_office($election);
 $resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
 $customdata        = array(
-    'offices'     => $officesToForm,
     'resolutions' => $resolutionsToForm,
     'election'    => $election,
     'college'     => $college,
-    'privuser'    => $privileged_user,
     'candidates'  => $candidatesbyoffice,
+    'voter'       => $voter
         );
 if(null !== $voter){
     $customdata['college'] = $voter->college;
@@ -173,7 +189,7 @@ if($ballot_item_form->is_cancelled()) {
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($privileged_user, $voter, $election);
     $formdata = new stdClass();
-    if(!$preview && $privileged_user){
+    if(!$preview && $voter->candoanything){
         // FORM and INDIVIDUAL FORM ITEMS
         $candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election->id)), array('election'=> $election));
         $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
