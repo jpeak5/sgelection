@@ -12,6 +12,16 @@
         <WITHHOLD_DIR_FLG>L</WITHHOLD_DIR_FLG>
     </ROW>
     <ROW>
+        <IDNUMBER>89wmonro1</IDNUMBER>
+        <DEPT_CODE>Multimedia</DEPT_CODE>
+        <COURSE_NBR>1001</COURSE_NBR>
+        <SECTION_NBR>001</SECTION_NBR>
+        <CREDIT_HRS>6.00</CREDIT_HRS>
+        <INDIV_NAME>Will, Monroe</INDIV_NAME>
+        <PRIMARY_ACCESS_ID>wmonro1</PRIMARY_ACCESS_ID>
+        <WITHHOLD_DIR_FLG>L</WITHHOLD_DIR_FLG>
+    </ROW>
+    <ROW>
         <IDNUMBER>89its002</IDNUMBER>
         <DEPT_CODE>Multimedia</DEPT_CODE>
         <COURSE_NBR>1001</COURSE_NBR>

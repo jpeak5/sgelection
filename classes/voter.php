@@ -63,27 +63,14 @@ class voter extends sge_database_object {
             $name = sge::trim_prefix($pair->name, 'user_');
             $params->$name = $pair->value;
         }
-        $params->ip_address = getremoteaddr();
-        $params->courseload = $this->courseload();
         parent::__construct($params);
+        $this->ip_address = getremoteaddr();
+        $this->courseload = $this->courseload();
     }
 
-    public function can_vote(election $election){
-        $nays = array();
-        $nays += sge::is_commissioner($this);
-        $nays += sge::is_faculty_advisor($this);
-        $nays += $this->is_parttime();
-        $nays += $this->is_fulltime();
-        $nays += $this->right_college();
-        $nays += $election->polls_are_open();
-    }
-
-    public function is_parttime(){
-        return array();
-    }
-
-    public function is_fulltime(){
-        return array();
+    public function at_least_parttime(){
+        $pt = sge::config('parttime');
+        return $this->hours >= $pt;
     }
 
     private function get_enrolled_hours(){
@@ -130,6 +117,28 @@ class voter extends sge_database_object {
 
     public function right_college() {
         return array();
+    }
+
+    /**
+     * Is this voter the elections commissioner
+     * @return boolean
+     */
+    public function is_commissioner() {
+        if($this->username == sge::config('commissioner')){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Is this voter the SG Faculty advisor?
+     * @return boolean
+     */
+    public function is_faculty_advisor() {
+        if($this->username == sge::config('facadvisor')){
+           return true;
+        }
+        return false;
     }
 
     public function mark_as_voted(election $election) {

@@ -11,16 +11,17 @@ class ballot_item_form extends moodleform {
         $mform =& $this->_form;
 
         $election   = $this->_customdata['election'];
-        $privuser   = $this->_customdata['privuser'];
         $candidates = $this->_customdata['candidates'];
+        $college    = $this->_customdata['college'];
+        $voter      = $this->_customdata['voter'];
 
         $i = 0;
 
-        if($privuser){
+        if($voter->candoanything){
             // Preview section
             $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
             $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
-            sge::get_college_selection_box($mform);
+            sge::get_college_selection_box($mform, $college);
             $ptftparams = array(voter::VOTER_PART_TIME=>'pt', voter::VOTER_FULL_TIME=>'ft');
             $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
             $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));

@@ -72,37 +72,7 @@ class sge {
         return $word;
     }
 
-    /**
-     * Is the input voter the elections commissioner ?
-     * @param voter $v
-     * @return array Array composed of a single k=>v element,
-     * much like the elements in the @see moodleform::validation() errors array.
-     * Empty if the check returns true.
-     */
-    public static function is_commissioner(voter $v) {
-        $commissioner = get_config('block_sgelection', 'commissioner');
-        if($v->username == $commissioner){
-            return array();
-        }
-        $msg = (sprintf("trying to match voter %s with commissioner %s", $v->username, $commissioner));
-        return array('commissionercheck'=>$msg);
-    }
 
-    /**
-     * Is the input voter the SG Faculty advisor?
-     * @param voter $v
-     * @return array Array composed of a single k=>v element,
-     * much like the elements in the @see moodleform::validation() errors array.
-     * Empty if the check returns true.
-     */
-    public static function is_faculty_advisor(voter $v) {
-        $advisor = get_config('block_sgelection', 'facadvisor');
-        if($v->username == $advisor){
-            return array();
-        }
-        $msg = (sprintf("trying to match voter %s with advisor %s", $v->username, $advisor));
-        return array('advisorcheck'=>$msg);
-    }
 
     /**
      * This is wierd- consider moving the is_{usertype} into the voter class.
@@ -170,12 +140,26 @@ class sge {
         return get_string('election_fullname', 'block_sgelection', $a);
     }
 
-    public static function get_college_selection_box($mform){
+    public static function get_college_selection_box($mform, $selected = false){
         global $DB;
         $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
         $colleges = $DB->get_records_sql($sql);
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
         $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
+        if($selected && in_array($selected, array_keys($colleges))){
+            $mform->setSelected($selected);
+        }
     }
+
+    public static function config($id){
+        return get_config('block_sgelection', $id);
+    }
+
+    public static function voter_can_do_anything(voter $voter, election $election) {
+        $is_editingcommissioner = $voter->is_commissioner() && !$election->polls_are_open();
+        // NB: excluding Moodle site admins from this check.
+        return $voter->is_faculty_advisor() || $is_editingcommissioner;
+    }
+
 }
