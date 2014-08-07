@@ -150,6 +150,15 @@ class voter extends sge_database_object {
     public function is_privileged_user(){
         return $this->is_commissioner() || $this->is_faculty_advisor() || is_siteadmin();
     }
+    
+    public function already_voted(election $election){
+        global $DB;
+        $params = array(
+            'userid'      => $this->userid,
+            'election_id' => $election->id
+        );
+        return $DB->record_exists('block_sgelection_voted', $params, '*', IGNORE_MISSING);
+    }
 
     public function mark_as_voted(election $election) {
         $row = new stdClass();
@@ -158,6 +167,21 @@ class voter extends sge_database_object {
 
         global $DB;
         return $DB->insert_record('block_sgelection_voted', $row);
+    }
+
+    /**
+     * @TODO perhaps this should return something useful in the event
+     * that a field is not set.
+     * @return boolean
+     */
+    public function has_required_metadata(){
+        $requiredfields = array('college', 'hours', 'courseload', 'year');
+        foreach($requiredfields as $rf){
+            if(!isset($this->$rf)){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

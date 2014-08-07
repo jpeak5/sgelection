@@ -56,6 +56,7 @@ $candidatesToTable = function($cid, $count=0){
 echo $OUTPUT->header();
 $offices = office::get_all();
 foreach($offices as $o){
+    echo '<h1> ' . $o->name . '</h1>';
     $votes = vote::get_all();
     $candidates = candidate::get_all(array('election_id'=>$election_id, 'office'=>$o->id));
     
@@ -68,6 +69,7 @@ foreach($offices as $o){
             . 'AND o.id = :oid '
             . 'GROUP BY typeid;', array('oid'=>$o->id));
     if(count($candidate_vote_count) > 0){
+        
         echo '<h1> ' . $o->name . '</h1>';
 
         $candidate_table = new html_table();
