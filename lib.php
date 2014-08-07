@@ -97,12 +97,15 @@ class sge {
      * @param ues_semester[] $possiblesemesters
      * @return type
      */
-    public static function get_possible_semesters_menu($possiblesemesters){
-        $semesters = array();
-        foreach($possiblesemesters as $s){
-            $semesters[$s->id] = (string)$s;
+    public static function commissioner_form_available_semesters_menu(array $availablesemesters = array()){
+        if(empty($availablesemesters)){
+            $availablesemesters = self::commissioner_form_available_semesters();
         }
-        return $semesters;
+        $menu = array();
+        foreach($availablesemesters as $s){
+            $menu[$s->id] = (string)$s;
+        }
+        return $menu;
     }
 
     public static function get_year_range_from_semesters($semesters){
@@ -111,8 +114,8 @@ class sge {
         $min = $max = (int)$yearnow;
 
         foreach($semesters as $s){
-            $start = (int)strftime('%y', $s->classes_start);
-            $end   = (int)strftime('%y', $s->grades_due);
+            $start = (int)strftime('%Y', $s->classes_start);
+            $end   = (int)strftime('%Y', $s->grades_due);
             $min = $start < $min ? $start : $min;
             $max = $end   > $max ? $end   : $max;
         }

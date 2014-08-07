@@ -26,9 +26,8 @@ $editnode->make_active();
 $possiblesemesters = sge::get_possible_semesters();
 list($minyear, $maxyear) = sge::get_year_range_from_semesters($possiblesemesters);
 $data = array(
-    'semesters' => sge::get_possible_semesters_menu($possiblesemesters),
-    'minyear'   => $minyear,
-    'maxyear'   => $maxyear
+    'semesters' => sge::commissioner_form_available_semesters_menu(),
+    'datedefaults'   => array('startyear' => $minyear, 'stopyear' => $maxyear),
     );
 $form = new commissioner_form(null, $data);
 
