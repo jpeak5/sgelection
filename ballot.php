@@ -111,7 +111,7 @@ if(!$voter->candoanything && $preview){
  * Don't allow a second vote.
  */
 if($voter->already_voted($election)){
-    print_error('You have already voted in this election')
+    print_error('You have already voted in this election');
 }
 ?>
 
