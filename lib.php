@@ -9,7 +9,7 @@ function get_active_elections() {
     global $DB;
     $todaysDate = time();
     $elections = $DB->get_records_select('block_sgelection_election', 'end_date > :now', array('now' => time()));
-    return $elections;
+    return election::classify_rows($elections);
 
 }
 
