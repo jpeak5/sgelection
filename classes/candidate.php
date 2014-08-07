@@ -104,7 +104,7 @@ class candidate extends sge_database_object{
             $a->username = $data['username'];
             $a->eid      = $election->id;
 
-            $a->semestername = sge::election_fullname($election);
+            $a->semestername = $election->fullname();
             $offices = array();
             foreach($candidates as $c){
                 $offices[] = office::get_by_id($c->oid)->name . sprintf(" [id: %d] ", $c->oid);

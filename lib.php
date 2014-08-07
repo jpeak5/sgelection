@@ -138,21 +138,6 @@ class sge {
     }
 
     /**
-     * Get the fullname for an election.
-     * Provides an easy and consistent way to convert an election to a string.
-     *
-     * @param election $election
-     * @return string
-     */
-    public static function election_fullname(election $election){
-        $semester = ues_semester::by_id($election->semesterid);
-        $a = new stdClass();
-        $a->sem  = (string)$semester;
-        $a->name = $election->name;
-        return get_string('election_fullname', 'block_sgelection', $a);
-    }
-
-    /**
      * Helper method to generate a college selection form control.
      *
      * @TODO consider moving the $mform calls back into the form, using this method

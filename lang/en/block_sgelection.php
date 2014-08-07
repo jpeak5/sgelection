@@ -21,6 +21,7 @@ $string['pictureselect'] = 'Picture Select';
 $string['picturedesc'] = 'Picture Description';
 $string['displaydate'] = 'Display Date';
 $string['election_fullname'] = '{$a->sem} [{$a->name}]';
+$string['election_shortname'] = '{$a->sem} [{$a->name}]';
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
