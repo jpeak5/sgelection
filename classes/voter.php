@@ -141,6 +141,15 @@ class voter extends sge_database_object {
         return false;
     }
 
+    public function already_voted(election $election){
+        global $DB;
+        $params = array(
+            'userid'      => $this->userid,
+            'election_id' => $election->id
+        );
+        return $DB->record_exists('block_sgelection_voted', $params, '*', IGNORE_MISSING);
+    }
+
     public function mark_as_voted(election $election) {
         $row = new stdClass();
         $row->userid = $this->userid;

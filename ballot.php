@@ -107,16 +107,12 @@ if(!$voter->candoanything && $preview){
     print_error("Only the SG Commissioner can preview the ballot.");
 }
 
-
-// is this used anymore ? delete
-// edit flags
-//$edit_candidate = optional_param('edit_candidate', false, PARAM_INT);
-//if($edit_candidate){
-//    $url = new moodle_url('/block/sgelection/candidates.php', array('election_id'=>$election->id));
-//    redirect($url);
-//}
-
-
+/**
+ * Don't allow a second vote.
+ */
+if($voter->already_voted($election)){
+    print_error('You have already voted in this election')
+}
 ?>
 
 <script type="text/javascript">
@@ -171,9 +167,8 @@ if($ballot_item_form->is_cancelled()) {
     if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
     }elseif(strlen($vote) > 0){
-        $alreadyvoted = $DB->record_exists('block_sgelection_voted', array('userid'=>$voter->userid, 'election_id' => $election->id), '*', IGNORE_MISSING);
 
-        if($alreadyvoted){
+        if($voter->already_voted($election)){
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
