@@ -28,12 +28,7 @@ require_once('offices_form.php');
 require_once('candidates_form.php');
 require_once('resolutions_form.php');
 
-require_once('classes/office.php');
-require_once('classes/resolution.php');
-require_once('classes/candidate.php');
-require_once('classes/election.php');
-require_once('classes/voter.php');
-require_once('classes/vote.php');
+sge::require_db_classes();
 
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();

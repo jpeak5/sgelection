@@ -40,10 +40,11 @@ class sge {
      */
     public static function require_db_classes(){
         global $CFG;
-        //$files = scandir($CFG->wwwroot.'/blocks/sgelection/classes');
-        $files = array('election', 'office', 'candidate', 'ballot', 'ballotitem', 'resolution', 'sgedatabaseobject', 'voter', 'sgeobject');
+        $classesroot = $CFG->dirroot.'/blocks/sgelection/classes';
+        $files = get_directory_list($classesroot, '', false, false);
+
         foreach($files as $f){
-            require_once 'classes/'.$f.".php";
+            require_once $classesroot.'/'.$f;
         }
     }
 
