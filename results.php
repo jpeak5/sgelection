@@ -49,13 +49,17 @@ require_login();
 echo $OUTPUT->header();
 $offices = office::get_all();
 foreach($offices as $o){
+    echo '<h1> ' . $o->name . '</h1>';
     $votes = vote::get_all();
 
     $candidate_vote_count = $DB->get_records_sql(''
             . 'SELECT typeid, count(*) '
-            . 'AS COUNT FROM mdl_block_sgelection_votes '
+            . 'AS COUNT FROM {block_sgelection_votes} AS v '
+            . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
+            . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
             . 'WHERE type = "candidate" '
-            . 'GROUP BY typeid;', null);
+            . 'AND o.id = :oid '
+            . 'GROUP BY typeid;', array('oid'=>$o->id));
     
     $candidate_table = new html_table();
     $candidate_table->head = array('Candidate Name', 'number of votes');

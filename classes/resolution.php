@@ -33,6 +33,11 @@ class resolution extends ballot_item{
 
     static $tablename = "block_sgelection_resolution";
 
+    const IN_FAVOR = 2;
+    const AGAINST = 1;
+    const ABSTAIN = 0;
+
+
     public static function validate_unique_title($data){
         $title  = $data['title'];
         $allres = resolution::get_all(array('election_id' => $data['election_id']));
