@@ -1,5 +1,6 @@
 <?php
-//require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
+global $CFG;
+require_once($CFG->dirroot.'/blocks/sgelection/classes/election.php');
 
 function get_active_elections() {
     // DB lookup
