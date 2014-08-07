@@ -67,7 +67,8 @@ foreach($offices as $o){
             . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
             . 'WHERE type = "candidate" '
             . 'AND o.id = :oid '
-            . 'GROUP BY typeid;', array('oid'=>$o->id));
+            . 'AND c.election_id = :eid'
+            . 'GROUP BY typeid;', array('oid'=>$o->id, 'eid'=>$election_id));
 
     if(count($candidate_vote_count) > 0){
         echo '<h1> ' . $o->name . '</h1>';
