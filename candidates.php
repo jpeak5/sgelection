@@ -15,7 +15,8 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/candidates.php');
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('ballot_page_header', 'block_sgelection', $election));
+$semester = sge::election_fullname($election);
+$PAGE->set_heading(get_string('ballot_page_header', 'block_sgelection', $semester));
 
 $renderer = $PAGE->get_renderer('block_sgelection');
 
