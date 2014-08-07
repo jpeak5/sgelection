@@ -76,7 +76,7 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="college" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="college that the voter is from"/>
         <FIELD NAME="major" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="major that the voter is in"/>
-        <FIELD NAME="year" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="year the voter is in"/>
+        <FIELD NAME="year" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="year the voter is in"/>
         <FIELD NAME="courseload" TYPE="char" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="yes or no if the student is enrolled full time"/>
         <FIELD NAME="ip_address" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="IP address where vote was"/>
       </FIELDS>
