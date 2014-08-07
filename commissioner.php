@@ -22,13 +22,10 @@ $editurl = new moodle_url('/blocks/sgelection/commissioner.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 
-
-$possiblesemesters = sge::get_possible_semesters();
-list($minyear, $maxyear) = sge::get_year_range_from_semesters($possiblesemesters);
+list($minyear, $maxyear) = sge::commissioner_form_semester_year_range();
 $data = array(
-    'semesters' => sge::get_possible_semesters_menu($possiblesemesters),
-    'minyear'   => $minyear,
-    'maxyear'   => $maxyear
+    'semesters' => sge::commissioner_form_available_semesters_menu(),
+    'datedefaults'   => array('startyear' => $minyear, 'stopyear' => $maxyear, 'optional'=>false),
     );
 $form = new commissioner_form(null, $data);
 

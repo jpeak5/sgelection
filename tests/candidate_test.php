@@ -234,7 +234,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $a = new stdClass();
         $a->username = $user->username;
         $a->eid = $election->id;
-        $a->semestername = sge::election_fullname($election);
+        $a->semestername = $election->fullname();
         $a->office = sprintf("%s [id: %d] ", $office->name, $office->id);
         $a->office .= sprintf(" and %s [id: %d] ", $office2->name, $office2->id);
         $expectedmsg = get_string('err_user_nonunique', 'block_sgelection', $a);

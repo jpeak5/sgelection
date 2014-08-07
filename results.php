@@ -58,15 +58,18 @@ $offices = office::get_all();
 foreach($offices as $o){
     $votes = vote::get_all();
     $candidates = candidate::get_all(array('election_id'=>$election_id, 'office'=>$o->id));
-    
+
     $candidate_vote_count = $DB->get_records_sql(''
+
             . 'SELECT c.id as cid, typeid, count(*) '
             . 'AS COUNT FROM {block_sgelection_votes} AS v '
             . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
             . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
             . 'WHERE type = "candidate" '
             . 'AND o.id = :oid '
-            . 'GROUP BY typeid;', array('oid'=>$o->id));
+            . 'AND c.election_id = :eid'
+            . 'GROUP BY typeid;', array('oid'=>$o->id, 'eid'=>$election_id));
+
     if(count($candidate_vote_count) > 0){
         
         echo '<h1> ' . $o->name . '</h1>';
@@ -80,7 +83,7 @@ foreach($offices as $o){
             //$candidate->firstname . ' ' . $candidate->lastname
             unset($candidates[$c->cid]);
         }
-        $candidate_table->data = array_merge($candidate_table->data, array_map($candidatesToTable, array_keys($candidates)));  
+        $candidate_table->data = array_merge($candidate_table->data, array_map($candidatesToTable, array_keys($candidates)));
         echo html_writer::table($candidate_table);
     }
 
@@ -91,6 +94,15 @@ $resolution_vote_count = $DB->get_records_sql(
         . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 1) AS against, '
         . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 0) AS abstain '
         . 'FROM {block_sgelection_resolution} AS res WHERE res.election_id = :eid', array('eid'=>$election_id));
+
+$sql = 'select v.typeid, count(*) as count '
+        . 'from {block_sgelection_votes} v '
+        . 'JOIN {block_sgelection_resolution} r '
+        . 'ON v.typeid = r.id '
+        . 'WHERE v.type = "resolution" '
+        . 'AND r.election_id = :eid'
+        . 'GROUP BY v.typeid;';
+$resolution_vote_count = $DB->get_records_sql($sql, array('eid'=>$election_id));
 
 $resolution_table = new html_table();
 $resolution_table->head = array(get_string('resolution', 'block_sgelection'), get_string('for', 'block_sgelection'), get_string('against', 'block_sgelection'), get_string('abstain', 'block_sgelection'));

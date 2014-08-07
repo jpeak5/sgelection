@@ -10,10 +10,7 @@ class commissioner_form extends moodleform {
 
         $mform =& $this->_form;
 
-        $datedefaults = array(
-            'startyear' => $this->_customdata['minyear'],
-            'stopyear'  => $this->_customdata['maxyear'],
-            );
+        $datedefaults = $this->_customdata['datedefaults'];
 
         //add group for text areas
         $mform->addElement('header', 'displayinfo', get_string('new_election_options', 'block_sgelection'));
@@ -28,10 +25,10 @@ class commissioner_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $mform->addElement('date_selector', 'start_date', get_string('start_date', 'block_sgelection'), $datedefaults);
+        $mform->addElement('date_time_selector', 'start_date', get_string('start_date', 'block_sgelection'), $datedefaults);
         $mform->addRule('start_date', null, 'required', null, 'client');
 
-        $mform->addElement('date_selector', 'end_date', get_string('end_date', 'block_sgelection'), $datedefaults);
+        $mform->addElement('date_time_selector', 'end_date', get_string('end_date', 'block_sgelection'), $datedefaults);
         $mform->addRule('end_date', null, 'required', null, 'client');
 
         $this->add_action_buttons();

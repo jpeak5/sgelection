@@ -13,15 +13,15 @@ class block_sgelection extends block_list {
 
     public function get_content() {
         global $USER, $CFG, $COURSE, $OUTPUT;
-        
+
         $voter = new voter($USER->id);
-        
+
         // see if this user should be allowed to vote at all
         if($voter->courseload() == voter::VOTER_NO_TIME && !(is_siteadmin()) ){
             echo "VOTER NO TIME!!!!";
             return $this->content;
         }
-        
+
         $this->content = new stdClass;
         $this->content->items = array();
         $this->content->icons = array();
@@ -32,20 +32,20 @@ class block_sgelection extends block_list {
         $activeElectionsLinks = array();
         $i=0;
         foreach($activeElections as $ae){
-            $semester = sge::election_fullname($ae);
+            $semester = $ae->shortname();
             $activeElectionsLinks[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester );
             $this->content->items[]= $activeElectionsLinks[$i];
             $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
             $i++;
         }
 
-        $isAdministrator = $voter->is_faculty_advisor();        
+        $isAdministrator = $voter->is_faculty_advisor();
         if($isAdministrator || is_siteadmin()){
             $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Admin');
             $this->content->items[] = $administrate;
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
         }
-        
+
         $isCommissioner = $voter->is_commissioner();
         if($isCommissioner){
             $commissioner = html_writer::link(new moodle_url('/blocks/sgelection/commissioner.php'), 'Commissioner');
@@ -54,11 +54,6 @@ class block_sgelection extends block_list {
         }
 
         $canviewresults = $voter->is_privileged_user();
-        if($canviewresults){
-            $results = html_writer::link(new moodle_url('/blocks/sgelection/results.php'), 'Results');
-            $this->content->items[] = $results;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
-        }
         return $this->content;
     }
 

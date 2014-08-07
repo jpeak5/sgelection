@@ -55,7 +55,16 @@ abstract class sge_database_object extends sge_object{
 
     public static function get_all($params = array()){
         global $DB;
-        return $DB->get_records(static::$tablename, $params);
+        $rows = $DB->get_records(static::$tablename, $params);
+        return static::classify_rows($rows);
+    }
+
+    public static function classify_rows($rows){
+        $instances = array();
+        foreach($rows as $row){
+            $instances[$row->id] = new static($row);
+        }
+        return $instances;
     }
 
     public function delete(){
