@@ -142,6 +142,15 @@ class voter extends sge_database_object {
         return false;
     }
 
+    /**
+     * This is wierd- consider moving the is_{usertype} into the voter class.
+     * @param type $userid
+     * @return type
+     */
+    public function is_privileged_user(){
+        return $this->is_commissioner() || $this->is_faculty_advisor() || is_siteadmin();
+    }
+
     public function mark_as_voted(election $election) {
         $row = new stdClass();
         $row->userid = $this->userid;

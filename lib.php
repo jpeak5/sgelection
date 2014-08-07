@@ -72,18 +72,6 @@ class sge {
         return $word;
     }
 
-
-
-    /**
-     * This is wierd- consider moving the is_{usertype} into the voter class.
-     * @param type $userid
-     * @return type
-     */
-    public static function is_privileged_user($userid){
-        $voter = new voter($userid);
-        return empty(sge::is_commissioner($voter)) || empty(sge::is_faculty_advisor($voter)) || is_siteadmin();
-    }
-
     /**
      * Get all rows in the enrol_ues_semesters table having grades_due > now().
      *
