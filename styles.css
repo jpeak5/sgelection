@@ -5,3 +5,6 @@
 .resolution{
     margin: auto 200px;
 }
+#page-blocks-sgelection-results .winnerresolution{
+    background-color: #aaffaa;
+}

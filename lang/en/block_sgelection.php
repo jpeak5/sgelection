@@ -40,6 +40,9 @@ $string['title_of_resolution'] = 'Title of Resolution';
 $string['create_new_resolution'] = 'Create New Resolution';
 $string['resolution_text'] = 'Resolution Text';
 $string['resolution_page_header'] = 'Resolution Page';
+$string['for'] = 'For';
+$string['against'] = 'Against';
+$string['resolution'] = 'Resolution';
 
 // Offices
 $string['office_page_header'] = 'Office Page Header';

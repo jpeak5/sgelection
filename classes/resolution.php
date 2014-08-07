@@ -36,8 +36,19 @@ class resolution extends ballot_item{
     const IN_FAVOR = 2;
     const AGAINST = 1;
     const ABSTAIN = 0;
+    
 
-
+    public static function highest_vote_for_resolution($r, $tCell, $yCell, $nCell, $aCell){
+        $highest = max($r->yes, $r->against, $r->abstain);
+        if($r->yes == $highest){
+            $yCell->attributes =  array('class'=>'winnerresolution');
+        } else if($r->against == $highest){
+            $nCell->attributes =  array('class'=>'winnerresolution');
+        } else if($r->abstain == $highest){
+            $aCell->attributes =  array('class'=>'winnerresolution');
+        }
+    }
+    
     public static function validate_unique_title($data){
         $title  = $data['title'];
         $allres = resolution::get_all(array('election_id' => $data['election_id']));

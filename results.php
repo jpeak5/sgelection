@@ -56,7 +56,6 @@ $candidatesToTable = function($cid, $count=0){
 echo $OUTPUT->header();
 $offices = office::get_all();
 foreach($offices as $o){
-    echo '<h1> ' . $o->name . '</h1>';
     $votes = vote::get_all();
     $candidates = candidate::get_all(array('election_id'=>$election_id, 'office'=>$o->id));
     
@@ -86,15 +85,37 @@ foreach($offices as $o){
     }
 
 }
+$resolution_vote_count = $DB->get_records_sql(
+        'SELECT res.title, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 2) AS yes, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 1) AS against, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 0) AS abstain '
+        . 'FROM {block_sgelection_resolution} AS res WHERE res.election_id = :eid', array('eid'=>$election_id));
 
-$resolution_vote_count = $DB->get_records_sql('select typeid, count(*) as count from mdl_block_sgelection_votes WHERE type = "resolution" GROUP BY typeid;', null);
 $resolution_table = new html_table();
-$resolution_table->head = array('Resolution', 'number of votes');
+$resolution_table->head = array(get_string('resolution', 'block_sgelection'), get_string('for', 'block_sgelection'), get_string('against', 'block_sgelection'), get_string('abstain', 'block_sgelection'));
 
 foreach($resolution_vote_count as $r){
-    $resolution = resolution::get_by_id($r->typeid);
-    $resolution_table->data[] = new html_table_row(array($resolution->title, $r->count));
+    
+    $titleCell = new html_table_cell($r->title);
+    $titleCell->attributes = array('class'=> 'title');
+    
+    $yesCell = new html_table_cell($r->yes);
+    $yesCell->attributes = array('class'=>'yes');
+    
+    $againstCell = new html_table_cell($r->against);
+    $againstCell->attributes = array('class'=>'against');
+    
+    $abstainCell = new html_table_cell($r->abstain);
+    $abstainCell->attributes = array('class'=>'abstain');
+    
+    resolution::highest_vote_for_resolution($r, $titleCell, $yesCell, $againstCell, $abstainCell);
+    $resolutionRow = new html_table_row(array($titleCell, $yesCell, $againstCell, $abstainCell));    
+    $resolution_table->data[] = $resolutionRow;
+    
 }
+ 
+ 
 
 echo html_writer::table($resolution_table);
 echo $OUTPUT->footer();
