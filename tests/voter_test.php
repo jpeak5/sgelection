@@ -34,13 +34,11 @@ class block_sgelection_voter_testcase extends advanced_testcase {
         $college = 'USER-COLLEGE';
         $major   = 'USER-MAJOR';
         $year    = 'SOPH';
-        $degree  = 'Y';
 
         $params = array(
             'user_college' => $college,
             'user_major'   => $major,
             'user_year'    => $year,
-            'user_degree'  => $degree,
         );
 
         foreach($params as $name => $value){
@@ -55,6 +53,5 @@ class block_sgelection_voter_testcase extends advanced_testcase {
         $this->assertEquals($college, $voter->college);
         $this->assertEquals($major, $voter->major);
         $this->assertEquals($year, $voter->year);
-        $this->assertEquals($degree, $voter->degree);
     }
 }

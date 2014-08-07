@@ -20,7 +20,7 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'classes/sgedatabaseobject.php';
+require_once $CFG->dirroot.'/blocks/sgelection/classes/sgedatabaseobject.php';
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 

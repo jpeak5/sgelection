@@ -54,11 +54,6 @@ class block_sgelection extends block_list {
         }
 
         $canviewresults = $voter->is_privileged_user();
-        if($canviewresults){
-            $results = html_writer::link(new moodle_url('/blocks/sgelection/results.php'), 'Results');
-            $this->content->items[] = $results;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
-        }
         return $this->content;
     }
 

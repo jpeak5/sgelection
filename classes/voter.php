@@ -21,6 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+global $CFG;
 require_once 'sgeobject.php';
 require_once($CFG->dirroot . '/blocks/sgelection/lib.php');
 require_once('sgedatabaseobject.php');
