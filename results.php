@@ -38,7 +38,7 @@ require_once('classes/resolution.php');
 global $DB, $OUTPUT, $PAGE;
 
 // Only required to return the user to the correct ballot page.
-//$election_id = required_param('election_id', PARAM_INT);
+$election_id = required_param('election_id', PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/sgelection/results.php');
@@ -46,33 +46,45 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
 
 require_login();
+
+$candidatesToTable = function($cid, $count=0){
+    global $DB;
+    $candidate = candidate::get_by_id($cid);
+    $candidateUser = $DB->get_record('user', array('id'=>$candidate->userid));
+    return new html_table_row(array($candidateUser->firstname . ' ' . $candidateUser->lastname, $count));
+};
 echo $OUTPUT->header();
 $offices = office::get_all();
 foreach($offices as $o){
     echo '<h1> ' . $o->name . '</h1>';
     $votes = vote::get_all();
+    $candidates = candidate::get_all(array('election_id'=>$election_id, 'office'=>$o->id));
 
     $candidate_vote_count = $DB->get_records_sql(''
-            . 'SELECT typeid, count(*) '
+
+            . 'SELECT c.id as cid, typeid, count(*) '
             . 'AS COUNT FROM {block_sgelection_votes} AS v '
             . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
             . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
             . 'WHERE type = "candidate" '
             . 'AND o.id = :oid '
             . 'GROUP BY typeid;', array('oid'=>$o->id));
-    
-    $candidate_table = new html_table();
-    $candidate_table->head = array('Candidate Name', 'number of votes');
 
-    foreach($candidate_vote_count as $c){
-        $candidate = candidate::get_by_id($c->typeid);
-        $candidateUser = $DB->get_record('user', array('id'=>$candidate->userid));
-        //$candidate = candidate::get_full_candidates($c->typeid);
-        var_dump($candidate);
-        $candidate_table->data[] = new html_table_row(array($candidateUser->firstname . ' ' . $candidateUser->lastname, $c->count));
-        //$candidate->firstname . ' ' . $candidate->lastname
+    if(count($candidate_vote_count) > 0){
+        echo '<h1> ' . $o->name . '</h1>';
+
+        $candidate_table = new html_table();
+        $candidate_table->data = array();
+        $candidate_table->head = array('Candidate Name', 'number of votes');
+
+        foreach($candidate_vote_count as $c){
+            $candidate_table->data[] = $candidatesToTable($c->cid, $c->count);
+            //$candidate->firstname . ' ' . $candidate->lastname
+            unset($candidates[$c->cid]);
+        }
+        $candidate_table->data = array_merge($candidate_table->data, array_map($candidatesToTable, array_keys($candidates)));
+        echo html_writer::table($candidate_table);
     }
-    echo html_writer::table($candidate_table);
 
 }
 
