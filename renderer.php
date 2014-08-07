@@ -135,7 +135,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
             $table->data[] = new html_table_row(array('Voter year', $voter->year));
             $table->data[] = new html_table_row(array('Voter hours', $voter->hours." hours, ".voter::courseload_string($voter->courseload)));
         }
-        $table->data[] = new html_table_row(array('Election', sge::election_fullname($election)));
+        $table->data[] = new html_table_row(array('Election', $election->fullname()));
         return $debug.html_writer::table($table);
     }
 

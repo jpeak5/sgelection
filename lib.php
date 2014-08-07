@@ -40,10 +40,11 @@ class sge {
      */
     public static function require_db_classes(){
         global $CFG;
-        //$files = scandir($CFG->wwwroot.'/blocks/sgelection/classes');
-        $files = array('election', 'office', 'candidate', 'ballot', 'ballotitem', 'resolution', 'sgedatabaseobject', 'voter', 'sgeobject');
+        $classesroot = $CFG->dirroot.'/blocks/sgelection/classes';
+        $files = get_directory_list($classesroot, '', false, false);
+
         foreach($files as $f){
-            require_once 'classes/'.$f.".php";
+            require_once $classesroot.'/'.$f;
         }
     }
 
@@ -135,21 +136,6 @@ class sge {
         }
 
         return array($min, $max);
-    }
-
-    /**
-     * Get the fullname for an election.
-     * Provides an easy and consistent way to convert an election to a string.
-     *
-     * @param election $election
-     * @return string
-     */
-    public static function election_fullname(election $election){
-        $semester = ues_semester::by_id($election->semesterid);
-        $a = new stdClass();
-        $a->sem  = (string)$semester;
-        $a->name = $election->name;
-        return get_string('election_fullname', 'block_sgelection', $a);
     }
 
     /**

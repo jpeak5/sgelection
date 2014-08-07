@@ -28,12 +28,7 @@ require_once('offices_form.php');
 require_once('candidates_form.php');
 require_once('resolutions_form.php');
 
-require_once('classes/office.php');
-require_once('classes/resolution.php');
-require_once('classes/candidate.php');
-require_once('classes/election.php');
-require_once('classes/voter.php');
-require_once('classes/vote.php');
+sge::require_db_classes();
 
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
@@ -48,7 +43,7 @@ $PAGE->set_pagelayout('standard');
 require_login();
 
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
-$semester = sge::election_fullname($election);
+$semester = $election->fullname();
 
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
@@ -59,7 +54,6 @@ $editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 // End PAGE init.
-
 
 
 // Initialize incoming params.

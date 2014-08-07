@@ -45,7 +45,7 @@ class election extends sge_database_object {
         foreach($elections as $election){
             $semester = ues_semester::by_id($election->semesterid);
             if($semester->id == $data['semesterid'] && $election->name == $data['name']){
-                $found = sge::election_fullname($election);
+                $found = $election->fullname();
                 return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', $found));
             }
         }
@@ -78,4 +78,31 @@ class election extends sge_database_object {
         return $open;
     }
 
+    /**
+     * Get the fullname for an election.
+     * Provides an easy and consistent way to convert an election to a string.
+     *
+     * @return string
+     */
+    public function fullname(){
+        $semester = ues_semester::by_id($this->semesterid);
+        $a = new stdClass();
+        $a->sem  = (string)$semester;
+        $a->name = $this->name;
+        return get_string('election_fullname', 'block_sgelection', $a);
+    }
+
+    /**
+     * Get the shortname for an election.
+     * Provides an easy and consistent way to convert an election to a short string.
+     *
+     * @return string
+     */
+    public function shortname(){
+        $semester = ues_semester::by_id($this->semesterid);
+        $a = new stdClass();
+        $a->sem  = $semester->name;
+        $a->name = $this->name;
+        return get_string('election_shortname', 'block_sgelection', $a);
+    }
 }
