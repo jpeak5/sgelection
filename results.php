@@ -88,7 +88,14 @@ foreach($offices as $o){
 
 }
 
-$resolution_vote_count = $DB->get_records_sql('select typeid, count(*) as count from mdl_block_sgelection_votes WHERE type = "resolution" GROUP BY typeid;', null);
+$sql = 'select v.typeid, count(*) as count '
+        . 'from {block_sgelection_votes} v '
+        . 'JOIN {block_sgelection_resolution} r '
+        . 'ON v.typeid = r.id '
+        . 'WHERE v.type = "resolution" '
+        . 'AND r.election_id = :eid'
+        . 'GROUP BY v.typeid;';
+$resolution_vote_count = $DB->get_records_sql($sql, array('eid'=>$election_id));
 $resolution_table = new html_table();
 $resolution_table->head = array('Resolution', 'number of votes');
 
