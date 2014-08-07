@@ -217,6 +217,11 @@ if($ballot_item_form->is_cancelled()) {
 } else {
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
+
+    // results
+    if($voter->candoanything){
+        echo html_writer::link(new moodle_url('/blocks/sgelection/results.php', array('election_id'=>$election->id)), 'Results');
+    }
     $formdata = new stdClass();
     if(!$preview && $voter->candoanything){
         // FORM and INDIVIDUAL FORM ITEMS
