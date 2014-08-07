@@ -55,11 +55,11 @@ class ballot_item_form extends moodleform {
             //$mform->addElement('html', html_writer::tag('p',  $r->text));
             $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
             $radioarray=array();
-            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), 1);
-            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), 0);
-            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('abstain', 'block_sgelection'), -1);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), resolution::AGAINST);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('abstain', 'block_sgelection'), resolution::ABSTAIN);
 
-            $mform->setDefault('resvote_'.$r->id, -1);
+            $mform->setDefault('resvote_'.$r->id, resolution::ABSTAIN);
             $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
 
         }

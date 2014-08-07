@@ -159,4 +159,19 @@ class voter extends sge_database_object {
         return $DB->insert_record('block_sgelection_voted', $row);
     }
 
+    /**
+     * @TODO perhaps this should return something useful in the event
+     * that a field is not set.
+     * @return boolean
+     */
+    public function has_required_metadata(){
+        $requiredfields = array('college', 'hours', 'courseload', 'year');
+        foreach($requiredfields as $rf){
+            if(!isset($this->$rf)){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
