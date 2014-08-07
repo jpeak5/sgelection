@@ -33,7 +33,9 @@ class sge {
     }
 
     /**
-     * helper fn to make requiring many classes easier.
+     * Helper fn to make requiring many classes easier.
+     *
+     * @TODO consider scanning the directory instead of manually maintaining the list.
      * @global type $CFG
      */
     public static function require_db_classes(){
@@ -78,24 +80,26 @@ class sge {
      * These are used when creating a new election; a new election will either fall in
      * the current semester or in a future semester.
      *
+     * Relatedly, when checking user eligibility, we need to know
+     * their credit hour enrollment for a given semester.
+     *
      * @global type $DB
      * @return ues_semester[]
      */
-    public static function get_possible_semesters() {
+    public static function commissioner_form_available_semesters() {
         global $DB;
         $sql = "SELECT * FROM {enrol_ues_semesters} WHERE grades_due > :time";
         $raw = $DB->get_records_sql($sql, array('time'=>time()));
-        $ues = array();
+        $availablesemesters = array();
         foreach($raw as $sem){
-            $ues[] = ues_semester::upgrade($sem);
+            $availablesemesters[] = ues_semester::upgrade($sem);
         }
-        return $ues;
+        return $availablesemesters;
     }
 
     /**
-     *
-     * @param ues_semester[] $possiblesemesters
-     * @return type
+     * @param ues_semester[] $availablesemesters
+     * @return array
      */
     public static function commissioner_form_available_semesters_menu(array $availablesemesters = array()){
         if(empty($availablesemesters)){
@@ -108,7 +112,17 @@ class sge {
         return $menu;
     }
 
-    public static function get_year_range_from_semesters($semesters){
+    /**
+     * Given an array of ues_semesters, determine the earliest year in which
+     * a semester starts, and the latest year in which a semester ends.
+     *
+     * @param ues_semester[] $semesters
+     * @return int[]
+     */
+    public static function commissioner_form_semester_year_range(array $semesters = array()){
+        if(empty($semesters)){
+            $semesters = self::commissioner_form_available_semesters();
+        }
         $now = new DateTime();
         $yearnow = $now->format('Y');
         $min = $max = (int)$yearnow;
@@ -123,7 +137,14 @@ class sge {
         return array($min, $max);
     }
 
-    public static function election_fullname($election){
+    /**
+     * Get the fullname for an election.
+     * Provides an easy and consistent way to convert an election to a string.
+     *
+     * @param election $election
+     * @return string
+     */
+    public static function election_fullname(election $election){
         $semester = ues_semester::by_id($election->semesterid);
         $a = new stdClass();
         $a->sem  = (string)$semester;
@@ -131,6 +152,15 @@ class sge {
         return get_string('election_fullname', 'block_sgelection', $a);
     }
 
+    /**
+     * Helper method to generate a college selection form control.
+     *
+     * @TODO consider moving the $mform calls back into the form, using this method
+     * only to generate the array required to make that control.
+     * @global type $DB
+     * @param type $mform
+     * @param type $selected
+     */
     public static function get_college_selection_box($mform, $selected = false){
         global $DB;
         $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
@@ -143,6 +173,11 @@ class sge {
         }
     }
 
+    /**
+     * Helper method to return plugin-specific config values with a shorter method call.
+     * @param string $id config_plugins key
+     * @return string
+     */
     public static function config($id){
         return get_config('block_sgelection', $id);
     }
