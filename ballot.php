@@ -74,19 +74,35 @@ $college = $preview && $voter->candoanything ? optional_param('college', '', PAR
 // Begin security checks.
 $voter   = new voter($USER->id);
 
-// Establish SG admin status.
+/**
+ * Establish SG admin status.
+ *
+ * The commissioner can create and edit elections,
+ * however, once an election begins, the commissioner
+ * is treated as an ordinary voter.
+ * The faculty advisor can always see/do everything.
+ */
 $voter->candoanything = sge::voter_can_do_anything($voter, $election);
 
-// Are the polls open ?
+/**
+ * If the polls aren't open, allow only voters with doanything status
+ * to use this form (including especially the ballot editing features).
+ */
 if(!$voter->candoanything && !$election->polls_are_open()){
     print_error("polls are not open yet");
 }
 
-// At least part time enrollment?
+/**
+ * If a voter doesn't have at least part-time enrollment, deny access
+ * unless the voter has doanything status.
+ */
 if(!$voter->candoanything && !$voter->at_least_parttime()){
     print_error("You need to be at least a parttime student to vote");
 }
 
+/**
+ * Only allow voters with doanything status to use the preview form.
+ */
 if(!$voter->candoanything && $preview){
     print_error("Only the SG Commissioner can preview the ballot.");
 }
