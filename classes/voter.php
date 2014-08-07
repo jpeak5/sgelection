@@ -22,7 +22,8 @@
  */
 
 require_once 'sgeobject.php';
-require_once 'lib.php';
+require_once($CFG->dirroot . '/blocks/sgelection/lib.php');
+require_once('sgedatabaseobject.php');
 
 class voter extends sge_database_object {
 
