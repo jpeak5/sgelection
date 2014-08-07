@@ -113,6 +113,10 @@ if(!$voter->candoanything && $preview){
 if($voter->already_voted($election)){
     print_error('You have already voted in this election');
 }
+
+if(!$voter->candoanything && !$voter->has_required_metadata()){
+    print_error('Your user profile is missing required information');
+}
 ?>
 
 <script type="text/javascript">
@@ -177,8 +181,9 @@ if($ballot_item_form->is_cancelled()) {
         foreach($candidatesbyoffice as $office => $o){
             $cand_ids += $o->candidates;
         }
-
         $voter->save();
+
+        // Save votes for each candidate.
         foreach($cand_ids as $cid => $acnd){
             $fieldname = 'candidate_checkbox_'.$cid;
             if(isset($fromform->$fieldname)){
@@ -188,6 +193,19 @@ if($ballot_item_form->is_cancelled()) {
                 $vote->typeid = $cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;
+                $vote->save();
+            }
+        }
+
+        // Save vote values for each resolution.
+        foreach(array_keys($resolutionsToForm) as $resid){
+            $fieldname = 'resvote_'.$resid;
+            if(isset($fromform->$fieldname)){
+                $vote = new vote(array('voterid'=>$voter->id));
+                $vote->time = time();
+                $vote->typeid = $resid;
+                $vote->type = 'resolution';
+                $vote->vote = $fromform->$fieldname;
                 $vote->save();
             }
         }

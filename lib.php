@@ -159,7 +159,7 @@ class sge {
     public static function voter_can_do_anything(voter $voter, election $election) {
         $is_editingcommissioner = $voter->is_commissioner() && !$election->polls_are_open();
         // NB: excluding Moodle site admins from this check.
-        return $voter->is_faculty_advisor() || $is_editingcommissioner;
+        return $voter->is_faculty_advisor() || $is_editingcommissioner || is_siteadmin();
     }
 
 }
