@@ -86,43 +86,43 @@ class block_sgelection_renderer extends plugin_renderer_base {
                 get_string('affiliation', 'block_sgelection'),
                 get_string('election_id', 'block_sgelection'),
             );
-            
-            
+
+
             $candidates = $DB->get_records('block_sgelection_resolution');
-            
+
             foreach($candidates as $c){
                 //$dave .= $c-> . ' : ';
             }
-            
+
             $table->data = $candidates;
 
             return html_writer::table($table);
     }
-    
+
     // possible function
     public function create_new_resolution_link($eid){
-        return '<br />' . 
+        return '<br />' .
         html_writer::div(
             html_writer::link(new moodle_url('/blocks/sgelection/resolutions.php', array('eid' => $eid)), 'Add Resolution')
          ) . '<br />';
     }
-    
+
     //possible function
     public function create_new_candidate_link($eid){
-        return '<br />' . 
+        return '<br />' .
         html_writer::div(
                 html_writer::link(new moodle_url('/blocks/sgelection/candidates.php', array('eid' => $eid)), 'Add Candidate')
         ) . '<br />';
     }
-    
+
     public function create_new_office_link($eid){
-        return '<br />' . 
+        return '<br />' .
         html_writer::div(
             html_writer::link(new moodle_url('/blocks/sgelection/offices.php', array('eid' => $eid)), 'Add Office')
          ) . '<br />';
     }
 
-    public function get_debug_info($priv, voter $voter=null, $election){
+    public function get_debug_info($priv, voter $voter=null, election $election){
         $debug = html_writer::tag('h3', 'Debugging');
         $table = new html_table();
         $table->head = array('Name', 'Value');
@@ -134,6 +134,12 @@ class block_sgelection_renderer extends plugin_renderer_base {
             $table->data[] = new html_table_row(array('Voter major', $voter->major));
             $table->data[] = new html_table_row(array('Voter year', $voter->year));
             $table->data[] = new html_table_row(array('Voter hours', $voter->hours." hours, ".voter::courseload_string($voter->courseload)));
+
+            $pollsopen = $election->polls_are_open() ? 'Polls Open' : 'Polls Closed';
+            $elecstart = strftime('%F %T', $election->start_date);
+            $elecend   = strftime('%F %T', $election->end_date);
+            $pollstat  = sprintf("%s [%s - %s]", $pollsopen, $elecstart, $elecend);
+            $table->data[] = new html_table_row(array('Election Status', $pollstat));
         }
         $table->data[] = new html_table_row(array('Election', $election->fullname()));
         return $debug.html_writer::table($table);
