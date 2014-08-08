@@ -179,9 +179,9 @@ class sge {
         $colleges = $DB->get_records_sql($sql);
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
-        $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
+        $collegeselector = $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
         if($selected && in_array($selected, array_keys($colleges))){
-            $mform->setSelected($selected);
+            $collegeselector->setSelected($selected);
         }
     }
 
