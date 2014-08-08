@@ -63,6 +63,7 @@ abstract class block_sgelection_base extends advanced_testcase{
                 $limit = count($nokeys);
                 $idx = rand(0,$limit-1);
                 $office = new office($nokeys[$idx]);
+                $office->save();
             }
         }
         $c = new stdClass();
@@ -87,9 +88,10 @@ abstract class block_sgelection_base extends advanced_testcase{
         $e->start_date = time() - $halfinterval;
         $e->end_date   = $current ? time() + $halfinterval : $e->start_date + $halfinterval;
 
-        $id = $DB->insert_record('block_sgelection_election', $e);
-        $e->id = $id;
-        return new election($e);
+        $election = new election($e);
+        $election->save();
+
+        return $election;
     }
 
     public function create_semester(){
@@ -101,8 +103,9 @@ abstract class block_sgelection_base extends advanced_testcase{
         $s->classes_start = rand(1407000000, 1408000000);
         $s->grade_due     = rand(1408000001, 1409000000);
 
-        $s->id = $DB->insert_record('enrol_ues_semesters', $s);
-        return $s;
+        $sem = new ues_semester();
+        $sem->fill_params((array)$s)->save();
+        return $sem;
     }
 
     public function create_office($params = null){

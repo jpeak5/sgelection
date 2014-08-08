@@ -40,8 +40,9 @@ abstract class sge_database_object extends sge_object{
                 $this->id = $id;
             }
         }else{
-            return $DB->update_record(static::$tablename, $this);
+            $DB->update_record(static::$tablename, $this);
         }
+        return $this;
     }
 
     public static function get_by_id($id){

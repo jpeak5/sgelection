@@ -21,6 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once 'lib.php';
+require_once 'tests/sgdatabaseobject_test.php';
 
 class sge_testcase extends sge_database_object_testcase {
 

@@ -53,4 +53,27 @@ class election_testcase extends block_sgelection_base {
 
         $this->assertEquals($msg, $result['start_date']);
     }
+
+    public function test_get_active(){
+        $s1 = $this->create_semester();
+        $params = array('start_date' => time() - 20, 'end_date' => time() - 10, 'name' => 'old', 'semesterid'=>$s1->id);
+        $this->create_election($params)->save();
+
+        $params['end_date']   = time() + 20;
+        $params['name']       = 'current';
+        $curerntelection = $this->create_election($params)->save();
+
+        $params['start_date'] = time() + 10;
+        $params['name']       = 'future';
+        $this->create_election($params)->save();
+
+        $all = count(election::get_all());
+
+        $this->assertEquals(3, $all);
+        $active = election::get_active();
+
+        $this->assertEquals(1, count($active));
+        $current = current($active);
+        $this->assertEquals($curerntelection->name, $current->name);
+    }
 }

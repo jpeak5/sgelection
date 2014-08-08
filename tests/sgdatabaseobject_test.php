@@ -24,13 +24,14 @@
  */
 require_once 'classes/sgedatabaseobject.php';
 require_once 'classes/candidate.php';
+require_once 'tests/sgetestbase.php';
 
 class myclass extends sge_database_object {
 
     public $a;
     public $b;
     public $c;
-    
+
     static $tablename = "user";
 }
 

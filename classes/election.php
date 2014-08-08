@@ -39,6 +39,20 @@ class election extends sge_database_object {
 
     }
 
+    /**
+     * Return currently active elections.
+     * @global type $DB
+     * @return election[]
+     */
+    public static function get_active() {
+        global $DB;
+        $now = $then = time();
+        $select    = 'end_date >= :now AND start_date <= :then';
+        $params    = array('now' => $now, 'then' => $then);
+        $elections = $DB->get_records_select(self::$tablename, $select, $params);
+        return self::classify_rows($elections);
+    }
+
     public static function validate_unique($data, $files){
 
         $elections = election::get_all(array('semesterid' => $data['semesterid']));

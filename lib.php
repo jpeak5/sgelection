@@ -28,19 +28,6 @@ require_once($CFG->dirroot.'/blocks/sgelection/classes/election.php');
 class sge {
 
     /**
-     * Return currently active elections.
-     * @global type $DB
-     * @return election[]
-     */
-    public static function get_active_elections() {
-        global $DB;
-        $now = $then = time();
-        $select    = 'end_date >= :now AND start_date <= :then';
-        $params    = array('now' => $now, 'then' => $then);
-        $elections = $DB->get_records_select('block_sgelection_election', $select, $params);
-        return election::classify_rows($elections);
-    }
-    /**
      * Helper method called from forms' validation() methods; verifies existence of a user.
      *
      * @global type $DB
