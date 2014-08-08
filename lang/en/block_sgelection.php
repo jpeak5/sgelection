@@ -25,6 +25,7 @@ $string['displaydate'] = 'Display Date';
 $string['election_fullname'] = '{$a->sem} [{$a->name}]';
 $string['election_shortname'] = '{$a->sem} [{$a->name}]';
 $string['create_election']    = 'Create new election';
+$string['thanks_for_voting'] = 'Thanks for voting!';
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
