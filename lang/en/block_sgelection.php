@@ -22,7 +22,7 @@ $string['picturedesc'] = 'Picture Description';
 $string['displaydate'] = 'Display Date';
 $string['election_fullname'] = '{$a->sem} [{$a->name}]';
 $string['election_shortname'] = '{$a->sem} [{$a->name}]';
-
+$string['thanks_for_voting'] = 'Thanks for voting!';
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
 $string['create_new_candidate'] = 'Create a New Candidate';

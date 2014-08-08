@@ -28,7 +28,12 @@ require_once('offices_form.php');
 require_once('candidates_form.php');
 require_once('resolutions_form.php');
 
-sge::require_db_classes();
+require_once('classes/office.php');
+require_once('classes/resolution.php');
+require_once('classes/candidate.php');
+require_once('classes/election.php');
+require_once('classes/voter.php');
+require_once('classes/vote.php');
 
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
@@ -54,6 +59,7 @@ $editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
 // End PAGE init.
+
 
 
 // Initialize incoming params.
@@ -204,18 +210,18 @@ if($ballot_item_form->is_cancelled()) {
             }
         }
         $voter->mark_as_voted($election);
-        redirect('/');
-    }
+        echo $OUTPUT->header();
+        echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
+        echo html_writer::tag('p', get_string('thanks_for_voting', 'block_sgelection'));
+        echo html_writer::link($CFG->wwwroot, get_string('continue'));
+        echo $OUTPUT->footer();
+
+        }
 
     // insert into votes and voters tables.
 } else {
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
-
-    // results
-    if($voter->candoanything){
-        echo html_writer::link(new moodle_url('/blocks/sgelection/results.php', array('election_id'=>$election->id)), 'Results');
-    }
     $formdata = new stdClass();
     if(!$preview && $voter->candoanything){
         // FORM and INDIVIDUAL FORM ITEMS
