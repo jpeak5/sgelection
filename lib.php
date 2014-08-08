@@ -24,18 +24,22 @@
 global $CFG;
 require_once($CFG->dirroot.'/blocks/sgelection/classes/election.php');
 
-function get_active_elections() {
-    // DB lookup
-    // if todays date is < end date of all records
-    // return election'
-    global $DB;
-    $elections = $DB->get_records_select('block_sgelection_election', 'end_date > :now', array('now' => time()));
-    return election::classify_rows($elections);
-
-}
 
 class sge {
 
+    /**
+     * Return currently active elections.
+     * @global type $DB
+     * @return election[]
+     */
+    public static function get_active_elections() {
+        global $DB;
+        $now = $then = time();
+        $select    = 'end_date >= :now AND start_date <= :then';
+        $params    = array('now' => $now, 'then' => $then);
+        $elections = $DB->get_records_select('block_sgelection_election', $select, $params);
+        return election::classify_rows($elections);
+    }
     /**
      * Helper method called from forms' validation() methods; verifies existence of a user.
      *
