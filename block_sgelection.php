@@ -16,9 +16,8 @@ class block_sgelection extends block_list {
 
         $voter = new voter($USER->id);
 
-        // see if this user should be allowed to vote at all
-        if($voter->courseload() == voter::VOTER_NO_TIME && !(is_siteadmin()) ){
-            echo "VOTER NO TIME!!!!";
+        // See if this user should be allowed to view the block at all.
+        if($voter->courseload() == voter::VOTER_NO_TIME && !($voter->is_faculty_advisor() || is_siteadmin())){
             return $this->content;
         }
 
@@ -39,21 +38,20 @@ class block_sgelection extends block_list {
             $i++;
         }
 
-        $isAdministrator = $voter->is_faculty_advisor();
-        if($isAdministrator || is_siteadmin()){
+        $issgadmin = $voter->is_faculty_advisor() || is_siteadmin();
+        if($issgadmin){
             $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), 'Admin');
             $this->content->items[] = $administrate;
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
         }
 
-        $isCommissioner = $voter->is_commissioner();
-        if($isCommissioner){
+        $caneditelections = $voter->is_commissioner() || $voter->is_faculty_advisor() || is_siteadmin();
+        if($caneditelections){
             $commissioner = html_writer::link(new moodle_url('/blocks/sgelection/commissioner.php'), 'Commissioner');
             $this->content->items[] = $commissioner;
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
         }
 
-        $canviewresults = $voter->is_privileged_user();
         return $this->content;
     }
 
