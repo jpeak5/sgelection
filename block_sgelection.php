@@ -27,15 +27,10 @@ class block_sgelection extends block_list {
 
         $icon_class = array('class' => 'icon');
 
-        $activeElections = get_active_elections();
-        $activeElectionsLinks = array();
-        $i=0;
-        foreach($activeElections as $ae){
+        foreach(sge::get_active_elections() as $ae){
             $semester = $ae->shortname();
-            $activeElectionsLinks[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester );
-            $this->content->items[]= $activeElectionsLinks[$i];
+            $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester );
             $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
-            $i++;
         }
 
         $issgadmin = $voter->is_faculty_advisor() || is_siteadmin();
