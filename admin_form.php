@@ -19,11 +19,11 @@ class sg_admin_form extends moodleform {
         $mform->setType('commissioner', PARAM_ALPHANUM);
         $mform->addRule('commissioner', null, 'required', null, 'client');
 
-        $mform->addELement('text', 'fulltime', get_string('fulltime', 'block_sgelection'));
+        $mform->addELement('text', 'fulltime', get_string('fulltime', 'block_sgelection'), 12);
         $mform->setType('fulltime', PARAM_INT);
         $mform->addRule('fulltime', null, 'required', null, 'client');
 
-        $mform->addELement('text', 'parttime', get_string('parttime', 'block_sgelection'));
+        $mform->addELement('text', 'parttime', get_string('parttime', 'block_sgelection'), 6);
         $mform->setType('parttime', PARAM_INT);
         $mform->addRule('parttime', null, 'required', null, 'client');
 
