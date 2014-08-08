@@ -151,7 +151,7 @@ class voter extends sge_database_object {
     public function is_privileged_user(){
         return $this->is_commissioner() || $this->is_faculty_advisor() || is_siteadmin();
     }
-    
+
     public function already_voted(election $election){
         global $DB;
         $params = array(
@@ -182,6 +182,10 @@ class voter extends sge_database_object {
                 return false;
             }
         }
+        return true;
+    }
+
+    public function can_view_results() {
         return true;
     }
 

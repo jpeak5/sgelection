@@ -20,8 +20,11 @@ $string['green'] = 'green';
 $string['pictureselect'] = 'Picture Select';
 $string['picturedesc'] = 'Picture Description';
 $string['displaydate'] = 'Display Date';
+
+// Election
 $string['election_fullname'] = '{$a->sem} [{$a->name}]';
 $string['election_shortname'] = '{$a->sem} [{$a->name}]';
+$string['create_election']    = 'Create new election';
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';

@@ -30,12 +30,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once(dirname(__FILE__) . '/../../config.php');
-require_once('classes/vote.php');
-require_once('classes/sgedatabaseobject.php');
-require_once('classes/candidate.php');
-require_once('classes/resolution.php');
+global $CFG, $DB, $OUTPUT, $PAGE;
 
-global $DB, $OUTPUT, $PAGE;
+require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
+sge::require_db_classes();
 
 // Only required to return the user to the correct ballot page.
 $election_id = required_param('election_id', PARAM_INT);
@@ -46,6 +44,10 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
 
 require_login();
+$voter    = new voter($USER->id);
+
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav(null, $voter);
 
 $candidatesToTable = function($cid, $count=0){
     global $DB;
@@ -71,7 +73,7 @@ foreach($offices as $o){
             . 'GROUP BY typeid;', array('oid'=>$o->id, 'eid'=>$election_id));
 
     if(count($candidate_vote_count) > 0){
-        
+
         echo '<h1> ' . $o->name . '</h1>';
 
         $candidate_table = new html_table();
@@ -108,26 +110,26 @@ $resolution_table = new html_table();
 $resolution_table->head = array(get_string('resolution', 'block_sgelection'), get_string('for', 'block_sgelection'), get_string('against', 'block_sgelection'), get_string('abstain', 'block_sgelection'));
 
 foreach($resolution_vote_count as $r){
-    
+
     $titleCell = new html_table_cell($r->title);
     $titleCell->attributes = array('class'=> 'title');
-    
+
     $yesCell = new html_table_cell($r->yes);
     $yesCell->attributes = array('class'=>'yes');
-    
+
     $againstCell = new html_table_cell($r->against);
     $againstCell->attributes = array('class'=>'against');
-    
+
     $abstainCell = new html_table_cell($r->abstain);
     $abstainCell->attributes = array('class'=>'abstain');
-    
+
     resolution::highest_vote_for_resolution($r, $titleCell, $yesCell, $againstCell, $abstainCell);
-    $resolutionRow = new html_table_row(array($titleCell, $yesCell, $againstCell, $abstainCell));    
+    $resolutionRow = new html_table_row(array($titleCell, $yesCell, $againstCell, $abstainCell));
     $resolution_table->data[] = $resolutionRow;
-    
+
 }
- 
- 
+
+
 
 echo html_writer::table($resolution_table);
 echo $OUTPUT->footer();

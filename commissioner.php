@@ -2,6 +2,7 @@
 require_once('../../config.php');
 require_once('commissioner_form.php');
 require_once('classes/election.php');
+require_once('classes/voter.php');
 
 global $DB, $OUTPUT, $PAGE;
 
@@ -21,6 +22,11 @@ $settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_
 $editurl = new moodle_url('/blocks/sgelection/commissioner.php');
 $editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
 $editnode->make_active();
+
+$voter    = new voter($USER->id);
+
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav(null, $voter);
 
 list($minyear, $maxyear) = sge::commissioner_form_semester_year_range();
 $data = array(

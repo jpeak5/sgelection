@@ -53,6 +53,30 @@ class election extends sge_database_object {
         return self::classify_rows($elections);
     }
 
+    public static function get_links($activeonly = true, $useshortname = true){
+        $elections = $activeonly ? self::get_active() : self::get_all();
+        $links = array();
+        foreach($elections as $election){
+            $url  = new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $election->id));
+            $text = $useshortname ? $election->shortname() : $election->fullname();
+            $links[] = html_writer::link($url, $text);
+        }
+
+        return $links;
+    }
+
+    public static function get_urls($page, $activeonly = true, $useshortname = true){
+        $elections = $activeonly ? self::get_active() : self::get_all();
+        $urls = array();
+        foreach($elections as $election){
+            $name = $useshortname ? $election->shortname() : $election->fullname();
+            $url  = new moodle_url("/blocks/sgelection/{$page}.php", array('election_id' => $election->id));
+            $urls[$election->id] = array('name' => $name, 'url' => $url);
+        }
+
+        return $urls;
+    }
+
     public static function validate_unique($data, $files){
 
         $elections = election::get_all(array('semesterid' => $data['semesterid']));

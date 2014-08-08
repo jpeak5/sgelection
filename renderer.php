@@ -145,4 +145,68 @@ class block_sgelection_renderer extends plugin_renderer_base {
         return $debug.html_writer::table($table);
     }
 
+    /**
+     * @TODO This fn, and the helper fns it has spwawned needs a serious revision
+     * at some point in the future...a lot like spaghetti...
+     * @global type $PAGE
+     * @param election $election
+     * @param voter $voter
+     * @return type
+     */
+    public function set_nav(election $election = null, voter $voter) {
+        global $PAGE;
+        $sgrootnode = $PAGE->settingsnav->add('SG Elections Admin');
+
+        $canviewresults = $voter->can_view_results();
+        $canviewallballots = $voter->is_privileged_user();
+
+        if (!$canviewresults && !$canviewallballots) {
+            return;
+        }
+
+        if ($canviewallballots) {
+            $ballotsnode = $sgrootnode->add('Ballots');
+
+            list($commtxt, $commurl) = $this->commissioner_link_parts($voter);
+            $commissionernode = $ballotsnode->add($commtxt, $commurl);
+
+            foreach (election::get_urls('ballot', false) as $id => $data) {
+
+                $ballotnode = $ballotsnode->add($data['name'], $data['url']);
+
+                if (isset($election) && $data['name'] == $election->shortname()) {
+                    $ballotnode->make_active();
+                }
+            }
+        }
+
+        if ($canviewresults) {
+
+            $resultslinks = election::get_urls('results', false);
+            if (count($resultslinks) > 0) {
+                $resultsnode = $sgrootnode->add('Results');
+
+                foreach ($resultslinks as $id => $data) {
+                    $resultnode = $resultsnode->add($data['name'], $data['url']);
+                }
+            }
+        }
+    }
+
+    public function commissioner_link_parts(voter $voter){
+        $url = new moodle_url('/blocks/sgelection/commissioner.php');
+        $txt = get_string('create_election', 'block_sgelection');
+        return array($txt, $url);
+    }
+
+    public function commissioner_link(voter $voter){
+        list($txt, $url) = $this->commissioner_link_parts($voter);
+        return html_writer::link($url, $txt);
+    }
+
+    public function results_link(election $election, voter $voter, $useshortname = true){
+        $url = new moodle_url('/blocks/sgelection/results.php', array('election_id', $election->id));
+        $txt = $useshortname ? $election->shortname() : $election->fullname();
+        return array($txt, $url);
+    }
 }

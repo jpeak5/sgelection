@@ -49,15 +49,14 @@ $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 
-$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election->id));
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
-$editnode->make_active();
+$voter    = new voter($USER->id);
+
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav($election, $voter);
 // End PAGE init.
 
-
 // Initialize incoming params.
-$vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
+$vote     = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 
 // Need to group these better logically and conceptually in order to isolate them from the live election activity.
 $preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true                               : false;
@@ -66,7 +65,6 @@ $college = $preview && $voter->candoanything ? optional_param('college', '', PAR
 
 
 // Begin security checks.
-$voter   = new voter($USER->id);
 
 /**
  * Establish SG admin status.
@@ -141,7 +139,6 @@ function checkboxlimit(checkgroup, limit){
 
 
 <?php
-$renderer = $PAGE->get_renderer('block_sgelection');
 
 $candidatesbyoffice = candidate::candidates_by_office($election);
 $resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
