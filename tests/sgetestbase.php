@@ -46,9 +46,9 @@ abstract class block_sgelection_base extends advanced_testcase{
                 // otherwise, choose an existing record at random
                 $elections = $DB->get_records(election::$tablename);
                 $nokeys = array_values($elections);
-                $limit = count($nokeys);
+                $limit = count($nokeys) - 1;
                 $idx = rand(0,$limit);
-                $election = election::instantiate($nokeys[$idx]);
+                $election = new election($nokeys[$idx]);
             }
         }
 
@@ -71,22 +71,43 @@ abstract class block_sgelection_base extends advanced_testcase{
         $c->office = $office->id;
         $c->affiliation = "nono";
         $c->election_id = $election->id;
-        $c->id = $DB->insert_record(candidate::$tablename, $c);
-        return new candidate($c);
+
+        $candidate = new candidate($c);
+        $candidate->save();
+
+        return $candidate;
     }
 
-    public function create_election($params = null, $current = false){
+    protected function create_election($params = null, $current = false){
+
+        $startend = function($time, $current){
+            $halfinterval  = rand(86400, 31536000);
+            $start_date = $time - $halfinterval;
+            $end_date   = $current ? $time + $halfinterval : $start_date + $halfinterval;
+
+            return array($start_date, $end_date);
+        };
+
         if(is_object($params) || is_array($params)){
-            return new election($params);
+            $params = (array)$params;
+            if($current){
+                list($start, $end) = $startend(time(), $current);
+                $params['start_date'] = $start;
+                $params['end_date']   = $end;
+            }
+            $election = new election($params);
+            $election->save();
+            return $election;
         }
-        global $DB;
+
         $e = new stdClass();
         $semester = $this->create_semester();
         $e->semesterid = $semester->id;
         $e->name       = array_rand(array("Spring", "Summer", "Fall"));
-        $halfinterval  = rand(86400, 31536000);
-        $e->start_date = time() - $halfinterval;
-        $e->end_date   = $current ? time() + $halfinterval : $e->start_date + $halfinterval;
+
+        list($start, $end) = $startend(time(), $current);
+        $e->start_date = $start;
+        $e->end_date   = $end;
 
         $election = new election($e);
         $election->save();
@@ -94,7 +115,7 @@ abstract class block_sgelection_base extends advanced_testcase{
         return $election;
     }
 
-    public function create_semester(){
+    protected function create_semester(){
         global $DB;
         $s = new stdClass();
         $s->year = rand(2012, 2016);
@@ -108,7 +129,7 @@ abstract class block_sgelection_base extends advanced_testcase{
         return $sem;
     }
 
-    public function create_office($params = null){
+    protected function create_office($params = null){
         if(is_object($params) || is_array($params)){
             return new election($params);
         }
@@ -124,16 +145,15 @@ abstract class block_sgelection_base extends advanced_testcase{
         $o = new stdClass();
         $o->name = $offices[rand(0, count($offices)-1)];
         $random = rand(0,999) % 5 == 0;
-        $o->college = $random ? $colleges[rand(0, count($colleges)-1)] : null;
+        $o->college = $random ? $colleges[rand(0, count($colleges)-1)] : '';
 
         $o->number = $random ? rand(1, 25) : 1;
-
-        global $DB;
-        $o->id = $DB->insert_record(office::$tablename, $o);
-        return new office($o);
+        $office = new office($o);
+        $office->save();
+        return $office;
     }
 
-    public function create_resolution($params = null, $eid = null){
+    protected function create_resolution($params = null, $eid = null){
         if(is_object($params) || is_array($params)){
             return new resolution($params);
         }
@@ -161,5 +181,68 @@ abstract class block_sgelection_base extends advanced_testcase{
         $resolution = new resolution($params);
         $resolution->save();
         return $resolution;
+    }
+
+    public function test_my_generators_basic(){
+
+        $classes = array('office', 'election', 'resolution', 'candidate');
+
+        foreach($classes as $class){
+            global $DB;
+            $createstring = "create_".$class;
+            $instance = $this->$createstring();
+
+            $this->assertInstanceIsValidAndPersisted($instance, $class);
+        }
+    }
+
+    private function assertInstanceIsValidAndPersisted($instance, $class){
+        global $DB;
+        $this->assertInstanceOf($class, $instance);
+
+        // We need an instance id for this test.
+        $this->assertTrue(isset($instance->id), "Missing attribute 'id' for instance of class {$class}.");
+        $row = $DB->get_record($class::$tablename, array('id'=>$instance->id));
+
+        // Did we get a record?
+        $this->assertInstanceOf('stdClass', $row, sprintf("Database lookup did not result in an instance of stdClass, as was expected."));
+
+        // Ensure that all the values in the DB for the instance->id row both exist and are equal to the obj attrs.
+        foreach((array)$row as $k => $v){
+            $errmiising = sprintf("Missing attribute %s::%s", $class, $k);
+            $this->assertTrue(isset($instance->$k), $errmiising);
+
+            $errnoteql  = sprintf("%s::%s not equal; DB: %s, instance: %s", $class, $k, $v, $instance->$k);
+            $this->assertEquals($v, $instance->$k, $errnoteql);
+        }
+    }
+    public function test_election_generator(){
+        $class = 'election';
+        $params = array(
+            'name'       => 'gruelling',
+            'semesterid' => 3,
+            'start_date' => time() + 1000,
+            'end_date'   => time() + 10000,
+        );
+        $fn = 'create_'.$class;
+
+        // Test permutation 1.
+        $instance = $this->$fn($params);
+        $this->assertInstanceIsValidAndPersisted($instance, 'election');
+        unset($instance);
+
+        // Test permutation 2.
+        $time = time();
+        $instance = $this->$fn($params, true);
+        $this->assertInstanceIsValidAndPersisted($instance, 'election');
+        $this->assertLessThanOrEqual($time, $instance->start_date, sprintf("The time now is %s, ", $time, strftime('%F %T', $time)));
+        $this->assertGreaterThanOrEqual($time, $instance->end_date, sprintf("The time now is %s, ", $time, strftime('%F %T', $time)));
+        unset($instance);
+
+        $instance = $this->$fn(null, true);
+        $this->assertInstanceIsValidAndPersisted($instance, 'election');
+        $this->assertLessThanOrEqual($time, $instance->start_date, sprintf("The time now is %s, ", $time, strftime('%F %T', $time)));
+        $this->assertGreaterThanOrEqual($time, $instance->end_date, sprintf("The time now is %s, ", $time, strftime('%F %T', $time)));
+        unset($instance);
     }
 }
