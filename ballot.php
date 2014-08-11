@@ -54,15 +54,16 @@ $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 
-$voter    = new voter($USER->id);
-
-$renderer = $PAGE->get_renderer('block_sgelection');
-$renderer->set_nav($election, $voter);
+$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
+$editurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election->id));
+$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
+$editnode->make_active();
 // End PAGE init.
 
 
+
 // Initialize incoming params.
-$vote     = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
+$vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 
 // Need to group these better logically and conceptually in order to isolate them from the live election activity.
 $preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true                               : false;
@@ -71,6 +72,7 @@ $college = $preview && $voter->candoanything ? optional_param('college', '', PAR
 
 
 // Begin security checks.
+$voter   = new voter($USER->id);
 
 /**
  * Establish SG admin status.
@@ -145,6 +147,7 @@ function checkboxlimit(checkgroup, limit){
 
 
 <?php
+$renderer = $PAGE->get_renderer('block_sgelection');
 
 $candidatesbyoffice = candidate::candidates_by_office($election);
 $resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
@@ -200,7 +203,7 @@ if($ballot_item_form->is_cancelled()) {
             if(isset($fromform->$fieldname)){
                 $vote = new vote(array('voterid'=>$voter->id));
                 $vote->time = time();
-                $vote->typeid = $resid;
+                $vote->typeid = $resid; 
                 $vote->type = 'resolution';
                 $vote->vote = $fromform->$fieldname;
                 $vote->save();
@@ -211,6 +214,9 @@ if($ballot_item_form->is_cancelled()) {
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('p', get_string('thanks_for_voting', 'block_sgelection'));
         echo html_writer::link($CFG->wwwroot, get_string('continue'));
+        // $result = $DB->get_records_sql('SELECT * FROM {table} WHERE foo = ?', array('bar'));
+        $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
+        echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
         echo $OUTPUT->footer();
 
         }
