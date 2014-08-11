@@ -33,9 +33,10 @@ class ballot_item_form extends moodleform {
             }
             foreach($office->candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
-                $edita   = html_writer::link($editurl, 'edit');
-
-                $mform->addElement('static', 'edit_candidate', $edita);
+                if($voter->is_commissioner()){
+                    $edita   = html_writer::link($editurl, 'edit');
+                    $mform->addElement('static', 'edit_candidate', $edita);
+                }
                 $mform->addElement('checkbox', 'candidate_checkbox_'.$c->cid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'ballot_item'));
                 $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation);
                 $mform->addElement('html', '<div class="candidatebox"></div>');
@@ -47,8 +48,10 @@ class ballot_item_form extends moodleform {
         foreach($resolutions as $r){
             $mform->addElement('static','title',  html_writer::tag('h1', $r->title));
 
-            $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
-            $edita   = html_writer::link($editurl, 'edit');
+            if($voter->is_commissioner()){
+                $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
+                $edita   = html_writer::link($editurl, 'edit');
+            }
             $mform->addElement('static', 'edit_candidate', $edita);
 
 
