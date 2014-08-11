@@ -131,7 +131,9 @@ abstract class block_sgelection_base extends advanced_testcase{
 
     protected function create_office($params = null){
         if(is_object($params) || is_array($params)){
-            return new election($params);
+            $office = new office($params);
+            $office->save();
+            return $office;
         }
 
         $offices = array(
@@ -244,5 +246,17 @@ abstract class block_sgelection_base extends advanced_testcase{
         $this->assertLessThanOrEqual($time, $instance->start_date, sprintf("The time now is %s, ", $time, strftime('%F %T', $time)));
         $this->assertGreaterThanOrEqual($time, $instance->end_date, sprintf("The time now is %s, ", $time, strftime('%F %T', $time)));
         unset($instance);
+    }
+
+    public function test_office_generator(){
+        $params = array(
+            'name'  => 'President',
+            'college' => '',
+            'number'  => 1,
+        );
+
+        $instance = $this->create_office($params);
+        $this->assertInstanceOf('office', $instance);
+        $this->assertInstanceIsValidAndPersisted($instance, 'office');
     }
 }
