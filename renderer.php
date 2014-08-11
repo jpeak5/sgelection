@@ -152,7 +152,9 @@ class block_sgelection_renderer extends plugin_renderer_base {
 
     /**
      * @TODO This fn, and the helper fns it has spwawned needs a serious revision
-     * at some point in the future...a lot like spaghetti...
+     * at some point in the future...a lot like spaghetti...needs to be able to figure
+     * out which page it's' on; needs to be smarter about permissions-checks.
+     *
      * @global type $PAGE
      * @param election $election
      * @param voter $voter
