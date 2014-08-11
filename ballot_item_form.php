@@ -57,8 +57,8 @@ class ballot_item_form extends moodleform {
             if($voter->is_commissioner()){
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');
+                $mform->addElement('static', 'edit_candidate', $edita);
             }
-            $mform->addElement('static', 'edit_candidate', $edita);
 
 
             //$mform->addElement('html', html_writer::tag('p',  $r->text));
