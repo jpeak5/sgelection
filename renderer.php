@@ -123,6 +123,11 @@ class block_sgelection_renderer extends plugin_renderer_base {
     }
 
     public function get_debug_info($priv, voter $voter=null, election $election){
+
+        if(!debugging()){
+            return '';
+        }
+
         $debug = html_writer::tag('h3', 'Debugging');
         $table = new html_table();
         $table->head = array('Name', 'Value');
