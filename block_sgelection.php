@@ -12,7 +12,7 @@ class block_sgelection extends block_list {
     }
 
     public function get_content() {
-        global $USER, $CFG, $COURSE, $OUTPUT;
+        global $USER, $CFG, $COURSE, $OUTPUT, $DB;
 
         $voter = new voter($USER->id);
 
@@ -28,12 +28,20 @@ class block_sgelection extends block_list {
         $icon_class = array('class' => 'icon');
 
         foreach(election::get_active() as $ae){
-            if(!$voter->already_voted($ae)){
 
                 $semester = $ae->shortname();
-                $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester );
-                $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
-            }
+                $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$ae->id));
+                $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
+                if(!$voter->already_voted($ae)){
+                    $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester ) . ' ' . $numberOfVotesTotalString;
+                    $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
+                }
+                else{
+                    $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString);
+                    $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);                
+                    
+                }
+            
         }
 
         $issgadmin = $voter->is_faculty_advisor() || is_siteadmin();
@@ -49,6 +57,7 @@ class block_sgelection extends block_list {
             $this->content->items[] = $commissioner;
             $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
         }
+
 
         return $this->content;
     }
