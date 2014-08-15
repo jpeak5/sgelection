@@ -49,7 +49,10 @@ require_login();
 
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = $election->fullname();
+?>
+  <meta property="og:image" content="http://en.wikipedia.org/wiki/File:Siberischer_tiger_de_edit02.jpg" /> 
 
+<?php
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
@@ -111,7 +114,8 @@ if(!$voter->candoanything && $preview){
  * Don't allow a second vote.
  */
 if($voter->already_voted($election)){
-    print_error('You have already voted in this election');
+    var_dump($election);
+    //print_error('You have already voted in this election');
 }
 
 if(!$voter->candoanything && !$voter->has_required_metadata()){
@@ -120,18 +124,16 @@ if(!$voter->candoanything && !$voter->has_required_metadata()){
 ?>
 
 <script type="text/javascript">
-
-/***********************************************
-* Limit number of checked checkboxes script- by JavaScript Kit (www.javascriptkit.com)
-* This notice must stay intact for usage
-* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and 100s more
-***********************************************/
-
 function checkboxlimit(checkgroup, limit){
+    console.log('inside checkboxlimit');
 	var checkgroup=checkgroup;
 	var limit=limit;
+        console.log(checkgroup);
+        console.log(checkgroup.length);
 	for (var i=0; i<checkgroup.length; i++){
+                console.log('am i here');
 		checkgroup[i].onclick=function(){
+
 		var checkedcount=0;
 		for (var i=0; i<checkgroup.length; i++)
 			checkedcount+=(checkgroup[i].checked)? 1 : 0;
@@ -167,7 +169,6 @@ $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('el
 if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 } else if($fromform = $ballot_item_form->get_data()){
-
     if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
     }elseif(strlen($vote) > 0){
@@ -210,6 +211,7 @@ if($ballot_item_form->is_cancelled()) {
             }
         }
         $voter->mark_as_voted($election);
+        
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('p', get_string('thanks_for_voting', 'block_sgelection'));
@@ -217,11 +219,28 @@ if($ballot_item_form->is_cancelled()) {
         // $result = $DB->get_records_sql('SELECT * FROM {table} WHERE foo = ?', array('bar'));
         $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
         echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
-        echo $OUTPUT->footer();
 
-        }
+?>
+
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://delliott.lsu.edu/mdl27/blocks/sgelection/ballot.php?election_id=1" target="_blank">
+      Share on Facebook
+    </a>
+
+    <script type="text/javascript">
+        FB.ui({
+          method: 'share',
+          href: 'https://developers.facebook.com/docs/',
+        }, function(response){});
+    </script>
+    <?php
+        
+    echo $OUTPUT->footer();
+
+    }
 
     // insert into votes and voters tables.
+
+        
 } else {
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
@@ -241,17 +260,25 @@ if($ballot_item_form->is_cancelled()) {
     }
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
+
+
+    $i = 0;
+
+
+    $lengthOfCandidates = count($candidatesbyoffice);
+    $limit = 1000; //what?!
+    echo '<script type="text/javascript">';
+
+    while($i < $lengthOfCandidates){
+        $limit = $candidatesbyoffice[$i+1]->number;
+        echo 'checkboxlimit(document.querySelectorAll(".candidate_office_'.$i.'"), '. $limit . ');';
+        $i++;
+    }
+
+    echo '</script>';
+
+
     echo $OUTPUT->footer();
 
 }
 
-
-?>
-
-<script type="text/javascript">
-
-//Syntax: checkboxlimit(checkbox_reference, limit)
-checkboxlimit(document.forms.ballot_form.candidate_checkbox, 2);
-
-</script>
-<?php
