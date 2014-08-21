@@ -14,17 +14,13 @@ class ballot_item_form extends moodleform {
         $candidates = $this->_customdata['candidates'];
         $college    = $this->_customdata['college'];
         $voter      = $this->_customdata['voter'];
-        //$number_of_office_votes_allowed = $this->_customdata['number_of_office_votes_allowed'];
-
         $i = 0;
 
         if($voter->is_commissioner()){
-
             // edit election link.
             $editurl = new moodle_url('commissioner.php', array('id' => $election->id));
             $edita   = html_writer::link($editurl, "Edit this Election");
             $mform->addElement('static', 'edit_election', $edita);
-
             // Preview section
             $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
             $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
@@ -36,7 +32,7 @@ class ballot_item_form extends moodleform {
     $officeIndex = 0;
     $number_of_office_votes_allowed = array();
         foreach($candidates as $officeid => $office){
-        
+            $mform->addElement('static','testbox_'.$officeid, $officeid);
             if(count($office->candidates) > 0){
                 $number_of_office_votes_allowed[] = $office->number;
                 $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name));
@@ -46,12 +42,12 @@ class ballot_item_form extends moodleform {
             }
             foreach($office->candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
-                $edita   = html_writer::link($editurl, 'edit');
-                $mform->addElement('static', 'edit_candidate', $edita);
-                //maybe put c infront of cid and o infront of officeid so people know which one is which
+                if($voter->is_commissioner()){
+                    $edita   = html_writer::link($editurl, 'edit');
+                    $mform->addElement('static', 'edit_candidate', $edita);
+                }
+                
                 $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'candidate_office_'.$officeIndex));
-                //$mform->addElement('hidden', 'office_got_voted_for_'.$officeIndex.'_'.$officeid, $officeid);
-                //$mform->setType('office_got_voted_for_'.$officeIndex.'_'.$officeid, PARAM_INT);
                 $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation);
                 $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeIndex]);
                 $mform->setType('number_of_office_votes_allowed_'.$officeid, PARAM_INT);
@@ -92,43 +88,29 @@ class ballot_item_form extends moodleform {
     }
     
     function validation($data, $files){
-
         $errors = parent::validation($data, $files);
-        //$errors += sge::validate_username($data, 'username');
-        //$errors += candidate::validate_one_office_per_candidate_per_election($data, 'username');
-        var_dump($data);
-        //$thething = 'thething';
-        $officeKeepTrackArray = [0,0,0,0,0,0,0,0,0,0,0];
-        $officeLimitKeepTrackArray = [0,0,0,0,0,0,0,0,0,0,0];
+        $officeKeepTrackArray = array();
+        $officeLimitKeepTrackArray = array();
         foreach($data as $key => $value){
             if(strstr($key, 'candidate_checkbox_')){
-                var_dump($key);
-                
-                $theexploded = explode('_', $key);
-                var_dump($theexploded);
-                $officeKeepTrackArray[$theexploded[3]] += 1;
-                var_dump($officeKeepTrackArray);
+                $officeidcurrent = explode('_', $key);
+                if(isset($officeKeepTrackArray[$officeidcurrent[3]])){
+                    $officeKeepTrackArray[$officeidcurrent[3]] += 2;                
+                }
+                else {
+                    $officeKeepTrackArray[$officeidcurrent[3]] = 2;                    
+                }
             }
             if(strstr($key, 'number_of_office_votes_allowed')){
-                $theexploded = explode('_', $key);            
-                var_dump($theexploded);
-                $officeLimitKeepTrackArray[$theexploded[5]] = $value;
-                var_dump($officeLimitKeepTrackArray);            }
-        }
-        
-        foreach ($officeKeepTrackArray as $o){
-            if($officeKeepTrackArray > $officeLimitKeepTrackArray){
-                $errors += array('Too Many Candidates Selected' => 'Too Many Candidates Selected');            
-                
+                $numofvotesallowed = explode('_', $key);         
+                $officeLimitKeepTrackArray[$numofvotesallowed[5]] = $value;
             }
         }
-
-        
-        
-        
-        
-        return $errors;        
+        foreach ($officeKeepTrackArray as $i=>$o){
+            if($o > $officeLimitKeepTrackArray[$i]){           
+                $errors += array('testbox_'.$i => 'Too Many Candidates Selected');            
+            }
+        }
+        return $errors; 
     }
-
-   
 }
