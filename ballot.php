@@ -124,24 +124,22 @@ if(!$voter->candoanything && !$voter->has_required_metadata()){
 ?>
 
 <script type="text/javascript">
-function checkboxlimit(checkgroup, limit){
-    console.log('inside checkboxlimit');
+function checkboxlimit(checkgroup, limit, officenumber){
 	var checkgroup=checkgroup;
 	var limit=limit;
-        console.log(checkgroup);
-        console.log(checkgroup.length);
 	for (var i=0; i<checkgroup.length; i++){
-                console.log('am i here');
 		checkgroup[i].onclick=function(){
-
 		var checkedcount=0;
 		for (var i=0; i<checkgroup.length; i++)
 			checkedcount+=(checkgroup[i].checked)? 1 : 0;
 		if (checkedcount>limit){
-			alert("You can only select a maximum of "+limit+" checkboxes");
+                        document.getElementById('hiddenCandidateWarningBox_'+officenumber).style.display="block";
 			this.checked=false;
-			}
 		}
+                else{
+                        document.getElementById('hiddenCandidateWarningBox_'+1).style.display="none";
+                }
+            }
 	}
 }
 
@@ -238,9 +236,6 @@ if($ballot_item_form->is_cancelled()) {
 
     }
 
-    // insert into votes and voters tables.
-
-        
 } else {
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
@@ -261,9 +256,7 @@ if($ballot_item_form->is_cancelled()) {
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
 
-
     $i = 0;
-
 
     $lengthOfCandidates = count($candidatesbyoffice);
     $limit = 1000; //what?!
@@ -271,12 +264,13 @@ if($ballot_item_form->is_cancelled()) {
 
     while($i < $lengthOfCandidates){
         $limit = $candidatesbyoffice[$i+1]->number;
-        echo 'checkboxlimit(document.querySelectorAll(".candidate_office_'.$i.'"), '. $limit . ');';
+        $officenumber = $candidatesbyoffice[$i+1]->id;
+
+        echo 'checkboxlimit(document.querySelectorAll(".candidate_office_'.$i.'"), '. $limit .' , ' . $officenumber .');';
         $i++;
     }
 
     echo '</script>';
-
 
     echo $OUTPUT->footer();
 

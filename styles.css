@@ -8,3 +8,7 @@
 #page-blocks-sgelection-results .winnerresolution{
     background-color: #aaffaa;
 }
+
+.hiddenCandidateWarningBox{
+    display: none;
+}
