@@ -37,7 +37,7 @@ if($form->is_cancelled()){
     $site = get_site();
     $form->set_data(get_config('block_sgelection'));
     echo $OUTPUT->header();
-    
+    //
     $listofusers = '[';
     $users = $DB->get_records('user');
     $numItems = count($users);
