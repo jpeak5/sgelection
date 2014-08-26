@@ -13,17 +13,22 @@ class sg_admin_form extends moodleform {
         //add group for text areas
         $mform->addElement('header', 'displayinfo', get_string('election_tool_administration', 'block_sgelection'));
 
-        //add page title element.
-        // TUTORIAL : Add Form Elements - Advanced Blocks, doesn't have setType, might be an error
-        $mform->addELement('text', 'commissioner', get_string('commissioner', 'block_sgelection'));
+        
+        $mform->addElement('html', '<div style="width:35em;height:16em;" >');
+        //  style="width:15em;height:18em;"
+
+        $mform->addElement('text', 'commissioner', get_string('commissioner', 'block_sgelection'));
         $mform->setType('commissioner', PARAM_ALPHANUM);
         $mform->addRule('commissioner', null, 'required', null, 'client');
 
-        $mform->addELement('text', 'fulltime', get_string('fulltime', 'block_sgelection'), 12);
+        $mform->addElement('html', '<div class="commissioner_container" id="commissioner_container"></div>');
+
+        
+        $mform->addElement('text', 'fulltime', get_string('fulltime', 'block_sgelection'), 12);
         $mform->setType('fulltime', PARAM_INT);
         $mform->addRule('fulltime', null, 'required', null, 'client');
 
-        $mform->addELement('text', 'parttime', get_string('parttime', 'block_sgelection'), 6);
+        $mform->addElement('text', 'parttime', get_string('parttime', 'block_sgelection'), 6);
         $mform->setType('parttime', PARAM_INT);
         $mform->addRule('parttime', null, 'required', null, 'client');
 
@@ -38,7 +43,12 @@ class sg_admin_form extends moodleform {
 
         $select->setMultiple(true);
 
+        $mform->addElement('html', '</div>');
+        
         $this->add_action_buttons();
+        
+        
+        
     }
 
     public function validation($data, $files){
