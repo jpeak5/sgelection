@@ -30,6 +30,8 @@ if($form->is_cancelled()){
     set_config('fulltime', $fromform->fulltime, 'block_sgelection');
     set_config('parttime', $fromform->parttime, 'block_sgelection');
     // @TODO if excl_curr_codes is not set, we have a problem.
+    // Probably, supply a default value here.
+    // Alternatively, provide a 'none' option in the form that will need to be checked here.
     set_config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes), 'block_sgelection');
 
     redirect(new moodle_url($selfurl, array('done'=>'true')));
