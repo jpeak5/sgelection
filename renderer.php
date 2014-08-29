@@ -175,7 +175,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
             $ballotsnode = $sgrootnode->add('Ballots');
 
             list($commtxt, $commurl) = $this->commissioner_link_parts($voter);
-            $commissionernode = $ballotsnode->add($commtxt, $commurl);
+            $ballotsnode->add($commtxt, $commurl);
 
             foreach (election::get_urls('ballot', false) as $id => $data) {
 
@@ -194,7 +194,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
                 $resultsnode = $sgrootnode->add('Results');
 
                 foreach ($resultslinks as $id => $data) {
-                    $resultnode = $resultsnode->add($data['name'], $data['url']);
+                    $resultsnode->add($data['name'], $data['url']);
                 }
             }
         }
