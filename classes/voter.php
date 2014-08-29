@@ -77,9 +77,10 @@ class voter extends sge_database_object {
 
     private function get_enrolled_hours(){
         global $DB;
-        $sql = sprintf("SELECT sum(credit_hours) FROM {enrol_ues_students} WHERE userid = :userid AND status = 'enrolled'");
+        $params = array('userid' => $this->userid, 'status' => 'enrolled');
+        $sql = sprintf("SELECT sum(credit_hours) FROM {enrol_ues_students} WHERE userid = :userid AND status = :status");
 
-        return $DB->get_record_sql($sql, array('userid'=>$this->userid));
+        return $DB->get_record_sql($sql, $params);
     }
 
     public function courseload(){
