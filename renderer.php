@@ -161,16 +161,16 @@ class block_sgelection_renderer extends plugin_renderer_base {
      * @return type
      */
     public function set_nav(election $election = null, voter $voter) {
-        global $PAGE;
-        $sgrootnode = $PAGE->settingsnav->add('SG Elections Admin');
 
-        $canviewresults = $voter->can_view_results();
+        // Display nothing for users without either of the following privileges.
+        $canviewresults    = $voter->can_view_results();
         $canviewallballots = $voter->is_privileged_user();
-
         if (!$canviewresults && !$canviewallballots) {
             return;
         }
 
+        global $PAGE;
+        $sgrootnode = $PAGE->settingsnav->add('SG Elections Admin');
         if ($canviewallballots) {
             $ballotsnode = $sgrootnode->add('Ballots');
 
