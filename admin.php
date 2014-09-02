@@ -50,7 +50,7 @@ if($form->is_cancelled()){
     echo $done == true ? $OUTPUT->notification('changes saved', 'notifysuccess') : '';
     $form->display();
 
-    $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#fitem_id_commissioner'));
+    $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_commissioner'));
 
     echo $OUTPUT->footer();
 }
