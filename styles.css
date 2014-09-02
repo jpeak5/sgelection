@@ -13,6 +13,6 @@
     display: none;
 }
 
-.yui3-aclist-list{
+#page-blocks-sgelection-admin .yui3-aclist-content .yui3-aclist-list{
     color: #461d7c;
 }
