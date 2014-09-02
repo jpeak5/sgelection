@@ -12,3 +12,7 @@
 .hiddenCandidateWarningBox{
     display: none;
 }
+
+.yui3-aclist-list{
+    color: #461d7c;
+}

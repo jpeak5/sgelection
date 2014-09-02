@@ -8,6 +8,8 @@ global $DB, $OUTPUT, $PAGE;
 $done    = optional_param('done', 0, PARAM_TEXT);
 $selfurl = '/blocks/sgelection/admin.php';
 
+$PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
+
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($selfurl);
 $PAGE->set_pagelayout('standard');
@@ -37,32 +39,17 @@ if($form->is_cancelled()){
     $site = get_site();
     $form->set_data(get_config('block_sgelection'));
     echo $OUTPUT->header();
-    //
-    $listofusers = '[';
+    $listofusers = array();
     $users = $DB->get_records('user');
     $numItems = count($users);
-    $i = 0;
     foreach ($users as $user) {
-         if(++$i === $numItems) {
-            $listofusers .=  '"' . $user->username . '"]';
-         }
-         else{
-            $listofusers .=  '"' . $user->username . '",';
-         }
+        $listofusers[] = $user->username;
     }
-    echo '<script type="text/javascript">
-    YUI().use("yui2-autocomplete", "yui2-datasource", function(Y){
-            var YAHOO = Y.YUI2;
-            var dataSource = new YAHOO.util.LocalDataSource
-            (
-                    ' . $listofusers .'
-            );
-
-            var autoCompleteText = new YAHOO.widget.AutoComplete("id_commissioner","commissioner_container",dataSource);
-    });
-    </script>';
 
     echo $done == true ? $OUTPUT->notification('changes saved', 'notifysuccess') : '';
     $form->display();
+
+    $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#fitem_id_commissioner'));
+
     echo $OUTPUT->footer();
 }

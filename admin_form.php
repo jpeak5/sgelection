@@ -13,17 +13,12 @@ class sg_admin_form extends moodleform {
         //add group for text areas
         $mform->addElement('header', 'displayinfo', get_string('election_tool_administration', 'block_sgelection'));
 
-        
-        $mform->addElement('html', '<div style="width:35em;height:16em;" >');
-        //  style="width:15em;height:18em;"
+        $mform->addElement('html', '<div class="yui3-skin-sam" >');
 
         $mform->addElement('text', 'commissioner', get_string('commissioner', 'block_sgelection'));
         $mform->setType('commissioner', PARAM_ALPHANUM);
         $mform->addRule('commissioner', null, 'required', null, 'client');
 
-        $mform->addElement('html', '<div class="commissioner_container" id="commissioner_container"></div>');
-
-        
         $mform->addElement('text', 'fulltime', get_string('fulltime', 'block_sgelection'), 12);
         $mform->setType('fulltime', PARAM_INT);
         $mform->addRule('fulltime', null, 'required', null, 'client');
@@ -40,15 +35,9 @@ class sg_admin_form extends moodleform {
         }
 
         $select = $mform->addElement('select', 'excluded_curr_codes', get_string('excluded_curriculum_code', 'block_sgelection'), $currCodesArray);
-
         $select->setMultiple(true);
-
         $mform->addElement('html', '</div>');
-        
         $this->add_action_buttons();
-        
-        
-        
     }
 
     public function validation($data, $files){
