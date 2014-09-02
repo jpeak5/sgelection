@@ -6,7 +6,6 @@ require_once('classes/voter.php');
 
 global $DB, $OUTPUT, $PAGE;
 
-//next look for optional variables.
 $id = optional_param('id', 0, PARAM_INT);
 
 $context = context_system::instance();
@@ -43,6 +42,14 @@ if($form->is_cancelled()){
         $election = election::get_by_id($id);
         $form->set_data($election);
     }
-    $form->display();
+    if(empty($data['semesters'])){
+        // In the extremely rare case that there are no available semesters, redirect to /my.
+        // @TODO the definition of 'available' may need to be altered WRT semesters.
+        // @TODO Make this a get_string() returned by the renderer.
+        echo "No Active Semesters";
+        echo $OUTPUT->continue_button(new moodle_url('/my'));
+    }else{
+        $form->display();
+    }
     echo $OUTPUT->footer();
 }
