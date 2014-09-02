@@ -36,8 +36,6 @@ if($form->is_cancelled()){
 
     redirect(new moodle_url($selfurl, array('done'=>'true')));
 } else {
-    // form didn't validate or this is the first display
-    $site = get_site();
     $form->set_data(get_config('block_sgelection'));
     echo $OUTPUT->header();
     echo $done == true ? $OUTPUT->notification('changes saved', 'notifysuccess') : '';
