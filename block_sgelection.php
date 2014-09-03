@@ -17,7 +17,7 @@ class block_sgelection extends block_list {
         $voter = new voter($USER->id);
 
         // See if this user should be allowed to view the block at all.
-        if($voter->courseload() == voter::VOTER_NO_TIME && !($voter->is_faculty_advisor() || is_siteadmin())){
+        if(!isloggedin() || ($voter->courseload() == voter::VOTER_NO_TIME && !($voter->is_faculty_advisor() || is_siteadmin()))){
             return $this->content;
         }
 
