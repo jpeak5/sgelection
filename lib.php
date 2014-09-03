@@ -186,5 +186,15 @@ class sge {
         // NB: excluding Moodle site admins from this check.
         return $voter->is_faculty_advisor() || $is_editingcommissioner || is_siteadmin();
     }
+    
+    public static function get_list_of_usernames(){
+        global $DB;
+        $listofusers = array();
+        $users = $DB->get_records('user');
+        foreach ($users as $user) {
+            $listofusers[] = $user->username;
+        }
+        return $listofusers;
+    }
 
 }

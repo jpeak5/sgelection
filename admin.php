@@ -40,16 +40,11 @@ if($form->is_cancelled()){
 } else {
     $form->set_data(get_config('block_sgelection'));
     echo $OUTPUT->header();
-    $listofusers = array();
-    $users = $DB->get_records('user');
-    $numItems = count($users);
-    foreach ($users as $user) {
-        $listofusers[] = $user->username;
-    }
+    
 
     echo $done == true ? $OUTPUT->notification('changes saved', 'notifysuccess') : '';
     $form->display();
-
+    $listofusers = sge::get_list_of_usernames();
     $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_commissioner'));
 
     echo $OUTPUT->footer();
