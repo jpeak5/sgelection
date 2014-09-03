@@ -97,10 +97,10 @@ class ballot_item_form extends moodleform {
             if(strstr($key, 'candidate_checkbox_')){
                 $officeidcurrent = explode('_', $key);
                 if(isset($officeKeepTrackArray[$officeidcurrent[3]])){
-                    $officeKeepTrackArray[$officeidcurrent[3]] += 2;                
+                    $officeKeepTrackArray[$officeidcurrent[3]] += 1;
                 }
                 else {
-                    $officeKeepTrackArray[$officeidcurrent[3]] = 2;                    
+                    $officeKeepTrackArray[$officeidcurrent[3]] = 1;
                 }
             }
             if(strstr($key, 'number_of_office_votes_allowed')){
