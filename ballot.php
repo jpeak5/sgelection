@@ -180,14 +180,15 @@ if($ballot_item_form->is_cancelled()) {
         }
         $voter->save();
 
-        // Save votes for each candidate.
-        foreach($cand_ids as $cid => $acnd){
-            $fieldname = 'candidate_checkbox_'.$cid;
+   // Save votes for each candidate.
+        foreach($cand_ids as $c){
+            var_dump($c);
+            $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
 
                 $vote = new vote(array('voterid'=>$voter->id));
                 $vote->time = time();
-                $vote->typeid = $cid;
+                $vote->typeid = $c->cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;
                 $vote->save();
