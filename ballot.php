@@ -47,7 +47,7 @@ $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
 require_login();
 $PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
-
+$PAGE->requires->js('/blocks/sgelection/js/limitcandidatecheckboxes.js');
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = $election->fullname();
 ?>
@@ -111,39 +111,13 @@ if(!$voter->candoanything && $preview){
  * Don't allow a second vote.
  */
 if($voter->already_voted($election)){
-    var_dump($election);
     //print_error('You have already voted in this election');
 }
 
 if(!$voter->candoanything && !$voter->has_required_metadata()){
     print_error('Your user profile is missing required information');
 }
-?>
 
-<script type="text/javascript">
-function checkboxlimit(checkgroup, limit, officenumber){
-	var checkgroup=checkgroup;
-	var limit=limit;
-	for (var i=0; i<checkgroup.length; i++){
-		checkgroup[i].onclick=function(){
-		var checkedcount=0;
-		for (var i=0; i<checkgroup.length; i++)
-			checkedcount+=(checkgroup[i].checked)? 1 : 0;
-		if (checkedcount>limit){
-                        document.getElementById('hiddenCandidateWarningBox_'+officenumber).style.display="block";
-			this.checked=false;
-		}
-                else{
-                        document.getElementById('hiddenCandidateWarningBox_'+1).style.display="none";
-                }
-            }
-	}
-}
-
-</script>
-
-
-<?php
 $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
@@ -182,7 +156,6 @@ if($ballot_item_form->is_cancelled()) {
 
    // Save votes for each candidate.
         foreach($cand_ids as $c){
-            var_dump($c);
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
 
@@ -255,7 +228,11 @@ if($ballot_item_form->is_cancelled()) {
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
 
-    $i = 0;
+    
+    $listofusers = sge::get_list_of_usernames();
+    $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_username'));    
+    echo $OUTPUT->footer();
+$i = 0;
 
     $lengthOfCandidates = count($candidatesbyoffice);
     $limit = 1000; //what?!
@@ -270,10 +247,5 @@ if($ballot_item_form->is_cancelled()) {
     }
 
     echo '</script>';
-
-    $listofusers = sge::get_list_of_usernames();
-    $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_username'));    
-    echo $OUTPUT->footer();
-
 }
 

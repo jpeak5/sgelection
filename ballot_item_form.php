@@ -32,7 +32,6 @@ class ballot_item_form extends moodleform {
     $officeIndex = 0;
     $number_of_office_votes_allowed = array();
         foreach($candidates as $officeid => $office){
-            $mform->addElement('static','testbox_'.$officeid, $officeid);
             $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid. ' class="hiddenCandidateWarningBox felement fstatic  error"><span class = "error">You have selected too many candidates, please select at most ' . $office->number . '</span></div>' );
             
             if(count($office->candidates) > 0){
