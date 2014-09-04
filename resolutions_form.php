@@ -43,6 +43,8 @@ class resolution_form extends moodleform {
         $mform->addElement('editor', 'text_editor', get_string('resolution_text', 'block_sgelection'));
         $mform->setType('text', PARAM_RAW);
 
+        $mform->addElement('checkbox', 'restrict_fulltime', get_string('restrict_to_fulltime', 'block_sgelection'));
+
         $buttons = array(
             $mform->createElement('submit', 'save_resolution', get_string('savechanges')),
             $mform->createElement('cancel')

@@ -35,9 +35,13 @@ $form = new resolution_form(new moodle_url('resolutions.php', array('election_id
 if($form->is_cancelled()) {
     redirect(sge::ballot_url($election_id));
 } else if($fromform = $form->get_data()){
-
         $resolution      = new resolution($fromform);
         $resolution->text = $fromform->text_editor['text'];
+        if(isset($fromform->restrict_fulltime)){
+        $resolution->restrict_fulltime = $fromform->restrict_fulltime;
+        } else {
+            $resolution->restrict_fulltime = 0;
+        }
         $resolution->save();
         $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);

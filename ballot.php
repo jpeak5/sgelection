@@ -232,20 +232,17 @@ if($ballot_item_form->is_cancelled()) {
     $listofusers = sge::get_list_of_usernames();
     $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_username'));    
     echo $OUTPUT->footer();
-$i = 0;
 
+    $i = 0;
     $lengthOfCandidates = count($candidatesbyoffice);
     $limit = 1000; //what?!
     echo '<script type="text/javascript">';
-
     while($i < $lengthOfCandidates){
         $limit = $candidatesbyoffice[$i+1]->number;
         $officenumber = $candidatesbyoffice[$i+1]->id;
-
         echo 'checkboxlimit(document.querySelectorAll(".candidate_office_'.$i.'"), '. $limit .' , ' . $officenumber .');';
         $i++;
     }
-
     echo '</script>';
 }
 
