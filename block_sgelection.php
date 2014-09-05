@@ -92,6 +92,14 @@ class block_sgelection extends block_list {
         foreach($hours as $row){
             $DB->insert_record('block_sgelection_hours', $row);
         }
+
+        $elections = Election::get_active();
+        if(count($elections) > 0){
+            foreach($elections as $election){
+                $election->message_admins();
+            }
+        }
+
         return true;
     }
 }
