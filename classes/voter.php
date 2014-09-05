@@ -145,7 +145,6 @@ class voter extends sge_database_object {
     }
 
     /**
-     * This is wierd- consider moving the is_{usertype} into the voter class.
      * @param type $userid
      * @return type
      */
