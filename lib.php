@@ -198,9 +198,9 @@ class sge {
     }
 
     public static function prevent_voter_access(){
-        global $DB, $USER;
+        global $USER;
         require_once 'classes/voter.php';
-        $voter = new Voter($USER);
+        $voter = new Voter($USER->id);
         if(!$voter->is_privileged_user()){
             redirect(new moodle_url('/my'));
         }
