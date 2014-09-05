@@ -50,10 +50,6 @@ $PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
 $PAGE->requires->js('/blocks/sgelection/js/limitcandidatecheckboxes.js');
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = $election->fullname();
-?>
-  <meta property="og:image" content="http://en.wikipedia.org/wiki/File:Siberischer_tiger_de_edit02.jpg" /> 
-
-<?php
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
@@ -179,6 +175,16 @@ if($ballot_item_form->is_cancelled()) {
         $voter->mark_as_voted($election);
         
         echo $OUTPUT->header();
+        ?>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=715650648506222&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    <?php
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('p', get_string('thanks_for_voting', 'block_sgelection'));
         echo html_writer::link($CFG->wwwroot, get_string('continue'));
@@ -186,18 +192,20 @@ if($ballot_item_form->is_cancelled()) {
         $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
         echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
 
+//            <a href="https://www.facebook.com/sharer/sharer.php?u=http://delliott.lsu.edu/mdl27/blocks/sgelection/ballot.php?election_id=1" target="_blank">
+//      Share on Facebook
+//    </a>
+        
 ?>
-
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://delliott.lsu.edu/mdl27/blocks/sgelection/ballot.php?election_id=1" target="_blank">
-      Share on Facebook
-    </a>
-
-    <script type="text/javascript">
-        FB.ui({
-          method: 'share',
-          href: 'https://developers.facebook.com/docs/',
-        }, function(response){});
-    </script>
+<div class = "socialmediabuttons">
+    <div class ="facingbooksharebutton">
+        <div class="fb-share-button" data-href="http://delliott.lsu.edu/mdl27/"></div>    
+    </div>
+    <div class="twitterybutton">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://delliott.lsu.edu/" data-lang="en" data-text="I just pretended to vote in the LSU Student Government Elections!">Tweet</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </div> 
+</div>
     <?php
         
     echo $OUTPUT->footer();
