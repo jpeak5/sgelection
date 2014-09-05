@@ -21,6 +21,10 @@ $string['pictureselect'] = 'Picture Select';
 $string['picturedesc'] = 'Picture Description';
 $string['displaydate'] = 'Display Date';
 
+//block_sge...
+$string['create_election'] = 'Create Election';
+$string['configure'] = 'Configure';
+
 // Election
 $string['election_fullname'] = '{$a->sem} [{$a->name}]';
 $string['election_shortname'] = '{$a->sem} [{$a->name}]';
@@ -64,7 +68,7 @@ $string['affiliation'] = 'affiliation';
 $string['election_id'] = 'election_id';
 
 // Administration
-$string['commissioner'] = 'commissioner';
+$string['commissioner'] = 'Commissioner';
 $string['fulltime'] = 'Full Time';
 $string['parttime'] = 'Part Time';
 $string['election_tool_administration'] = ' Election Tool Administration';
