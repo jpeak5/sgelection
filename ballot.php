@@ -147,15 +147,11 @@ if($ballot_item_form->is_cancelled()) {
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
-        // live vote
-        $cand_ids = array();
-        foreach($candidatesbyoffice as $office => $o){
-            $cand_ids += $o->candidates;
-        }
+
         $voter->save();
 
    // Save votes for each candidate.
-        foreach($cand_ids as $c){
+        foreach(candidate::get_full_candidates($election) as $c){
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
 
