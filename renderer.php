@@ -216,4 +216,86 @@ class block_sgelection_renderer extends plugin_renderer_base {
         $txt = $useshortname ? $election->shortname() : $election->fullname();
         return array($txt, $url);
     }
+
+    public function get_office_results(election $election){
+        return self::office_results($election);
+    }
+
+    public static function office_results(election $election){
+        global $CFG;
+        require_once($CFG->dirroot.'/blocks/sgelection/classes/office.php');
+        require_once($CFG->dirroot.'/blocks/sgelection/classes/candidate.php');
+        require_once($CFG->dirroot.'/blocks/sgelection/classes/resolution.php');
+        $out = '';
+        $offices = office::get_all();
+        foreach($offices as $o){
+            //$votes = vote::get_all();
+            $candidates = candidate::get_all(array('election_id'=>$election->id, 'office'=>$o->id));
+            $candidate_vote_count = $election->get_candidate_votes($o);
+
+            if(count($candidate_vote_count) > 0){
+
+                $candidatesToTable = function($cid, $count=0){
+                    global $DB;
+                    $candidate = candidate::get_by_id($cid);
+                    $candidateUser = $DB->get_record('user', array('id'=>$candidate->userid));
+                    return new html_table_row(array($candidateUser->firstname . ' ' . $candidateUser->lastname, $count));
+                };
+
+
+                $out .= '<h1> ' . $o->name . '</h1>';
+
+                $candidate_table = new html_table();
+                $candidate_table->data = array();
+                $candidate_table->head = array('Candidate Name', 'number of votes');
+
+                foreach($candidate_vote_count as $c){
+                    $candidate_table->data[] = $candidatesToTable($c->cid, $c->count);
+                    //$candidate->firstname . ' ' . $candidate->lastname
+                    unset($candidates[$c->cid]);
+                }
+                $candidate_table->data = array_merge($candidate_table->data, array_map($candidatesToTable, array_keys($candidates)));
+                $out .= html_writer::table($candidate_table);
+
+            }
+        }
+
+
+        return $out;
+    }
+
+    public function get_resolution_results(election $election){
+        return self::resolution_results($election);
+    }
+
+    public static function resolution_results(election $election){
+        $resolution_vote_count = $election->get_resolution_votes();
+
+        $resolution_table = new html_table();
+        $resolution_table->head = array(get_string('resolution', 'block_sgelection'), get_string('for', 'block_sgelection'), get_string('against', 'block_sgelection'), get_string('abstain', 'block_sgelection'));
+
+        foreach($resolution_vote_count as $r){
+
+            $titleCell = new html_table_cell($r->title);
+            $titleCell->attributes = array('class'=> 'title');
+
+            $yesCell = new html_table_cell($r->yes);
+            $yesCell->attributes = array('class'=>'yes');
+
+            $againstCell = new html_table_cell($r->against);
+            $againstCell->attributes = array('class'=>'against');
+
+            $abstainCell = new html_table_cell($r->abstain);
+            $abstainCell->attributes = array('class'=>'abstain');
+
+            resolution::highest_vote_for_resolution($r, $titleCell, $yesCell, $againstCell, $abstainCell);
+            $resolutionRow = new html_table_row(array($titleCell, $yesCell, $againstCell, $abstainCell));
+            $resolution_table->data[] = $resolutionRow;
+
+        }
+
+
+
+        return html_writer::table($resolution_table);
+    }
 }

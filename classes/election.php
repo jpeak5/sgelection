@@ -143,4 +143,47 @@ class election extends sge_database_object {
         $a->name = $this->name;
         return get_string('election_shortname', 'block_sgelection', $a);
     }
+
+    public function get_candidate_votes(office $office){
+        global $DB;
+        $sql = 'SELECT c.id as cid, typeid, count(*) '
+                . 'AS count FROM {block_sgelection_votes} AS v '
+            . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
+            . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
+            . 'WHERE type = "candidate" '
+                . 'AND o.id = :oid '
+                . 'AND c.election_id = :eid'
+            . 'GROUP BY typeid;';
+        $params = array('oid'=>$office->id, 'eid'=>$this->id);
+
+        return $DB->get_records_sql($sql, $params);
+    }
+
+    public function get_resolution_votes(){
+        global $DB;
+        $sql = 'SELECT res.title, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 2) AS yes, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 1) AS against, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 0) AS abstain '
+        . 'FROM {block_sgelection_resolution} AS res WHERE res.election_id = :eid';
+        $params = array('eid' => $this->id);
+        return $DB->get_records_sql($sql, $params);
+    }
+
+    public function get_summary(){
+        global $CFG;
+        require_once $CFG->dirroot.'/blocks/sgelection/renderer.php';
+        return block_sgelection_renderer::office_results($this).block_sgelection_renderer::resolution_results($this);
+
+    }
+
+    public function message_admins() {
+        global $CFG, $DB;
+        $summary = $this->get_summary();
+        foreach(explode(',', $CFG->siteadmins) as $admin){
+            $user = $DB->get_record('user', array('id'=>$admin));
+            email_to_user($user, 'no-reply', "Election Results", $summary, $summary);
+        }
+    }
+
 }

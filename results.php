@@ -36,100 +36,19 @@ require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
 sge::require_db_classes();
 
 // Only required to return the user to the correct ballot page.
-$election_id = required_param('election_id', PARAM_INT);
+$election = Election::get_by_id(required_param('election_id', PARAM_INT));
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/sgelection/results.php');
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
+$renderer = $PAGE->get_renderer('block_sgelection');
 
 require_login();
 $voter    = new voter($USER->id);
 
-$renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
-
-$candidatesToTable = function($cid, $count=0){
-    global $DB;
-    $candidate = candidate::get_by_id($cid);
-    $candidateUser = $DB->get_record('user', array('id'=>$candidate->userid));
-    return new html_table_row(array($candidateUser->firstname . ' ' . $candidateUser->lastname, $count));
-};
 echo $OUTPUT->header();
-$offices = office::get_all();
-foreach($offices as $o){
-    $votes = vote::get_all();
-    $candidates = candidate::get_all(array('election_id'=>$election_id, 'office'=>$o->id));
-
-    $candidate_vote_count = $DB->get_records_sql(''
-
-            . 'SELECT c.id as cid, typeid, count(*) '
-            . 'AS COUNT FROM {block_sgelection_votes} AS v '
-            . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
-            . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
-            . 'WHERE type = "candidate" '
-            . 'AND o.id = :oid '
-            . 'AND c.election_id = :eid'
-            . 'GROUP BY typeid;', array('oid'=>$o->id, 'eid'=>$election_id));
-
-    if(count($candidate_vote_count) > 0){
-
-        echo '<h1> ' . $o->name . '</h1>';
-
-        $candidate_table = new html_table();
-        $candidate_table->data = array();
-        $candidate_table->head = array('Candidate Name', 'number of votes');
-
-        foreach($candidate_vote_count as $c){
-            $candidate_table->data[] = $candidatesToTable($c->cid, $c->count);
-            //$candidate->firstname . ' ' . $candidate->lastname
-            unset($candidates[$c->cid]);
-        }
-        $candidate_table->data = array_merge($candidate_table->data, array_map($candidatesToTable, array_keys($candidates)));
-        echo html_writer::table($candidate_table);
-    }
-
-}
-$resolution_vote_count = $DB->get_records_sql(
-        'SELECT res.title, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 2) AS yes, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 1) AS against, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 0) AS abstain '
-        . 'FROM {block_sgelection_resolution} AS res WHERE res.election_id = :eid', array('eid'=>$election_id));
-
-$sql = 'select v.typeid, count(*) as count '
-        . 'from {block_sgelection_votes} v '
-        . 'JOIN {block_sgelection_resolution} r '
-        . 'ON v.typeid = r.id '
-        . 'WHERE v.type = "resolution" '
-        . 'AND r.election_id = :eid'
-        . 'GROUP BY v.typeid;';
-$resolution_vote_count = $DB->get_records_sql($sql, array('eid'=>$election_id));
-
-$resolution_table = new html_table();
-$resolution_table->head = array(get_string('resolution', 'block_sgelection'), get_string('for', 'block_sgelection'), get_string('against', 'block_sgelection'), get_string('abstain', 'block_sgelection'));
-
-foreach($resolution_vote_count as $r){
-
-    $titleCell = new html_table_cell($r->title);
-    $titleCell->attributes = array('class'=> 'title');
-
-    $yesCell = new html_table_cell($r->yes);
-    $yesCell->attributes = array('class'=>'yes');
-
-    $againstCell = new html_table_cell($r->against);
-    $againstCell->attributes = array('class'=>'against');
-
-    $abstainCell = new html_table_cell($r->abstain);
-    $abstainCell->attributes = array('class'=>'abstain');
-
-    resolution::highest_vote_for_resolution($r, $titleCell, $yesCell, $againstCell, $abstainCell);
-    $resolutionRow = new html_table_row(array($titleCell, $yesCell, $againstCell, $abstainCell));
-    $resolution_table->data[] = $resolutionRow;
-
-}
-
-
-
-echo html_writer::table($resolution_table);
+echo $renderer->get_office_results($election);
+echo $renderer->get_resolution_results($election);
 echo $OUTPUT->footer();
