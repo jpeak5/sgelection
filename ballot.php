@@ -206,6 +206,8 @@ if($ballot_item_form->is_cancelled()) {
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </div> 
 </div>
+
+<a href="http://www.tumblr.com/share/link?url=<?php echo urlencode('http://delliott.lsu.edu/mdl27/') ?>&name=<?php echo urlencode('LSU Student Government Election') ?>&description=<?php echo urlencode('LSU Student Government Elections') ?>" title="Share on Tumblr" style="display:inline-block; text-indent:-9999px; overflow:hidden; width:81px; height:20px; background:url('http://platform.tumblr.com/v1/share_1.png') top left no-repeat transparent;">Share on Tumblr</a>
     <?php
         
     echo $OUTPUT->footer();
