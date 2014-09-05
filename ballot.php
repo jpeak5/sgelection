@@ -60,17 +60,6 @@ $PAGE->set_title($heading);
 
 // End PAGE init.
 
-
-
-// Initialize incoming params.
-$vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
-
-// Need to group these better logically and conceptually in order to isolate them from the live election activity.
-$preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true                               : false;
-$ptft    = $preview && $voter->candoanything ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : false;
-$college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA)              : false;
-
-
 // Begin security checks.
 $voter   = new voter($USER->id);
 
@@ -82,7 +71,18 @@ $voter   = new voter($USER->id);
  * is treated as an ordinary voter.
  * The faculty advisor can always see/do everything.
  */
-$voter->candoanything = sge::voter_can_do_anything($voter, $election);
+$voter->candoanything = $voter->is_privileged_user();
+
+
+// Initialize incoming params.
+$vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
+
+// Need to group these better logically and conceptually in order to isolate them from the live election activity.
+$preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true                               : false;
+$ptft    = $preview && $voter->candoanything ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : false;
+$college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA)              : false;
+
+
 
 /**
  * If the polls aren't open, allow only voters with doanything status
