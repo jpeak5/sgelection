@@ -13,13 +13,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'classes/sgedatabaseobject.php';
+require_once($CFG->dirroot.'/blocks/sgelection/classes/sgedatabaseobject.php');
+
 abstract class ballot_item extends sge_database_object {
 
     private $election_id;

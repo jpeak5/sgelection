@@ -24,8 +24,8 @@
  */
 global $CFG;
 require_once('sgedatabaseobject.php');
-require_once('classes/office.php');
-require_once('classes/election.php');
+require_once($CFG->dirroot.'/blocks/sgelection/classes/office.php');
+require_once($CFG->dirroot.'/blocks/sgelection/classes/election.php');
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
