@@ -186,7 +186,7 @@ class sge {
         // NB: excluding Moodle site admins from this check.
         return $voter->is_faculty_advisor() || $is_editingcommissioner || is_siteadmin();
     }
-    
+
     public static function get_list_of_usernames(){
         global $DB;
         $listofusers = array();
@@ -197,4 +197,12 @@ class sge {
         return $listofusers;
     }
 
+    public static function prevent_voter_access(){
+        global $DB, $USER;
+        require_once 'classes/voter.php';
+        $voter = new Voter($USER);
+        if(!$voter->is_privileged_user()){
+            redirect(new moodle_url('/my'));
+        }
+    }
 }

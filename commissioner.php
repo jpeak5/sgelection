@@ -3,8 +3,11 @@ require_once('../../config.php');
 require_once('commissioner_form.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
+require_once 'lib.php';
 
-global $DB, $OUTPUT, $PAGE;
+global $DB, $OUTPUT, $PAGE, $USER;
+
+sge::prevent_voter_access();
 
 $id = optional_param('id', 0, PARAM_INT);
 
