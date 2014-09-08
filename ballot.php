@@ -117,7 +117,7 @@ if(!$voter->candoanything && !$voter->has_required_metadata()){
 $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
-$candidatesbyoffice = candidate::candidates_by_office($election);
+$candidatesbyoffice = candidate::candidates_by_office($election, $voter);
 $resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
 $customdata        = array(
     'resolutions' => $resolutionsToForm,
@@ -147,7 +147,7 @@ if($ballot_item_form->is_cancelled()) {
         $voter->save();
 
    // Save votes for each candidate.
-        foreach(candidate::get_full_candidates($election) as $c){
+        foreach(candidate::get_full_candidates($election, $voter) as $c){
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
 

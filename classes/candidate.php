@@ -39,16 +39,15 @@ class candidate extends sge_database_object{
 
     static $tablename = "block_sgelection_candidate";
 
-    public static function get_full_candidates(election $election=null, office $office=null, $userid=null, $college=null){
+    public static function get_full_candidates(election $election=null, voter $voter = null, $candid = null){
         global $DB;
-        //mtrace(sprintf("fn args- election->id: %s, office->id: %s, userid: %s", $election->id, $office->id, $userid));
-        $eid   = $election ? 'e.id = ' . $election->id : '';
-        $oid   = $office   ? 'o.id = ' . $office->id : '';
-        $uid   = $userid   ? 'u.id = ' . $userid : '';
-        $col   = $college  ? sprintf('(o.college = \'%s\' OR o.college = \'\')', $college) : '';
+
+        $eid      = $election ? 'e.id = ' . $election->id : '';
+        $candid   = $candid   ? 'u.id = ' . $candid : '';
+        $col      = $voter  ? sprintf('(o.college = \'%s\' OR o.college = \'\')', $voter->college) : '';
 
         $clauses = array();
-        foreach(array($eid, $oid, $uid, $col) as $clause){
+        foreach(array($eid, $candid, $col) as $clause){
             if($clause != ''){
                 $clauses[] = $clause;
             }
@@ -69,9 +68,9 @@ class candidate extends sge_database_object{
         return $DB->get_records_sql($query);
     }
 
-    public static function candidates_by_office(election $election = null){
+    public static function candidates_by_office(election $election = null, voter $voter = null){
 
-        $candidates = self::get_full_candidates($election);
+        $candidates = self::get_full_candidates($election, $voter);
 
         $officetocandidates = array();
         foreach($candidates as $c){

@@ -46,7 +46,7 @@ class ballot {
             throw new Exception("User college is not set; required to vote.");
         }
 
-        $candidates = candidate::get_full_candidates($this->election->id, null, null, $this->voter->college);
+        $candidates = candidate::get_full_candidates($this->election, $this->voter);
     }
 
     public function get_resolutions(){
