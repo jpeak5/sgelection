@@ -117,8 +117,14 @@ if(!$voter->candoanything && !$voter->has_required_metadata()){
 $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
+$resparams = array('election_id' => $election->id);
+if(!$voter->is_privileged_user() && $voter->courseload() == VOTER::VOTER_PART_TIME){
+   $resparams['restrict_fulltime'] = '';
+}
+$resolutionsToForm  = resolution::get_all($resparams);
+
 $candidatesbyoffice = candidate::candidates_by_office($election, $voter);
-$resolutionsToForm = resolution::get_all(array('election_id' => $election->id));
+
 $customdata        = array(
     'resolutions' => $resolutionsToForm,
     'election'    => $election,
