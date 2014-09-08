@@ -26,7 +26,7 @@ class ballot_item_form extends moodleform {
             $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
             sge::get_college_selection_box($mform, $college);
 
-            $ptftparams = array(0 => 'No hours', 1 =>'Part-Time', 2 =>'Full-Time');
+            $ptftparams = array(1 =>'Part-Time', 2 =>'Full-Time');
             $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
             $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
         }
@@ -70,7 +70,6 @@ class ballot_item_form extends moodleform {
                 $mform->addElement('static', 'edit_candidate', $edita);
             }
 
-            //$mform->addElement('html', html_writer::tag('p',  $r->text));
             $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
             $radioarray=array();
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);

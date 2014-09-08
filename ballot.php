@@ -69,29 +69,26 @@ $voter   = new voter($USER->id);
  */
 $voter->candoanything = $voter->is_privileged_user();
 
-
 // Initialize incoming params.
 $vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 
 // Need to group these better logically and conceptually in order to isolate them from the live election activity.
 $preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true : false;
+
 if($preview && $voter->candoanything){
     $ptft = required_param('ptft', PARAM_INT);
-    var_dump($ptft);
-    switch($ptft){
-        case 0:
-            $voter->courseload = VOTER::VOTER_NO_TIME;
-            break;
-        case 1:
+        if($ptft == 1){
             $voter->courseload = VOTER::VOTER_PART_TIME;
-            break;
-        case 2:
+        }
+        else if ($ptft == 2){
             $voter->courseload = VOTER::VOTER_FULL_TIME;
-            break;
-    }
+        }
+        else{
+            print_error('Must be enrolled to vote');
+        }
 }
 
-$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA)              : false;
+$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA) : false;
 
 
 
@@ -133,9 +130,11 @@ $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
 $resparams = array('election_id' => $election->id);
-if(!$voter->is_privileged_user() && $voter->courseload() == VOTER::VOTER_PART_TIME){
+
+if($preview && $voter->courseload == VOTER::VOTER_PART_TIME){
    $resparams['restrict_fulltime'] = '';
 }
+
 $resolutionsToForm  = resolution::get_all($resparams);
 
 $candidatesbyoffice = candidate::candidates_by_office($election, $voter);
