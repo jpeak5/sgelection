@@ -16,7 +16,7 @@ class ballot_item_form extends moodleform {
         $voter      = $this->_customdata['voter'];
         $i = 0;
 
-        if($voter->is_commissioner()){
+        if($voter->is_privileged_user()){
             // edit election link.
             $editurl = new moodle_url('commissioner.php', array('id' => $election->id));
             $edita   = html_writer::link($editurl, "Edit this Election");
@@ -25,7 +25,8 @@ class ballot_item_form extends moodleform {
             $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
             $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
             sge::get_college_selection_box($mform, $college);
-            $ptftparams = array(voter::VOTER_PART_TIME=>'pt', voter::VOTER_FULL_TIME=>'ft');
+
+            $ptftparams = array(0 => 'No hours', 1 =>'Part-Time', 2 =>'Full-Time');
             $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
             $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
         }

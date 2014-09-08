@@ -74,9 +74,24 @@ $voter->candoanything = $voter->is_privileged_user();
 $vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 
 // Need to group these better logically and conceptually in order to isolate them from the live election activity.
-$preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true                               : false;
-$ptft    = $preview && $voter->candoanything ? optional_param('ptft', voter::VOTER_NO_TIME, PARAM_INT) : false;
-$college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA)              : false;
+$preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true : false;
+if($preview && $voter->candoanything){
+    $ptft = required_param('ptft', PARAM_INT);
+    var_dump($ptft);
+    switch($ptft){
+        case 0:
+            $voter->courseload = VOTER::VOTER_NO_TIME;
+            break;
+        case 1:
+            $voter->courseload = VOTER::VOTER_PART_TIME;
+            break;
+        case 2:
+            $voter->courseload = VOTER::VOTER_FULL_TIME;
+            break;
+    }
+}
+
+$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA)              : false;
 
 
 
@@ -128,7 +143,7 @@ $candidatesbyoffice = candidate::candidates_by_office($election, $voter);
 $customdata        = array(
     'resolutions' => $resolutionsToForm,
     'election'    => $election,
-    'college'     => $college,
+    'college'     => $voter->college,
     'candidates'  => $candidatesbyoffice,
     'voter'       => $voter
         );
@@ -142,7 +157,7 @@ if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 } else if($fromform = $ballot_item_form->get_data()){
     if($preview && $voter->candoanything){
-        redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$college)));
+        redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$voter->college)));
     }elseif(strlen($vote) > 0){
 
         if($voter->already_voted($election)){
@@ -234,7 +249,7 @@ if($ballot_item_form->is_cancelled()) {
         $resolution_form->display();
         $office_form->display();
     }else{
-        $formdata->college = $college;
+        $formdata->college = $voter->college;
         $formdata->ptft    = $ptft;
     }
     $ballot_item_form->set_data($formdata);
