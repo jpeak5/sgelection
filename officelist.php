@@ -24,8 +24,10 @@
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once('classes/office.php');
 require_once 'offices_form.php';
+require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;
+sge::prevent_voter_access();
 
 // Only required to return the user to the correct ballot page.
 $election_id = required_param('election_id', PARAM_INT);
@@ -37,11 +39,10 @@ $PAGE->set_heading(get_string('office_page_header', 'block_sgelection'));
 
 require_login();
 
-// Breadcrumb trail bit
-$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/officelist.php');
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
-$editnode->make_active();
+// Setup nav, depending on voter.
+$voter    = new voter($USER->id);
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav(null, $voter);
 
 $form = new office_form(new moodle_url('offices.php',array('election_id'=>$election_id)), array('election_id'=>$election_id, 'rtn'=>'officelist'));
 echo $OUTPUT->header();
