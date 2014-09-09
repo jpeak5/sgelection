@@ -4,8 +4,10 @@ require_once('../../config.php');
 require_once('resolutions_form.php');
 require_once('classes/resolution.php');
 require_once('classes/election.php');
+require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;
+sge::prevent_voter_access();
 
 //next look for optional variables.
 $resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);
@@ -24,11 +26,10 @@ $PAGE->set_heading(get_string('resolution_page_header', 'block_sgelection'));
 
 require_login();
 
-// Breadcrumb trail bit
-$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url('/blocks/sgelection/resolutions.php', array('election_id' => $election_id));
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
-$editnode->make_active();
+// Setup nav, depending on voter.
+$voter    = new voter($USER->id);
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav(null, $voter);
 
 $form = new resolution_form(new moodle_url('resolutions.php', array('election_id' => $election_id)), array('election' => $election, 'id'=>$id));
 

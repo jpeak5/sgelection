@@ -18,11 +18,10 @@ $PAGE->set_heading(get_string('office_page_header', 'block_sgelection'));
 
 require_login();
 
-// Breadcrumb trail bit
-$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl  = new moodle_url('/blocks/sgelection/offices.php', array('id' => $id));
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
-$editnode->make_active();
+// Setup nav, depending on voter.
+$voter    = new voter($USER->id);
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav(null, $voter);
 
 $rtnurl = new moodle_url($rtn.".php", array('election_id'=>$election_id));
 $ballothomeurl = new moodle_url('/blocks/sgelection/ballot.php', array('election_id'=>$election_id));

@@ -2,8 +2,10 @@
 
 require_once('../../config.php');
 require_once('admin_form.php');
+require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;
+sge::prevent_voter_access();
 
 $done    = optional_param('done', 0, PARAM_TEXT);
 $selfurl = '/blocks/sgelection/admin.php';
@@ -17,10 +19,10 @@ $PAGE->set_heading(get_string('admin_page_header', 'block_sgelection'));
 
 require_login();
 
-$settingsnode = $PAGE->settingsnav->add(get_string('sgelectionsettings', 'block_sgelection'));
-$editurl = new moodle_url($selfurl);
-$editnode = $settingsnode->add(get_string('editpage', 'block_sgelection'), $editurl);
-$editnode->make_active();
+// Setup nav, depending on voter.
+$voter    = new voter($USER->id);
+$renderer = $PAGE->get_renderer('block_sgelection');
+$renderer->set_nav(null, $voter);
 
 $form = new sg_admin_form();
 
@@ -40,7 +42,7 @@ if($form->is_cancelled()){
 } else {
     $form->set_data(get_config('block_sgelection'));
     echo $OUTPUT->header();
-    
+
 
     echo $done == true ? $OUTPUT->notification('changes saved', 'notifysuccess') : '';
     $form->display();

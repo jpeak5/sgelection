@@ -20,8 +20,8 @@ $PAGE->set_heading(get_string('admin_page_header', 'block_sgelection'));
 
 require_login();
 
+// Setup nav, depending on voter.
 $voter    = new voter($USER->id);
-
 $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
