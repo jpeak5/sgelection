@@ -16,6 +16,7 @@ class ballot_item_form extends moodleform {
         $voter      = $this->_customdata['voter'];
         $i = 0;
 
+        // Setup preview controls.
         if($voter->is_privileged_user()){
             // edit election link.
             $editurl = new moodle_url('commissioner.php', array('id' => $election->id));
@@ -44,11 +45,11 @@ class ballot_item_form extends moodleform {
             }
             foreach($office->candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
-                if($voter->is_commissioner()){
+                if($voter->is_privileged_user()){
                     $edita   = html_writer::link($editurl, 'edit');
                     $mform->addElement('static', 'edit_candidate', $edita);
                 }
-                
+
                 $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'candidate_office_'.$officeIndex));
                 $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation);
                 $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeIndex]);
@@ -57,19 +58,19 @@ class ballot_item_form extends moodleform {
             }
             $officeIndex++;
             $i++;
-            
+
         }
         $resolutions = $this->_customdata['resolutions'];
 
         foreach($resolutions as $r){
             $mform->addElement('static','title',  html_writer::tag('h1', $r->title));
 
-            if($voter->is_commissioner()){
+            if($voter->is_privileged_user()){
+                $
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');
                 $mform->addElement('static', 'edit_candidate', $edita);
             }
-
             $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
             $radioarray=array();
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);
