@@ -38,25 +38,25 @@ if($form->is_cancelled()) {
         $resolution      = new resolution($fromform);
         $resolution->text = $fromform->text_editor['text'];
         if(isset($fromform->restrict_fulltime)){
-        $resolution->restrict_fulltime = $fromform->restrict_fulltime;
+            $resolution->restrict_fulltime = $fromform->restrict_fulltime;
         } else {
             $resolution->restrict_fulltime = 0;
         }
+
         $resolution->save();
         $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
 } else {
     // form didn't validate or this is the first display
-    //$site = get_site();
     if($id){
 
-            $editor_options = array(
-        'trusttext' => true,
-        'subdirs' => 1,
-        'maxfiles' => EDITOR_UNLIMITED_FILES,
-        'accepted_types' => '*',
-        'context' => $context
-    );
+        $editor_options = array(
+            'trusttext' => true,
+            'subdirs' => 1,
+            'maxfiles' => EDITOR_UNLIMITED_FILES,
+            'accepted_types' => '*',
+            'context' => $context
+        );
 
         $resolution = resolution::get_by_id($id);
         $resolution = file_prepare_standard_editor($resolution, 'text', $editor_options);
