@@ -220,7 +220,10 @@ if($ballot_item_form->is_cancelled()) {
         $office_form->display();
     }else{
         $formdata->college = $voter->college;
-        $formdata->ptft    = $ptft;
+        if($preview){
+            $formdata->ptft    = $ptft;
+        }
+        
     }
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();

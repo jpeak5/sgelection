@@ -24,7 +24,7 @@
  */
 
 require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
-require_once('../../config.php');
+require_once($CFG->dirroot.'/config.php');
 
 /**
  * Standard HTML output renderer for badges
