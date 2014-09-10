@@ -66,7 +66,6 @@ class ballot_item_form extends moodleform {
             $mform->addElement('static','title',  html_writer::tag('h1', $r->title));
 
             if($voter->is_privileged_user()){
-                $
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');
                 $mform->addElement('static', 'edit_candidate', $edita);

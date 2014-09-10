@@ -26,7 +26,8 @@ require_once($CFG->dirroot.'/blocks/sgelection/classes/ballotitem.php');
 
 class resolution extends ballot_item{
 
-    public  $election_id,
+    public  $restrict_fulltime,
+            $election_id,
             $title,
             $text,
             $id;
@@ -48,9 +49,12 @@ class resolution extends ballot_item{
             $aCell->attributes =  array('class'=>'winnerresolution');
         }
     }
-    
+
     public static function validate_unique_title($data){
         $title  = $data['title'];
+        if(isset($data['id'])){
+            return array();
+        }
         $allres = resolution::get_all(array('election_id' => $data['election_id']));
         foreach($allres as $res){
             if($res->title == $title){
