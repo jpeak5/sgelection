@@ -3,6 +3,7 @@
 require_once('../../config.php');
 require_once('offices_form.php');
 require_once('classes/office.php');
+require_once('classes/voter.php');
 require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;

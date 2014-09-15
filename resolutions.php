@@ -38,6 +38,7 @@ if($form->is_cancelled()) {
 } else if($fromform = $form->get_data()){
         $resolution      = new resolution($fromform);
         $resolution->text = $fromform->text_editor['text'];
+        $resolution->link = $fromform->link;
         if(isset($fromform->restrict_fulltime)){
             $resolution->restrict_fulltime = $fromform->restrict_fulltime;
         } else {

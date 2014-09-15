@@ -42,6 +42,8 @@ class candidate_form extends moodleform {
                 $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'candidate', 'election_id'=>$election->id, 'rtn'=>'ballot')), "Delete"));
             }
         }
+
+
     }
 
     function validation($data, $files) {

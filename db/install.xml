@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/sgelection/db" VERSION="20140904" COMMENT="XMLDB file for Moodle blocks/sgelection"
+<XMLDB PATH="blocks/sgelection/db" VERSION="20140915" COMMENT="XMLDB file for Moodle blocks/sgelection"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -42,6 +42,7 @@
         <FIELD NAME="title" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="restrict_fulltime" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="should this resolution be limited to fulltime students?"/>
+        <FIELD NAME="link" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="link to full resolution text"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

@@ -53,6 +53,8 @@ $string['for'] = 'For';
 $string['against'] = 'Against';
 $string['resolution'] = 'Resolution';
 $string['restrict_to_fulltime'] = 'Restrict to Full Time?';
+$string['link_to_fulltext'] = 'Link to Full Text';
+
 // Offices
 $string['office_page_header'] = 'Office Page Header';
 $string['create_new_office'] = 'Create New Office';
