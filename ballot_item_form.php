@@ -38,7 +38,7 @@ class ballot_item_form extends moodleform {
             
             if(count($office->candidates) > 0){
                 $number_of_office_votes_allowed[] = $office->number;
-                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name));
+                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name) .  get_string('select_up_to', 'block_sgelection') . $office->number );
             }
             if($office->candidates != null){
                 shuffle($office->candidates);
