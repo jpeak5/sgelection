@@ -71,6 +71,7 @@ class ballot_item_form extends moodleform {
                 $mform->addElement('static', 'edit_candidate', $edita);
             }
             $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
+            $mform->addElement('static','text', 'Full Text Link', '<div class="resolution_link"><a href="'.$r->link.'">' . html_writer::tag('p', $r->link) . '</div>');            
             $radioarray=array();
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), resolution::AGAINST);

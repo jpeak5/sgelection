@@ -30,7 +30,8 @@ class resolution extends ballot_item{
             $election_id,
             $title,
             $text,
-            $id;
+            $id,
+            $link;
 
     static $tablename = "block_sgelection_resolution";
 
