@@ -83,7 +83,7 @@ class block_sgelection extends block_list {
                 . "    AND usem.id = :semid"
                 . " GROUP BY ustu.userid;";
         try{
-            $hours = $DB->get_records_sql($sql, array('semid'=>1));
+            $hours = $DB->get_records_sql($sql, array('semid'=>2));
         }catch(Exception $e){
             var_dump($e);
             // @TODO send email to admins in case of any failure.
@@ -99,7 +99,7 @@ class block_sgelection extends block_list {
                 $election->message_admins();
             }
         }
-
-        return true;
+    mtrace('!!!!!!!!!!number of rows = '.count($hours));
+    return true;
     }
 }

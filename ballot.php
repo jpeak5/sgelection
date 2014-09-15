@@ -47,7 +47,7 @@ $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
 require_login();
 $PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
-$PAGE->requires->js('/blocks/sgelection/js/limitcandidatecheckboxes.js');
+//$PAGE->requires->js('/blocks/sgelection/js/limitcandidatecheckboxes.js');
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = $election->fullname();
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
@@ -220,7 +220,10 @@ if($ballot_item_form->is_cancelled()) {
         $office_form->display();
     }else{
         $formdata->college = $voter->college;
-        $formdata->ptft    = $ptft;
+        if($preview){
+            $formdata->ptft    = $ptft;
+        }
+        
     }
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
@@ -228,18 +231,9 @@ if($ballot_item_form->is_cancelled()) {
     
     $listofusers = sge::get_list_of_usernames();
     $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_username'));    
+    require_once('candidatecheckboxcheck.php');
     echo $OUTPUT->footer();
 
-    $i = 0;
-    $lengthOfCandidates = count($candidatesbyoffice);
-    $limit = 1000; //what?!
-    echo '<script type="text/javascript">';
-    while($i < $lengthOfCandidates){
-        $limit = $candidatesbyoffice[$i+1]->number;
-        $officenumber = $candidatesbyoffice[$i+1]->id;
-        echo 'checkboxlimit(document.querySelectorAll(".candidate_office_'.$i.'"), '. $limit .' , ' . $officenumber .');';
-        $i++;
-    }
-    echo '</script>';
+    
 }
 
