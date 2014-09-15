@@ -37,9 +37,15 @@ class sge {
      */
     public static function validate_username($data, $fieldname){
         global $DB;
-        $userexists = $DB->record_exists('user', array('username'=>$data[$fieldname]));
-        if($userexists){
-            return array();
+        $user = $DB->get_record('user', array('username'=>$data[$fieldname]));
+        $voter = new voter($user->id);
+        if($user){
+            if($voter->courseload == 'F'){
+                return array();
+            }
+            else{
+                return array($fieldname => get_string('err_user_notfulltime', 'block_sgelection',  $data[$fieldname]));
+            }
         }else{
             return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
         }
