@@ -5,7 +5,7 @@ require_once('admin_form.php');
 require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;
-sge::prevent_voter_access();
+sge::allow_only(sge::FACADVISOR);
 
 $done    = optional_param('done', 0, PARAM_TEXT);
 $selfurl = '/blocks/sgelection/admin.php';
@@ -30,17 +30,17 @@ if($form->is_cancelled()){
     redirect('/');
 } else if($fromform = $form->get_data()){
     //We need to add code to appropriately act on and store the submitted data
-    set_config('commissioner', $fromform->commissioner, 'block_sgelection');
-    set_config('fulltime', $fromform->fulltime, 'block_sgelection');
-    set_config('parttime', $fromform->parttime, 'block_sgelection');
+    sge::config('commissioner', $fromform->commissioner);
+    sge::config('fulltime', $fromform->fulltime);
+    sge::config('parttime', $fromform->parttime);
     // @TODO if excl_curr_codes is not set, we have a problem.
     // Probably, supply a default value here.
     // Alternatively, provide a 'none' option in the form that will need to be checked here.
-    set_config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes), 'block_sgelection');
+    sge::config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes));
 
     redirect(new moodle_url($selfurl, array('done'=>'true')));
 } else {
-    $form->set_data(get_config('block_sgelection'));
+    $form->set_data(sge::config());
     echo $OUTPUT->header();
 
 

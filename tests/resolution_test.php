@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
@@ -25,15 +25,23 @@ class resolution_testcase extends block_sgelection_base {
 
     public function test_validate_unique_title(){
         $this->resetAfterTest();
-        $r1 = $this->create_resolution();
-        $r2 = $this->create_resolution();
+
+        $params = array(
+            'title' => 'title',
+            'election_id' => 1,
+            'text' => 'text',
+            'restrict_fulltime' => 1,
+        );
+        $r1 = $this->create_resolution($params);
+        $r2 = $this->create_resolution($params);
+
         $result = resolution::validate_unique_title((array)$r2);
         $this->assertNotEmpty($result);
         $this->assertEquals(
                 get_string('err_resolution_title_nonunique', 'block_sgelection'),
                 $result['title']
                 );
-        $r3 = $this->create_resolution(array('title' => 'uniq', 'text'=>'hello'));
+        $r3 = $this->create_resolution(array('title' => 'uniq', 'text'=>'hello', 'election_id' => 2, 'restrict_fulltime'=>0));
         $cleanresult = resolution::validate_unique_title((array)$r3);
         $this->assertEmpty($cleanresult);
     }

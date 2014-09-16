@@ -18,6 +18,7 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('office_page_header', 'block_sgelection'));
 
 require_login();
+sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
 
 // Setup nav, depending on voter.
 $voter    = new voter($USER->id);

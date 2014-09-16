@@ -131,6 +131,45 @@ class sge_database_object_testcase extends block_sgelection_base {
         $this->assertEquals('Lions', $test->affiliation);
     }
 
+    public function test_get_by_id_with_nulls(){
+        $e = new stdClass();
+        $e->semesterid = 55;
+        $e->name               = "Spring";
+        $e->hours_census_start = time() + 86400*2;
+        $e->start_date         = time() + 86400*3;
+        $e->end_date           = time() + 86400*4;
+
+        // Instantiate.
+        $election = new Election($e);
+        $this->assertInstanceOf('Election', $election);
+
+        // Ensure our NULL field is not present on the object.
+        $this->assertNull($election->hours_census_complete,
+                "Since it has not been set, this property should evaluate empty");
+        $this->assertNull($election->id,
+                "Since it has not been set, this property should evaluate empty");
+
+        // Persist to DB.
+        $election->save();
+        $this->assertNotNull($election->id);
+        $this->assertInternalType('int', $election->id);
+
+        // Try to get our persisted object back from the DB.
+        $objWithNullTableValues = Election::get_by_id($election->id);
+        $this->assertInstanceOf('Election', $objWithNullTableValues);
+        $this->assertEquals($election, $objWithNullTableValues);
+    }
+
+    public function test_get_by_id_not_found(){
+        global $DB;
+        // Ensure that the table is empty;
+        $this->assertEquals(0, count($DB->get_records(Election::$tablename)));
+
+        // Try to find election.id = 999363 in a completely empty table;
+        $election = Election::get_by_id(999363);
+        $this->assertFalse($election);
+    }
+
     public function test_get_all_by_election_id(){
         $election1 = $this->create_election();
         $office1   = $this->create_office();

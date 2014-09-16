@@ -26,7 +26,9 @@ ues::require_daos();
 
 class election extends sge_database_object {
     // @TODO rename 'semester' field to 'semesterid', in line with other fk fields.
-    public  $semesterid,
+    public  $hours_census_start,
+            $hours_census_complete,
+            $semesterid,
             $name,
             $start_date,
             $end_date,
@@ -104,6 +106,71 @@ class election extends sge_database_object {
 
         $msg = get_string('err_start_end_disorder', 'block_sgelection', $a);
         return array('start_date' => $msg);
+    }
+
+    public static function validate_census_start($data, $files){
+        $start  = $data['start_date'];
+        $cstart = $data['hours_census_start'];
+
+        $semester = ues_semester::by_id($data['semesterid']);
+        $earliest = sge::config('earliest_start') * 86400 + $semester->classes_start;
+        // Perhaps let the window be user-configurable.
+        $window = sge::config('census_window');
+        if($cstart <= $start - ($window * 60 * 60) && $cstart > $earliest){
+            return array();
+        }
+
+        $a = new stdClass();
+        $a->start  = strftime('%F %T', $start);
+        $a->cstart = strftime('%F %T', $cstart);
+        $a->earliest = strftime('%F %T', $earliest);
+        $a->window = $window;
+
+        $msg = get_string('err_census_start_too_soon', 'block_sgelection', $a);
+        return array('hours_census_start' => $msg);
+    }
+
+    public static function validate_times_in_bounds($data, $files) {
+        $semester = ues_semester::by_id($data['semesterid']);
+        $earliest = $semester->classes_start + sge::config('earliest_start') * 86400;
+        $latest   = $semester->grades_due    - sge::config('latest_end') * 86400;
+        if($data['start_date'] < $earliest){
+            $a = new stdClass();
+            $a->earliest = strftime('%F %T', $earliest);
+            $a->latest   = strftime('%F %T', $latest);
+
+            $msg = get_string('err_start_end_outofbounds', 'block_sgelection', $a);
+            return array('start_date' => $msg);
+        }elseif($data['end_date'] > $latest){
+            $a = new stdClass();
+            $a->earliest = strftime('%F %T', $earliest);
+            $a->latest   = strftime('%F %T', $latest);
+
+            $msg = get_string('err_start_end_outofbounds', 'block_sgelection', $a);
+            return array('end_date' => $msg);
+        }else{
+            return array();
+        }
+
+    }
+
+    public static function validate_future_start($data, $files) {
+        $soonest = sge::config('census_window') * 3600 + time();
+        if($data['start_date'] <= $soonest){
+            $msg = get_string('err_election_future_start', 'block_sgelection', strftime('%F %T', $soonest));
+            return array('start_date' => $msg);
+        }elseif($data['hours_census_start'] < time()){
+            if(!empty($data['id'])){
+                $election = Election::get_by_id($data['id']);
+                if(!empty($election->hours_census_complete)){
+                    return array();
+                }
+            }
+            $msg = get_string('err_census_future_start', 'block_sgelection');
+            return array('hours_census_start' => $msg);
+        }else{
+            return array();
+        }
     }
 
     public static function get_date_format(){
