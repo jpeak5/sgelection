@@ -35,7 +35,18 @@ class sge {
      * @param string $fieldname name of the field to which the err message should be attached in the return array.
      * @return array empty if user exists, otherwise having the form array($fieldname => $message)
      */
+
     public static function validate_username($data, $fieldname){
+        global $DB;
+        $userexists = $DB->record_exists('user', array('username'=>$data[$fieldname]));
+        if($userexists){
+            return array();
+        }else{
+            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
+        }
+    }
+
+    public static function validate_commisioner($data, $fieldname){
         global $DB;
         $user = $DB->get_record('user', array('username'=>$data[$fieldname]));
         $voter = new voter($user->id);
