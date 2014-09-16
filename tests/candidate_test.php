@@ -22,6 +22,8 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+global $CFG;
+
 require_once 'classes/candidate.php';
 require_once 'classes/election.php';
 require_once 'classes/office.php';
@@ -74,30 +76,6 @@ class candidate_class_testcase extends block_sgelection_base {
         $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand3).$eid]);
     }
 
-    public function test_get_full_candidates_office(){
-        $test2 = candidate::get_full_candidates(null, $this->office1);
-
-        $this->assertEquals(2, count($test2));
-        $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand1).$this->oldelection->id]);
-        $this->assertNotEmpty($test2[$this->full_candidate_key_helper($this->cand2).$this->currentelection->id]);
-    }
-
-    public function test_get_full_candidates_election_office(){
-        $test = candidate::get_full_candidates($this->currentelection, $this->office2);
-        $eid  = $this->currentelection->id;
-
-        $this->assertEquals(3, count($test));
-        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand3).$eid]);
-        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand4).$eid]);
-    }
-
-    public function test_get_full_candidates_userid(){
-        $test = candidate::get_full_candidates(null, null, $this->user1->id);
-        $this->assertEquals(2, count($test));
-        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand1).$this->oldelection->id]);
-        $this->assertNotEmpty($test[$this->full_candidate_key_helper($this->cand5).$this->currentelection->id]);
-    }
-
     private function full_candidate_key_helper($candidate){
         return $candidate->userid.$candidate->id;
     }
@@ -110,6 +88,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $eparams->semesterid = 1;
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
+        $eparams->hours_census_start = $eparams->start_date - 86400;
 
         $this->currentelection = new election($eparams);
         $this->currentelection->save();
@@ -120,6 +99,7 @@ class candidate_class_testcase extends block_sgelection_base {
         $eparams->semesterid = 2;
         $eparams->start_date = 2014;
         $eparams->end_date = 2015;
+        $eparams->hours_census_start = $eparams->start_date - 86400;
 
         $this->oldelection = new election($eparams);
         $this->oldelection->save();

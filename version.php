@@ -2,8 +2,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version = 2014062802;  // YYYYMMDDHH (year, month, day, 24-hr time)
-$plugin->requires = 2010112400; // YYYYMMDDHH (This is the release version for Moodle 2.0)
+$plugin->version = 2014062802;
+$plugin->requires = 2010112400;
 $plugin->component = 'block_sgelection';
 $plugin->maturity = MATURITY_ALPHA;
 $plugin->release = "v0";

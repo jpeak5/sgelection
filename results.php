@@ -35,6 +35,10 @@ global $CFG, $DB, $OUTPUT, $PAGE;
 require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
 sge::require_db_classes();
 
+// page security
+require_login();
+sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
+
 // Only required to return the user to the correct ballot page.
 $election = Election::get_by_id(required_param('election_id', PARAM_INT));
 
@@ -44,7 +48,6 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
 $renderer = $PAGE->get_renderer('block_sgelection');
 
-require_login();
 $voter    = new voter($USER->id);
 
 $renderer->set_nav(null, $voter);

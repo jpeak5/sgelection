@@ -86,8 +86,8 @@ class voter extends sge_database_object {
     public function courseload(){
         global $DB;
         $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid));
-        $parttime = get_config('block_sgelection', 'parttime');
-        $fulltime = get_config('block_sgelection', 'fulltime');
+        $parttime = sge::config('parttime');
+        $fulltime = sge::config('fulltime');
         $this->hours = $hours ? $hours : 0;
 
         if($hours < $parttime){
@@ -103,8 +103,8 @@ class voter extends sge_database_object {
     }
 
     public static function courseload_string($courseload){
-        $parttime = get_config('block_sgelection', 'parttime');
-        $fulltime = get_config('block_sgelection', 'fulltime');
+        $parttime = sge::config('parttime');
+        $fulltime = sge::config('fulltime');
         switch($courseload){
             case 'X':
                 return sprintf("Less than part-time enrollment (%s hours)",$parttime);
@@ -138,7 +138,7 @@ class voter extends sge_database_object {
      * @return boolean
      */
     public function is_faculty_advisor() {
-        if($this->username == sge::config('facadvisor')){
+        if($this->username == sge::config('facadv')){
            return true;
         }
         return false;

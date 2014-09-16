@@ -29,6 +29,10 @@ class commissioner_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
 
+        $mform->addElement('date_time_selector', 'hours_census_start', get_string('hours_census_start', 'block_sgelection'), $datedefaults);
+        $mform->addRule('hours_census_start', null, 'required', null, 'client');
+        $mform->addHelpButton('hours_census_start', 'hours_census_start', 'block_sgelection');
+
         $mform->addElement('date_time_selector', 'start_date', get_string('start_date', 'block_sgelection'), $datedefaults);
         $mform->addRule('start_date', null, 'required', null, 'client');
 
@@ -42,6 +46,9 @@ class commissioner_form extends moodleform {
         $errors = parent::validation($data, $files);
         $errors += election::validate_unique($data, $files);
         $errors += election::validate_start_end($data, $files);
+        $errors += election::validate_census_start($data, $files);
+        $errors += election::validate_times_in_bounds($data, $files);
+        $errors += election::validate_future_start($data, $files);
         return $errors;
     }
 }

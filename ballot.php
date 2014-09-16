@@ -40,12 +40,13 @@ ues::require_daos();
 
 global $USER, $DB, $PAGE;
 
+require_login();
+
 // Begin initialize PAGE.
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
 $PAGE->set_pagelayout('standard');
-require_login();
 $PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
 //$PAGE->requires->js('/blocks/sgelection/js/limitcandidatecheckboxes.js');
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
@@ -210,7 +211,7 @@ if($ballot_item_form->is_cancelled()) {
     echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
     $formdata = new stdClass();
     if(!$preview && $voter->candoanything){
-        // FORM and INDIVIDUAL FORM ITEMS
+        // form elements creation forms; not for regular users.
         $candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election->id)), array('election'=> $election));
         $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
         $office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election->id)), array('election_id'=> $election->id, 'rtn'=>'ballot'));
@@ -218,7 +219,8 @@ if($ballot_item_form->is_cancelled()) {
         $candidate_form->display();
         $resolution_form->display();
         $office_form->display();
-    }else{
+    }elseif($preview && $voter->candoanything){
+        // preview functionality; also not for regular users.
         $formdata->college = $voter->college;
         if($preview){
             $formdata->ptft    = $ptft;

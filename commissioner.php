@@ -7,7 +7,7 @@ require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE, $USER;
 
-sge::prevent_voter_access();
+sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
 
 $id = optional_param('id', 0, PARAM_INT);
 
