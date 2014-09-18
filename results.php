@@ -48,10 +48,29 @@ $PAGE->set_pagelayout('standard');
 $PAGE->set_heading(get_string('results_page_header', 'block_sgelection'));
 $renderer = $PAGE->get_renderer('block_sgelection');
 
+$PAGE->requires->js('/blocks/sgelection/js/datatableforstudentdata.js');
+
 $voter    = new voter($USER->id);
 
 $renderer->set_nav(null, $voter);
 echo $OUTPUT->header();
 echo $renderer->get_office_results($election);
 echo $renderer->get_resolution_results($election);
+
+$result = $DB->get_records('block_sgelection_voters');
+$dataarray=array();
+$data = array();
+$cols = 0;
+foreach($result as $r){
+    echo '<h1> r = </h1><br />';
+    var_dump($r->college);
+    echo '<h1> dataarray = </h1><br />';
+    $dataarray['college']=$r->college;
+    var_dump($dataarray);
+}
+$dataarray = json_encode($dataarray);
+
+echo '<h1> dataarray json encoded = </h1><br />';
+//var_dump($dataarray);
+//$PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $dataarray));
 echo $OUTPUT->footer();
