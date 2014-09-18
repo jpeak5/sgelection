@@ -84,7 +84,7 @@ class block_sgelection extends block_list {
             $DB->delete_records('block_sgelection_hours', array('semesterid' => $s->id));
 
             // Get user enrolled hours for the given semester.
-            $hours = sge::calculate_enrolled_hours_for_semester($s);
+            $hours = sge::calculate_all_enrolled_hours_for_semester($s);
 
             // If we get no results (should never happen, provided
             // ues users are enrolled), continue to the next one.
@@ -106,7 +106,6 @@ class block_sgelection extends block_list {
                 $election->message_admins();
             }
         }
-    mtrace('!!!!!!!!!!number of rows = '.count($hours));
     return true;
     }
 }

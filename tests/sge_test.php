@@ -318,7 +318,7 @@ class sge_testcase extends sge_database_object_testcase {
         $enrolledhours[$student2->id]['Spring'] += $enrol($student2->id, $SpringBIOL->id, 4);
 
         // Test the function return values agains the Expected values map for 'Spring'.
-        $springhours = sge::calculate_enrolled_hours_for_semester($semester1);
+        $springhours = sge::calculate_all_enrolled_hours_for_semester($semester1);
         foreach($springhours as $userid => $rec){
             $this->assertEquals($enrolledhours[$userid][$semester1->name], $rec->hours,
                     sprintf("Hours for userid %d did not match.\n", $userid));
@@ -329,7 +329,7 @@ class sge_testcase extends sge_database_object_testcase {
         $enrolledhours[$student2->id]['Summer']  = $enrol($student2->id, $SummerCHEM->id, 5);
 
         // Test the function return values agains the Expected values map for 'Spring'.
-        $summerhours = sge::calculate_enrolled_hours_for_semester($semester2);
+        $summerhours = sge::calculate_all_enrolled_hours_for_semester($semester2);
         foreach($summerhours as $userid => $rec){
             $this->assertEquals($enrolledhours[$userid][$semester2->name], $rec->hours,
                     sprintf("Hours for userid %d did not match.\n", $userid));

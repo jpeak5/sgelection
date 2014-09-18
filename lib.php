@@ -285,7 +285,7 @@ class sge {
         return $result;
     }
 
-    public static function calculate_enrolled_hours_for_semester(ues_semester $s){
+    public static function calculate_all_enrolled_hours_for_semester(ues_semester $s){
         global $DB;
         $sql = "SELECT "
                 . " ustu.userid as userid, sum(ustu.credit_hours) hours, usem.id as semesterid"
