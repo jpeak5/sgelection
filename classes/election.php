@@ -80,14 +80,16 @@ class election extends sge_database_object {
     }
 
     public static function validate_unique($data, $files){
-
+        $update = !empty($data['id']);
+        $found  = array();
         $elections = election::get_all(array('semesterid' => $data['semesterid']));
         foreach($elections as $election){
-            $semester = ues_semester::by_id($election->semesterid);
-            if($semester->id == $data['semesterid'] && $election->name == $data['name']){
-                $found = $election->fullname();
-                return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', $found));
+            if($election->name == $data['name']){
+                $found[] = $election->fullname();
             }
+        }
+        if(count($found) > 0 && !$update){
+            return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', implode(',',$found)));
         }
         return array();
     }
