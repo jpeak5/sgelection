@@ -88,8 +88,8 @@ if($preview && $voter->candoanything){
             print_error('Must be enrolled to vote');
         }
 }
-
-$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA) : false;
+    
+$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA) : $voter->college;
 
 
 
@@ -164,7 +164,7 @@ if($ballot_item_form->is_cancelled()) {
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
-
+        $voter->time = time();
         $voter->save();
 
    // Save votes for each candidate.
@@ -173,7 +173,6 @@ if($ballot_item_form->is_cancelled()) {
             if(isset($fromform->$fieldname)){
 
                 $vote = new vote(array('voterid'=>$voter->id));
-                $vote->time = time();
                 $vote->typeid = $c->cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;
@@ -186,15 +185,14 @@ if($ballot_item_form->is_cancelled()) {
             $fieldname = 'resvote_'.$resid;
             if(isset($fromform->$fieldname)){
                 $vote = new vote(array('voterid'=>$voter->id));
-                $vote->time = time();
-                $vote->typeid = $resid; 
+                $vote->typeid = $resid;
                 $vote->type = 'resolution';
                 $vote->vote = $fromform->$fieldname;
                 $vote->save();
             }
         }
         $voter->mark_as_voted($election);
-        
+
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('p', get_string('thanks_for_voting', 'block_sgelection'));
