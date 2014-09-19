@@ -34,11 +34,10 @@ class office extends sge_database_object {
 
     public static function validate_unique_office($data){
 
-        $name   = $data['name'];
-        $alloff = self::get_all();
+        $alloff  = self::get_all();
         unset($alloff[$data['id']]);
         foreach($alloff as $off){
-            if($off->name == $name){
+            if($off->name == $data['name'] && $data['college'] == $off->college){
                 return array('name'=> get_string('err_office_name_nonunique', 'block_sgelection'));
             }
         }
