@@ -39,7 +39,7 @@ class resolution_form extends moodleform {
         $mform->addElement('hidden', 'id', $id);
         $mform->setType('id', PARAM_INT);
 
-        $attributes = array('size' => '50', 'maxlength' => '100');
+        $attributes = array('size' => '50');
         $mform->addElement('text', 'title', get_string('title_of_resolution', 'block_sgelection'), $attributes);
         $mform->setType('title', PARAM_TEXT);
 
