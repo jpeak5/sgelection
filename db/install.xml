@@ -30,7 +30,7 @@
         <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="college" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="number" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="weight" TYPE="int" NOTNULL="true" SEQUENCE="false" DEFAULT='5' COMMENT="weight"/>
+        <FIELD NAME="weight" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" DEFAULT='5' COMMENT="weight"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
