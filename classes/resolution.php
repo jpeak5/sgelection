@@ -53,15 +53,20 @@ class resolution extends ballot_item{
 
     public static function validate_unique_title($data){
         $title  = $data['title'];
-        if(isset($data['id'])){
-            return array();
-        }
+        $update = !empty($data['id']);
+
         $allres = resolution::get_all(array('election_id' => $data['election_id']));
+        $count = 0;
         foreach($allres as $res){
             if($res->title == $title){
-                return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
+                $count++;
             }
         }
-        return array();
+
+        if(($count == 1 && $update) || $count == 0){
+            return array();
+        }else{
+            return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
+        }
     }
 }

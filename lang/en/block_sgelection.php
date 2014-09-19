@@ -83,6 +83,8 @@ $string['semester'] = 'Semester';
 $string['name'] = 'Name';
 $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
+$string['hours_census_start'] = 'Census Start Time';
+$string['hours_census_start_help'] = 'This time setting defines the first second in which Moodle may calculate enrollment eligibility (enrolled hours) for users.';
 
 // errors
 $string['err_user_nonexist'] = 'User {$a} does not exist.';
@@ -92,9 +94,23 @@ $string['err_election_nonunique'] = 'An election called <em>{$a}</em> already ex
 $string['err_start_end_disorder'] = 'Start date {$a->start} must occur before end date {$a->end}.';
 $string['err_office_name_nonunique'] = "An Office with this name already exists";
 $string['err_user_notfulltime'] = "Commissioner has to be fulltime";
+$string['err_census_start_too_soon'] = 'Census start time must be set after the election earliest_start date ({$a->earliest}) and at least {$a->window} hours before election start time.';
+$string['err_start_end_outofbounds'] = 'Election start and end dates must fall within the acceptable range as defined by the Moodle administrator. [{$a->earliest} - {$a->latest}]';
+$string['err_election_future_start'] = 'In order to allow time for the enrollment census to run, election can be set to start no sooner than {$a}.';
+$string['err_census_future_start']   = 'Census cannot start in the past.';
 
 //results
 $string['results_page_header'] = 'Results';
 
 // voter
 $string['ptorft'] = 'Part Time or Full Time';
+
+//admin settings
+$string['facadv'] = 'Faculty Advisor';
+$string['facadv_desc'] = 'Username of the SG Faculty Advisor';
+$string['earliest_start'] = '#days after semester start';
+$string['earliest_start_desc'] = 'How many days after the semester starts is it ok to begin an election ?';
+$string['latest_end'] = '#days before grades due';
+$string['latest_end_desc'] = 'How many days before the semester ends is it ok to end an election ?';
+$string['census_window'] = 'Census cron window';
+$string['census_window_desc'] = 'How many hours before an election can we allow the census period to begin? NB that cron must have a chance to run between election census start and election start.';

@@ -7,7 +7,7 @@ require_once('classes/election.php');
 require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;
-sge::prevent_voter_access();
+sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
 
 $election_id = required_param('election_id', PARAM_INT);
 $election    = election::get_by_id($election_id);

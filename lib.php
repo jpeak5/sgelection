@@ -27,6 +27,8 @@ require_once($CFG->dirroot.'/blocks/sgelection/classes/election.php');
 
 class sge {
 
+    const FACADVISOR    = 'facadvisor';
+    const COMMISSIONER = 'commissioner';
     /**
      * Helper method called from forms' validation() methods; verifies existence of a user.
      *
@@ -191,11 +193,17 @@ class sge {
 
     /**
      * Helper method to return plugin-specific config values with a shorter method call.
-     * @param string $id config_plugins key
+     * @param string $name config_plugins key
      * @return string
      */
-    public static function config($id){
-        return get_config('block_sgelection', $id);
+    public static function config($name = null, $value = null){
+        if(null !== $name && null !== $value){
+            return set_config($name, $value, 'block_sgelection');
+        }elseif(null !== $name){
+            return get_config('block_sgelection', $name);
+        }else{
+            return get_config('block_sgelection');
+        }
     }
 
     public static function voter_can_do_anything(voter $voter, election $election) {
@@ -204,6 +212,12 @@ class sge {
         return $voter->is_faculty_advisor() || $is_editingcommissioner || is_siteadmin();
     }
 
+    /**
+     * Helper function for username autocopmlete controls.
+     * @TODO this function should only pull UES users who do NOT have a directory hold.
+     * @global type $DB
+     * @return type
+     */
     public static function get_list_of_usernames(){
         global $DB;
         $listofusers = array();
@@ -214,12 +228,74 @@ class sge {
         return $listofusers;
     }
 
-    public static function prevent_voter_access(){
-        global $USER;
+    /**
+     * This function can be called with a variable number of args,
+     * one for each user (Fac. Adv, Commissioner) allowed. Siteadmins always pass.
+     * @global type $USER
+     * @return boolean
+     */
+    public static function allow_only(){
         require_once 'classes/voter.php';
-        $voter = new Voter($USER->id);
-        if(!$voter->is_privileged_user()){
-            redirect(new moodle_url('/my'));
+        global $USER;
+
+        if(is_siteadmin()){
+            return true;
         }
+
+        $voter = new Voter($USER->id);
+        foreach(func_get_args() as $allowed){
+            if($allowed === self::FACADVISOR && $voter->is_faculty_advisor()){
+                return true;
+            }
+            if($allowed === self::COMMISSIONER && $voter->is_commissioner()){
+                return true;
+            }
+        }
+        redirect(new moodle_url('/my'));
+    }
+
+    /**
+     * Since voter eligibility is based on the number of hours he/she has enrolled
+     * in for a given semester, we need to calculate this before each election.
+     *
+     * The date when this can be calculated is set by the Commissioner of elections
+     * https://trello.com/c/e0Idk1O2 and at cron(), we look for any elections for
+     * which the following is true:
+     * current time is before the election start time
+     * current time is after the census_start time (as set by the commissioner).
+     *
+     * If we find any of these elections, the app will need to calculate enrolled hours for
+     * the ues_semester in which the election occurs (block_sgelection_election.semesterid).
+     * Therefore, we finish here by returning an array of those ues_semesters.
+     *
+     * @global stdClass $DB
+     * @return ues_semester[] keyed by id, considered eligible for census.
+     */
+    public static function semesters_eligible_for_census(){
+        global $DB;
+        $result = array();
+        $where  = "hours_census_start < :now AND hours_census_complete IS NULL AND start_date > :then";
+        $raw    = $DB->get_fieldset_select(Election::$tablename, 'semesterid', $where, array('now'=>time(), 'then'=>time()));
+        foreach($raw as $r){
+            $s = ues_semester::by_id($r);
+            if($s){
+                $result[$s->id] = $s;
+            }
+        }
+        return $result;
+    }
+
+    public static function calculate_enrolled_hours_for_semester(ues_semester $s){
+        global $DB;
+        $sql = "SELECT "
+                . " ustu.userid as userid, sum(ustu.credit_hours) hours, usem.id as semesterid"
+                . " FROM {enrol_ues_students} as ustu"
+                . "    JOIN {enrol_ues_sections} usec ON usec.id = ustu.sectionid"
+                . "    JOIN {enrol_ues_semesters} usem ON usem.id = usec.semesterid"
+                . " WHERE ustu.status = 'enrolled'"
+                . "    AND usem.id = :semid"
+                . " GROUP BY ustu.userid;";
+
+        return $DB->get_records_sql($sql, array('semid'=>$s->id));
     }
 }

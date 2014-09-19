@@ -7,7 +7,7 @@ require_once('classes/election.php');
 require_once 'lib.php';
 
 global $DB, $OUTPUT, $PAGE;
-sge::prevent_voter_access();
+sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
 
 //next look for optional variables.
 $resolutionTitle = optional_param('title_of_resolution', '', PARAM_TEXT);

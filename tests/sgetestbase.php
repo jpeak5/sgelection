@@ -24,6 +24,8 @@
 global $CFG;
 require_once $CFG->libdir.'/testing/generator/data_generator.php';
 require_once 'classes/resolution.php';
+require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
+sge::require_db_classes();
 
 abstract class block_sgelection_base extends advanced_testcase{
 
@@ -95,6 +97,7 @@ abstract class block_sgelection_base extends advanced_testcase{
                 $params['start_date'] = $start;
                 $params['end_date']   = $end;
             }
+            $params['hours_census_start'] = $params['start_date'] - 86400;
             $election = new election($params);
             $election->save();
             return $election;
@@ -108,6 +111,8 @@ abstract class block_sgelection_base extends advanced_testcase{
         list($start, $end) = $startend(time(), $current);
         $e->start_date = $start;
         $e->end_date   = $end;
+        $e->hours_census_start = $e->start_date - 86400;
+        $e->hours_census_complete = $e->hours_census_start + 200;
 
         $election = new election($e);
         $election->save();
@@ -157,7 +162,9 @@ abstract class block_sgelection_base extends advanced_testcase{
 
     protected function create_resolution($params = null, $eid = null){
         if(is_object($params) || is_array($params)){
-            return new resolution($params);
+            $res = new resolution($params);
+            $res->save();
+            return $res;
         }
 
         if(!$eid){
@@ -177,7 +184,8 @@ abstract class block_sgelection_base extends advanced_testcase{
         $params = array(
             'election_id' => $eid,
             'title'       => $titles[rand(0, count($titles)-1)],
-            'text'        => $ipsum
+            'text'        => $ipsum,
+            'restrict_fulltime' => 1.
         );
 
         $resolution = new resolution($params);
@@ -225,6 +233,8 @@ abstract class block_sgelection_base extends advanced_testcase{
             'semesterid' => 3,
             'start_date' => time() + 1000,
             'end_date'   => time() + 10000,
+            'hours_census_start' => time() + 1000 - 86400,
+            'hours_census_complete' => time() + 1000 - 86300,
         );
         $fn = 'create_'.$class;
 

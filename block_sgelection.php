@@ -11,6 +11,8 @@ class block_sgelection extends block_list {
         $this->title = get_string('sgelection', 'block_sgelection');
     }
 
+    public function has_config() {return true;}
+
     public function get_content() {
         global $USER, $CFG, $COURSE, $OUTPUT, $DB;
 
@@ -73,24 +75,29 @@ class block_sgelection extends block_list {
      */
     public function cron() {
         global $DB;
-        $DB->delete_records('block_sgelection_hours');
-        $sql = "SELECT "
-                . " ustu.userid as userid, sum(ustu.credit_hours) hours"
-                . " FROM {enrol_ues_students} as ustu"
-                . "    JOIN {enrol_ues_sections} usec ON usec.id = ustu.sectionid"
-                . "    JOIN {enrol_ues_semesters} usem ON usem.id = usec.semesterid"
-                . " WHERE ustu.status = 'enrolled'"
-                . "    AND usem.id = :semid"
-                . " GROUP BY ustu.userid;";
-        try{
-            $hours = $DB->get_records_sql($sql, array('semid'=>2));
-        }catch(Exception $e){
-            var_dump($e);
-            // @TODO send email to admins in case of any failure.
-            //email_to_user($user, $from, $sql, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname)
-        }
-        foreach($hours as $row){
-            $DB->insert_record('block_sgelection_hours', $row);
+
+        // Iterate over each semester which is ready for eligibility calculation
+        // creating block_sgelection_hours rows for each student enrolled.
+        foreach(sge::semesters_eligible_for_census() as $s){
+
+            // If any hours rows exist for this semester, remove them- we want fresh data.
+            $DB->delete_records('block_sgelection_hours', array('semesterid' => $s->id));
+
+            // Get user enrolled hours for the given semester.
+            $hours = sge::calculate_enrolled_hours_for_semester($s);
+
+            // If we get no results (should never happen, provided
+            // ues users are enrolled), continue to the next one.
+            if(false === $hours){
+                continue;
+            }
+
+            // Insert each row.
+            // @TODO consider doing this using with a moodle batch
+            // insert or a transaction (include the delete too...)
+            foreach($hours as $row){
+                $DB->insert_record('block_sgelection_hours', $row);
+            }
         }
 
         $elections = Election::get_active();

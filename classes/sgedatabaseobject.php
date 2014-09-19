@@ -50,6 +50,10 @@ abstract class sge_database_object extends sge_object{
         $fields = array_keys($DB->get_columns(static::$tablename));
         $sql = sprintf("SELECT %s FROM {%s} WHERE id = %s", implode(',', $fields), static::$tablename, $id);
         $row = $DB->get_record_sql($sql);
+
+        if(false === $row){
+            return false;
+        }
         $params = array_combine($fields, (array)$row);
         return new static($params);
     }

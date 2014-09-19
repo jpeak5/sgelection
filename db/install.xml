@@ -55,6 +55,8 @@
         <FIELD NAME="semesterid" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="semester in which election is taking place"/>
         <FIELD NAME="start_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election begins"/>
         <FIELD NAME="end_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election is over"/>
+        <FIELD NAME="hours_census_start" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="at what time should cron consider the window open for counting student hours ?"/>
+        <FIELD NAME="hours_census_complete" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="This timestamp indicates the time at which the census was run."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -122,6 +124,7 @@
     <TABLE NAME="block_sgelection_hours" COMMENT="Cache for storing pre-calculated user credit hours for the election semester.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="semesterid" TYPE="int" LENGTH="5" NOTNULL="true" SEQUENCE="false" COMMENT="ues semesterid for which this hours count is valid"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="foreign key into the user table"/>
         <FIELD NAME="hours" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
