@@ -28,6 +28,7 @@ class office extends sge_database_object {
     public  $name,
             $number,
             $college,
+            $weight,
             $id;
 
     static $tablename = "block_sgelection_office";
