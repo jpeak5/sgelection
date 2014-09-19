@@ -99,7 +99,7 @@ class block_sgelection extends block_list {
                 $election->message_admins();
             }
         }
-    mtrace('!!!!!!!!!!number of rows = '.count($hours));
+    //mtrace('!!!!!!!!!!number of rows = '.count($hours));
     return true;
     }
 }

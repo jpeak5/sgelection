@@ -298,4 +298,120 @@ class block_sgelection_renderer extends plugin_renderer_base {
 
         return html_writer::table($resolution_table);
     }
+    
+    public static function print_analytics_tables(election $election){
+        global $DB, $PAGE;
+        $result = $DB->get_records('block_sgelection_voters');
+        
+        $dataarray=array();
+        // EXCESSIVE AMOUNT OF ARRAYS -> ARRAY ORIENTATED PROGRAMMING -> http://www.epixa.com/2012/04/array-oriented-programming.html
+        $collegearray=array();
+        $majorarray=array();
+        $yeararray=array();
+        $courseloadarray=array();            
+        $iparray=array();
+        $timearray=array();
+    
+        $thehtml = '<br /><br />';
+        $thehtml .=  html_writer::div('<h1>Election Report</h1>', 'datatablesdiv', array('id' => 'tophat'));
+        
+        foreach($result as $r){
+            $collegearray[] = $r->college;
+            $majorarray[] = $r->major;
+            $yeararray[] = $r->year;
+            $courseloadarray[] = $r->courseload;            
+            $iparray[] = $r->ip_address;
+            $timearray[] = $r->time;
+            $dataarray[]=$r;
+        }
+        $collegearraycount = array_count_values($collegearray);
+        $majorarraycount = array_count_values($majorarray);
+        $yeararraycount = array_count_values($yeararray);
+        $courseloadarraycount = array_count_values($courseloadarray);
+        $iparraycount = array_count_values($iparray);
+        $timearraycount = array_count_values($timearray);
+//college
+        $collegedata =  array();
+        foreach($collegearraycount as $key => $value){
+        $collegeobject = new stdClass();
+            $collegeobject->college = $key;
+            $collegeobject->count = $value;
+            $collegedata[]=$collegeobject;
+        }
+        $collegedata  = json_encode($collegedata);
+        $collegeobject = json_encode($collegeobject);
+//major        
+        $majordata =  array();
+        foreach($majorarraycount as $key => $value){
+        $majorobject = new stdClass();
+            $majorobject->major = $key;
+            $majorobject->count = $value;
+            $majordata[]=$majorobject;
+        }
+        $majordata  = json_encode($majordata);
+        $majorobject = json_encode($majorobject);
+//year        
+        $yeardata =  array();
+        foreach($yeararraycount as $key => $value){
+        $yearobject = new stdClass();
+            $yearobject->year = $key;
+            $yearobject->count = $value;
+            $yeardata[]=$yearobject;
+
+        }
+        $yeardata  = json_encode($yeardata);
+        $yearobject = json_encode($yearobject);
+//courseload        
+        $courseloaddata =  array();
+        foreach($courseloadarraycount as $key => $value){
+        $courseloadobject = new stdClass();
+            $courseloadobject->courseload = $key;
+            $courseloadobject->count = $value;
+            $courseloaddata[]=$courseloadobject;
+
+        }
+        $courseloaddata  = json_encode($courseloaddata);
+        $courseloadobject = json_encode($courseloadobject);
+//ip        
+        $ipdata =  array();
+        foreach($iparraycount as $key => $value){
+        $ipobject = new stdClass();
+            $ipobject->ip_address = $key;
+            $ipobject->count = $value;
+            $ipdata[]=$ipobject;
+        }
+        $ipdata  = json_encode($ipdata);
+        $ipobject = json_encode($ipobject);
+//time        
+        $timedata =  array();
+        foreach($timearraycount as $key => $value){
+        $timeobject = new stdClass();
+            $timeobject->time = $key;
+            $timeobject->count = $value;
+            $timedata[]=$timeobject;
+        }
+        $timedata  = json_encode($timedata);
+        $timeobject = json_encode($timeobject);
+
+        
+        $cols = 'college';
+        $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $collegedata));
+        
+        $cols = 'major';
+        $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $majordata));
+        
+        $cols = 'year';
+        $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $yeardata));
+        
+        $cols = 'courseload';
+        $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $courseloaddata));
+        
+        $cols = 'ip';
+        $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $ipdata));
+        
+        $cols = 'time';
+        $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $timedata));
+        
+        return $thehtml;
+    }
 }

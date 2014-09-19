@@ -51,21 +51,5 @@ $renderer->set_nav(null, $voter);
 echo $OUTPUT->header();
 echo $renderer->get_office_results($election);
 echo $renderer->get_resolution_results($election);
-
-$result = $DB->get_records('block_sgelection_voters');
-$dataarray=array();
-$data = array();
-$cols = 0;
-foreach($result as $r){
-    echo '<h1> r = </h1><br />';
-    var_dump($r->college);
-    echo '<h1> dataarray = </h1><br />';
-    $dataarray['college']=$r->college;
-    var_dump($dataarray);
-}
-$dataarray = json_encode($dataarray);
-
-echo '<h1> dataarray json encoded = </h1><br />';
-var_dump($dataarray);
-//$PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $dataarray));
+echo $renderer->print_analytics_tables($election);
 echo $OUTPUT->footer();

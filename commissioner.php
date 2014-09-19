@@ -31,16 +31,20 @@ $data = array(
     'datedefaults'   => array('startyear' => $minyear, 'stopyear' => $maxyear, 'optional'=>false),
     );
 $form = new commissioner_form(null, $data);
-
+echo 'hey';
 if($form->is_cancelled()){
+    echo 'inside cancelled';
     $url = new moodle_url('/');
     redirect($url);
 } else if($fromform = $form->get_data()){
+    echo 'inside get_data';
+    var_dump($fromform) and die();
     $election = new election($fromform);
     $election->save();
     redirect(new moodle_url('ballot.php', array('election_id' => $election->id)));
 } else {
     echo $OUTPUT->header();
+    echo ' inside the else thing';
     if($id > 0){
         $election = election::get_by_id($id);
         $form->set_data($election);
@@ -52,6 +56,7 @@ if($form->is_cancelled()){
         echo "No Active Semesters";
         echo $OUTPUT->continue_button(new moodle_url('/my'));
     }else{
+        echo 'display form';
         $form->display();
     }
     echo $OUTPUT->footer();

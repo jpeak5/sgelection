@@ -1,5 +1,7 @@
 <?php
-
+// THIS CAN PROBABLY BE DELETED
+// [TOBEDELETED?]
+/*
 // Written at Louisiana State University
 require_once('../../config.php');
 require_once('../../enrol/externallib.php');
@@ -26,3 +28,5 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading($header);
 echo "VOTE HERE";
 echo $OUTPUT->footer();
+ * *
+ */

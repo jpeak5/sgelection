@@ -59,6 +59,7 @@ $PAGE->set_title($heading);
 // Begin security checks.
 $voter   = new voter($USER->id);
 
+var_dump($voter);
 /**
  * Establish SG admin status.
  *
@@ -87,8 +88,8 @@ if($preview && $voter->candoanything){
             print_error('Must be enrolled to vote');
         }
 }
-
-$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA) : false;
+    
+$voter->college = $preview && $voter->candoanything ? optional_param('college', '', PARAM_ALPHA) : $voter->college;
 
 
 
@@ -163,7 +164,7 @@ if($ballot_item_form->is_cancelled()) {
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
-
+        $voter->time = time();
         $voter->save();
 
    // Save votes for each candidate.
@@ -172,7 +173,6 @@ if($ballot_item_form->is_cancelled()) {
             if(isset($fromform->$fieldname)){
 
                 $vote = new vote(array('voterid'=>$voter->id));
-                $vote->time = time();
                 $vote->typeid = $c->cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;

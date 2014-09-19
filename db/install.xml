@@ -64,7 +64,6 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="voterid" TYPE="int" LENGTH="7" NOTNULL="true" SEQUENCE="false" COMMENT="FK to voters table for meta"/>
-        <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="time that the vote was cast"/>
         <FIELD NAME="typeid" TYPE="int" LENGTH="6" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="type" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="vote" TYPE="int" LENGTH="6" NOTNULL="false" SEQUENCE="false"/>
@@ -81,6 +80,7 @@
         <FIELD NAME="year" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="year the voter is in"/>
         <FIELD NAME="courseload" TYPE="char" LENGTH="1" NOTNULL="true" SEQUENCE="false" COMMENT="yes or no if the student is enrolled full time"/>
         <FIELD NAME="ip_address" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="IP address where vote was"/>
+        <FIELD NAME="time" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="time that the vote was cast"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
