@@ -45,7 +45,7 @@ class ballot_item_form extends moodleform {
             }
             foreach($office->candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
-                if($voter->is_privileged_user()){
+                if($voter->is_privileged_user() && !$this->_customdata['preview']){
                     $edita   = html_writer::link($editurl, 'edit');
                     $mform->addElement('static', 'edit_candidate', $edita);
                 }

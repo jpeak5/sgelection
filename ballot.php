@@ -145,7 +145,8 @@ $customdata        = array(
     'election'    => $election,
     'college'     => $voter->college,
     'candidates'  => $candidatesbyoffice,
-    'voter'       => $voter
+    'voter'       => $voter,
+    'preview'     => $preview,
         );
 if(null !== $voter){
     $customdata['college'] = $voter->college;
