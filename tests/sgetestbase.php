@@ -185,7 +185,8 @@ abstract class block_sgelection_base extends advanced_testcase{
             'election_id' => $eid,
             'title'       => $titles[rand(0, count($titles)-1)],
             'text'        => $ipsum,
-            'restrict_fulltime' => 1.
+            'restrict_fulltime' => 1,
+            'link'        => 'http://example.com',
         );
 
         $resolution = new resolution($params);
