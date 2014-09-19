@@ -46,12 +46,12 @@ require_login();
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
-$PAGE->set_pagelayout('standard');
 $PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
-//$PAGE->requires->js('/blocks/sgelection/js/limitcandidatecheckboxes.js');
+
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = $election->fullname();
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
+
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 
@@ -75,6 +75,8 @@ $vote    = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 
 // Need to group these better logically and conceptually in order to isolate them from the live election activity.
 $preview = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true : false;
+$layout  = $voter->candoanything && !$preview ? 'standard' : 'base';
+$PAGE->set_pagelayout($layout);
 
 if($preview && $voter->candoanything){
     $ptft = required_param('ptft', PARAM_INT);
