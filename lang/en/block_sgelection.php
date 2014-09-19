@@ -67,7 +67,7 @@ $string['select_up_to'] = 'Select Up To ';
 $string['id'] = 'id';
 $string['userid'] = 'userid';
 $string['office'] = 'office';
-$string['affiliation'] = 'affiliation';
+$string['affiliation'] = 'affiliation/VP';
 $string['election_id'] = 'election_id';
 
 // Administration

@@ -52,7 +52,7 @@ class ballot_item_form extends moodleform {
 
                 $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'candidate_office_'.$officeIndex));
                 if(!empty($c->affiliation)){
-                    $mform->addElement('static', 'affiliation', 'Affiliation: ' . $c->affiliation);
+                    $mform->addElement('static', 'affiliation', '' . $c->affiliation);
                 }
                 $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeIndex]);
                 $mform->setType('number_of_office_votes_allowed_'.$officeid, PARAM_INT);
