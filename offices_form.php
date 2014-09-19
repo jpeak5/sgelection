@@ -25,7 +25,11 @@ class office_form extends moodleform {
         $mform->addElement('text', 'number', get_string('number_of_openings', 'block_sgelection'), $attributes);
         $mform->setType('number', PARAM_INT);
 
-        
+        $attributes = array('size' => '5', 'maxlength' => '4');
+        $mform->addElement('text', 'weight', get_string('weight', 'block_sgelection'), $attributes);
+        $mform->setType('weight', PARAM_INT);
+
+
         // Limit to College
         $colleges = sge::get_college_selection_box($mform);
 
