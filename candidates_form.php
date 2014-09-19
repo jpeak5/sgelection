@@ -12,7 +12,12 @@ class candidate_form extends moodleform {
         $id = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
 
         // ADD CANDIDATES HEADER
-        $options = $DB->get_records_menu('block_sgelection_office');
+        $offices = $DB->get_records('block_sgelection_office');
+        $options = array();
+        foreach($offices as $id => $office){
+            $college = !empty($office->college) ? sprintf(" [%s]", $office->college) : '';
+            $options[$id] = $office->name.$college;
+        }
         if(count($options) > 0){
 
             $mform->addElement('hidden', 'id', null);
