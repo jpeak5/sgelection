@@ -1,12 +1,12 @@
 <?php
-global $CFG;
+global $CFG, $PAGE;
 require_once("{$CFG->libdir}/formslib.php");
 require_once($CFG->dirroot.'/blocks/sgelection/lib.php');
 require_once 'lib.php';
-
+$PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
 class candidate_form extends moodleform {
     function definition() {
-        global $DB;
+        global $DB, $PAGE;
         $mform =& $this->_form;
         $election = $this->_customdata['election'];
         $id = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
@@ -46,6 +46,8 @@ class candidate_form extends moodleform {
             if($id){
                 $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'candidate', 'election_id'=>$election->id, 'rtn'=>'ballot')), "Delete"));
             }
+            $listofusers = sge::get_list_of_usernames();
+            $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_username'));    
         }
 
 

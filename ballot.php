@@ -46,7 +46,6 @@ require_login();
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
-$PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
 
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 $semester = $election->fullname();
@@ -232,8 +231,6 @@ if($ballot_item_form->is_cancelled()) {
     $ballot_item_form->display();
 
     
-    $listofusers = sge::get_list_of_usernames();
-    $PAGE->requires->js_init_call('autouserlookup', array($listofusers, '#id_username'));    
     require_once('candidatecheckboxcheck.php');
     echo $OUTPUT->footer();
 
