@@ -314,13 +314,17 @@ class block_sgelection_renderer extends plugin_renderer_base {
     
         $thehtml = '<br /><br />';
         $thehtml .=  html_writer::div('<h1>Election Report</h1>', 'datatablesdiv', array('id' => 'tophat'));
-        
         foreach($result as $r){
             $collegearray[] = $r->college;
             $majorarray[] = $r->major;
             $yeararray[] = $r->year;
             $courseloadarray[] = $r->courseload;            
             $iparray[] = $r->ip_address;
+            // DWETODO - Time needs furthur testing with real data
+            // I did manipulate $r-Time manually by -1801 +1801 to check but it'd be nice to see hundreds of times
+            // over a 24 hour period before being released live
+            $r->time = $r->time - ($r->time % 1800);
+            $r->time = date("Y-m-d H:i:s", $r->time);
             $timearray[] = $r->time;
             $dataarray[]=$r;
         }
@@ -333,7 +337,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 //college
         $collegedata =  array();
         foreach($collegearraycount as $key => $value){
-        $collegeobject = new stdClass();
+            $collegeobject = new stdClass();
             $collegeobject->college = $key;
             $collegeobject->count = $value;
             $collegedata[]=$collegeobject;
@@ -343,7 +347,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 //major        
         $majordata =  array();
         foreach($majorarraycount as $key => $value){
-        $majorobject = new stdClass();
+            $majorobject = new stdClass();
             $majorobject->major = $key;
             $majorobject->count = $value;
             $majordata[]=$majorobject;
@@ -353,7 +357,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 //year        
         $yeardata =  array();
         foreach($yeararraycount as $key => $value){
-        $yearobject = new stdClass();
+            $yearobject = new stdClass();
             $yearobject->year = $key;
             $yearobject->count = $value;
             $yeardata[]=$yearobject;
@@ -364,7 +368,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 //courseload        
         $courseloaddata =  array();
         foreach($courseloadarraycount as $key => $value){
-        $courseloadobject = new stdClass();
+            $courseloadobject = new stdClass();
             $courseloadobject->courseload = $key;
             $courseloadobject->count = $value;
             $courseloaddata[]=$courseloadobject;
@@ -375,7 +379,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 //ip        
         $ipdata =  array();
         foreach($iparraycount as $key => $value){
-        $ipobject = new stdClass();
+            $ipobject = new stdClass();
             $ipobject->ip_address = $key;
             $ipobject->count = $value;
             $ipdata[]=$ipobject;
@@ -385,7 +389,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 //time        
         $timedata =  array();
         foreach($timearraycount as $key => $value){
-        $timeobject = new stdClass();
+            $timeobject = new stdClass();
             $timeobject->time = $key;
             $timeobject->count = $value;
             $timedata[]=$timeobject;
