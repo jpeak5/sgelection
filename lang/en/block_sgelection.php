@@ -77,6 +77,7 @@ $string['fulltime'] = 'Full Time';
 $string['parttime'] = 'Part Time';
 $string['election_tool_administration'] = ' Election Tool Administration';
 $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
+
 // Commissioner Page / building election object
 $string['start_date'] = 'Start Date';
 $string['end_date'] = 'End Date';
@@ -84,7 +85,7 @@ $string['semester'] = 'Semester';
 $string['name'] = 'Name';
 $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
-$string['hours_census_start'] = 'Census Start Time';
+$string['hours_census_start'] = 'Date to pull student eligibility data';
 $string['hours_census_start_help'] = 'This time setting defines the first second in which Moodle may calculate enrollment eligibility (enrolled hours) for users.';
 
 // errors
