@@ -14,7 +14,6 @@ class ballot_item_form extends moodleform {
         $candidates = $this->_customdata['candidates'];
         $college    = $this->_customdata['college'];
         $voter      = $this->_customdata['voter'];
-        $i = 0;
 
         // Setup preview controls.
         if($voter->is_privileged_user()){
@@ -31,18 +30,20 @@ class ballot_item_form extends moodleform {
             $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
             $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
         }
-    $officeIndex = 0;
-    $number_of_office_votes_allowed = array();
+        $number_of_office_votes_allowed = array();
         foreach($candidates as $officeid => $office){
             $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid. ' class="hiddenCandidateWarningBox felement fstatic  error"><span class = "error">You have selected too many candidates, please select at most ' . $office->number . '</span></div>' );
-            
-            if(count($office->candidates) > 0){
-                $number_of_office_votes_allowed[] = $office->number;
-                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name) .  get_string('select_up_to', 'block_sgelection') . $office->number );
-            }
-            if($office->candidates != null){
+
+            if($office->candidates != null && count($office->candidates) > 0){
+                $number_of_office_votes_allowed[$officeid] = $office->number;
+                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name));
+
+                if(count($office->number) > 1){
+                    $mform->addElement('static', 'numberofoffices', get_string('select_up_to', 'block_sgelection', $office->number));
+                }
                 shuffle($office->candidates);
             }
+
             foreach($office->candidates as $c){
                 $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
                 if($voter->is_privileged_user() && !$this->_customdata['preview']){
@@ -50,16 +51,14 @@ class ballot_item_form extends moodleform {
                     $mform->addElement('static', 'edit_candidate', $edita);
                 }
 
-                $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'candidate_office_'.$officeIndex));
+                $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'candidate_office_'.$officeid));
                 if(!empty($c->affiliation)){
                     $mform->addElement('static', 'affiliation', '' . $c->affiliation);
                 }
-                $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeIndex]);
+                $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeid]);
                 $mform->setType('number_of_office_votes_allowed_'.$officeid, PARAM_INT);
                 $mform->addElement('html', '<div class="candidatebox"></div>');
             }
-            $officeIndex++;
-            $i++;
 
         }
         $resolutions = $this->_customdata['resolutions'];
