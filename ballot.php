@@ -225,15 +225,24 @@ if($ballot_item_form->is_cancelled()) {
         if($preview){
             $formdata->ptft    = $ptft;
         }
-        
+
     }
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
 
-    
-    require_once('candidatecheckboxcheck.php');
+
+
+   $lengthOfCandidates = count($candidatesbyoffice);
+
+   $PAGE->requires->js('/blocks/sgelection/js/checkboxlimit.js');
+
+    foreach($candidatesbyoffice as $cbo){
+        $officenumber = $cbo->id;
+        $PAGE->requires->js_init_call('checkboxlimit', array($cbo->id, $cbo->number, $cbo->id));
+    }
+
     echo $OUTPUT->footer();
 
-    
+
 }
 
