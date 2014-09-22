@@ -33,7 +33,8 @@ class election extends sge_database_object {
             $start_date,
             $end_date,
             $id,
-            $ballot;
+            $ballot,
+            $thanksforvoting;
 
     public static $tablename = 'block_sgelection_election';
 

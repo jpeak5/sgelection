@@ -197,7 +197,7 @@ if($ballot_item_form->is_cancelled()) {
 
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
-        echo html_writer::tag('p', get_string('thanks_for_voting', 'block_sgelection'));
+        echo html_writer::tag('h1', $election->thanksforvoting);
         echo html_writer::link($CFG->wwwroot, get_string('continue'));
         $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
         echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);

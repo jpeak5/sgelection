@@ -41,6 +41,7 @@ if($form->is_cancelled()){
     redirect($url);
 } else if($fromform = $form->get_data()){
     $election = new election($fromform);
+    $election->thanksforvoting = $fromform->thanksforvoting['text'];
     $election->save();
     redirect(new moodle_url('ballot.php', array('election_id' => $election->id)));
 } else {
@@ -48,6 +49,14 @@ if($form->is_cancelled()){
 
     if($id > 0){
         $election = election::get_by_id($id);
+        $editor_options = array(
+            'trusttext' => true,
+            'subdirs' => 1,
+            'maxfiles' => 0,
+            'accepted_types' => '*',
+            'context' => $context
+        );
+        $election = file_prepare_standard_editor($election, 'thanksforvoting', $editor_options);
         $form->set_data($election);
     }
     if(empty($data['semesters'])){

@@ -58,6 +58,7 @@
         <FIELD NAME="end_date" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="date election is over"/>
         <FIELD NAME="hours_census_start" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="at what time should cron consider the window open for counting student hours ?"/>
         <FIELD NAME="hours_census_complete" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="This timestamp indicates the time at which the census was run."/>
+        <FIELD NAME="thanksforvoting" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="thank you text for when the student is done voting"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
