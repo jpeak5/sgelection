@@ -37,6 +37,11 @@ class commissioner_form extends moodleform {
         $mform->addElement('date_time_selector', 'end_date', get_string('end_date', 'block_sgelection'), $datedefaults);
         $mform->addRule('end_date', null, 'required', null, 'client');
 
+        $attributes = array('size' => '100', 'maxlength' => '200');
+        $mform->addELement('text', 'thanksforvoting', get_string('thanks_for_voting_message', 'block_sgelection'), $attributes);
+        $mform->setType('thanksforvoting', PARAM_TEXT);
+        $mform->addRule('thanksforvoting', null, 'required', null, 'client');
+
         $this->add_action_buttons();
     }
 

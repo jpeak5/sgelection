@@ -87,6 +87,7 @@ $string['new_election_options'] = 'Create New Election';
 $string['ballot'] ='ballot';
 $string['hours_census_start'] = 'Date to pull student eligibility data';
 $string['hours_census_start_help'] = 'This time setting defines the first second in which Moodle may calculate enrollment eligibility (enrolled hours) for users.';
+$string['thanks_for_voting_message'] = 'Message you want displayed after student votes';
 
 // errors
 $string['err_user_nonexist'] = 'User {$a} does not exist.';

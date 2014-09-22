@@ -63,7 +63,7 @@ class candidate extends sge_database_object{
                . ' JOIN'
                . ' {block_sgelection_office} o on o.id = c.office'
                . ' JOIN'
-               . ' {user} u on c.userid = u.id '. $wheres /*. 'ORDER BY o.weight DESC*/;
+               . ' {user} u on c.userid = u.id '. $wheres . 'ORDER BY o.weight DESC;
 
         return $DB->get_records_sql($query);
     }
