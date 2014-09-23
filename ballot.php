@@ -48,6 +48,8 @@ $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
 
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
+$submitfinalvote = optional_param('submitfinalvote', 0, PARAM_INT);
+
 $semester = $election->fullname();
 $heading = get_string('ballot_page_header', 'block_sgelection', $semester);
 
@@ -161,14 +163,22 @@ if($ballot_item_form->is_cancelled()) {
     if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$voter->college)));
     }elseif(strlen($vote) > 0){
-
         if($voter->already_voted($election)){
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
-        $voter->time = time();
-        $voter->save();
-
+        // DWETODO -> I'm commenting out a lot of lines of where things used to be
+        // then moving them to the if($submitfinalvote) branch is
+        
+        // -- MOVED TO --> if($submitfinalvote)
+        // -----------------------------------
+        // $voter->time = time();
+        // $voter->save();
+        // $collectionofvotes will be an array for collecting all of the users votes
+        // then will be used to display their votes
+        // then if approved, the vote objects will be individually ->save();'d 
+        
+        $collectionofvotes =array();
    // Save votes for each candidate.
         foreach(candidate::get_full_candidates($election, $voter) as $c){
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
@@ -178,7 +188,11 @@ if($ballot_item_form->is_cancelled()) {
                 $vote->typeid = $c->cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;
-                $vote->save();
+                // -- MOVED TO --> if($submitfinalvote)
+                // $vote->save();
+                //redirect(sge::ballot_url($election->id));
+                //redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => $submitfinalvote)));                
+                echo 'click here to submit final vote';
             }
         }
 
@@ -190,11 +204,22 @@ if($ballot_item_form->is_cancelled()) {
                 $vote->typeid = $resid;
                 $vote->type = 'resolution';
                 $vote->vote = $fromform->$fieldname;
-                $vote->save();
+                // -- MOVED TO --> if($submitfinalvote)
+                //$vote->save();
             }
         }
-        $voter->mark_as_voted($election);
+        $_SESSION['collectionofvotes']=$collectionofvotes;
+        //$voter->mark_as_voted($election);
 
+        if($submitfinalvote == true){
+            echo 'inside submitfinalvote';
+            foreach($collectionofvotes as $individualvotes){
+                echo "vote saving will happen here \n";
+//                    $vote->save();
+            }
+//                    $voter->mark_as_voted($election);
+
+        }
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('h1', $election->thanksforvoting);
