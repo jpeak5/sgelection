@@ -1,18 +1,62 @@
 <?php
-require_once 'lib.php';
-require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
-require_once('classes/voter.php');
-//sge::require_db_classes();
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Student government election block
+ * @package    block_sgelection
+ * @copyright  2014 onwards Louisiana State University (http://www.lsu.edu)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+require_once ($CFG->dirroot . '/blocks/sgelection/lib.php');
+require_once ($CFG->dirroot . '/enrol/ues/publiclib.php');
+require_once ($CFG->dirroot . '/blocks/sgelection/classes/voter.php');
+
 ues::require_daos();
 
 class block_sgelection extends block_list {
-
+    /**
+     * Block initialization
+     */
     public function init() {
         $this->title = get_string('sgelection', 'block_sgelection');
     }
 
-    public function has_config() {return true;}
+    /**
+     * Allow the block to have a configuration page
+     *
+     * @return boolean
+     */
+    public function has_config() {
+        return true;
+    }
 
+    /**
+     * Locations where block can be displayed
+     *
+     * @return array
+     */
+    public function applicable_formats() {
+        return array('site' => true, 'my-index' => true, 'course' => false);
+    }
+
+    /**
+     * Return contents of the sgelection block
+     *
+     * @return stdClass contents of block
+     */
     public function get_content() {
         global $USER, $CFG, $COURSE, $OUTPUT, $DB;
 
@@ -64,6 +108,11 @@ class block_sgelection extends block_list {
         return $this->content;
     }
 
+    /**
+     * Can we load multiple instances of the block on a single page?
+     *
+     * @return array
+     */
     public function instance_allow_multiple() {
         return false;
     }
