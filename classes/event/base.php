@@ -44,9 +44,4 @@ abstract class base extends \core\event\base {
     public function get_description() {
         return get_string('defaultlogmessage', 'block_sgelection', $this->data);
     }
-
-    protected function target_to_crud(){
-        $crud = substr($this->target, 0, 1);
-        return $crud == 'v' ? 'r' : $crud;
-    }
 }
