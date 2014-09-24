@@ -31,11 +31,16 @@ $form = new candidate_form(new moodle_url('candidates.php', array('election_id' 
 
 if($form->is_cancelled()) {
     redirect(sge::ballot_url($election_id));
-} else if($candidate = $form->get_data()){
-    $userid = $DB->get_field('user', 'id', array('username' => $candidate->username));
-    $candidate->userid = $userid;
-    $formData      = new candidate($candidate);
-    $formData->save();
+} else if($fromform = $form->get_data()){
+    $userid = $DB->get_field('user', 'id', array('username' => $fromform->username));
+    $fromform->userid = $userid;
+    $candidate      = new candidate($fromform);
+    $candidate->save();
+
+    //logging
+    $action = $id ? 'updated' : 'created';
+    $candidate->logaction($action, null, array('relateduserid' => $candidate->userid));
+
     unset($username);
     $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
     redirect($thisurl);
