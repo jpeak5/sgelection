@@ -8,7 +8,10 @@ class office_form extends moodleform {
     function definition() {
         global $DB;
         $mform =& $this->_form;
-        $eid = $this->_customdata['election_id'];
+        // Setup election return url
+        $eid = !empty($this->_customdata['election_id']) ? $this->_customdata['election_id'] : false;
+        $returneid = $eid ? array('election_id'=>$eid) : array();
+
         $id = isset($this->_customdata['id']) ? $this->_customdata['id'] : null;
 
         $mform->addElement('hidden', 'rtn', $this->_customdata['rtn']);
@@ -33,7 +36,7 @@ class office_form extends moodleform {
         // Limit to College
         $colleges = sge::get_college_selection_box($mform);
 
-        $mform->addElement('static', 'edit_offices', html_writer::link(new moodle_url("officelist.php", array('election_id'=>$eid)), "edit offices"));
+        $mform->addElement('static', 'edit_offices', html_writer::link(new moodle_url("officelist.php", $returneid), "edit offices"));
 
         $buttons = array(
             $mform->createElement('submit', 'save_office', get_string('savechanges')),
@@ -42,7 +45,8 @@ class office_form extends moodleform {
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
 
         if($id){
-            $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", array('id'=>$id, 'class'=>'office', 'election_id'=>$eid)), "Delete"));
+            $deleteparams = array_merge($returneid, array('id'=>$id, 'class'=>'office', 'rtn'=>'officelist'));
+            $mform->addElement('static', 'delete', html_writer::link(new moodle_url("delete.php", $deleteparams), "Delete"));
         }
 
         $mform->addElement('hidden', 'id', $id);
