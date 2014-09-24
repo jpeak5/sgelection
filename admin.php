@@ -36,7 +36,9 @@ if($form->is_cancelled()){
     // @TODO if excl_curr_codes is not set, we have a problem.
     // Probably, supply a default value here.
     // Alternatively, provide a 'none' option in the form that will need to be checked here.
-    sge::config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes));
+    if(!empty($fromform->excluded_curr_codes)){
+        sge::config('excluded_curr_codes', implode(',', $fromform->excluded_curr_codes));
+    }
 
     redirect(new moodle_url($selfurl, array('done'=>'true')));
 } else {
