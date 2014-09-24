@@ -22,8 +22,13 @@
  */
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once 'lib.php';
-
 sge::require_db_classes();
+
+global $OUTPUT, $PAGE;
+
+// Don't allow anyone to use this who shouldn't.
+require_login();
+sge::allow_only(sge::COMMISSIONER, sge::FACADVISOR);
 
 $id    = required_param('id', PARAM_INT);
 $class = required_param('class', PARAM_ALPHANUMEXT);
