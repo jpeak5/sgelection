@@ -77,4 +77,20 @@ abstract class sge_database_object extends sge_object{
         $DB->delete_records(static::$tablename, array('id'=>$this->id));
         unset($this);
     }
+
+    public function logaction($action, $context = null, $additionalparams = array()){
+        if(empty($this->id)){
+            throw new coding_exception("Cannot log database object actions until it has an id.");
+        }
+        $context = $context == null ? context_system::instance() : $context;
+        $eventparams = array_merge(array(
+                'objectid' => $this->id,
+                'context'  => $context
+            ), $additionalparams);
+        $class = get_class($this);
+        $classaction = $class.'_'.$action;
+        $eventname = '\block_sgelection\event\\'.$classaction;
+        $event = $eventname::create($eventparams);
+        $event->trigger();
+    }
 }

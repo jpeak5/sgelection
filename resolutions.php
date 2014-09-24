@@ -46,6 +46,11 @@ if($form->is_cancelled()) {
         }
 
         $resolution->save();
+
+        //logging
+        $action = $id ? 'updated' : 'created';
+        $resolution->logaction($action);
+
         $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
 } else {

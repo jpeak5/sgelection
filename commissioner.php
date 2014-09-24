@@ -43,6 +43,11 @@ if($form->is_cancelled()){
     $election = new election($fromform);
     $election->thanksforvoting = $fromform->thanksforvoting['text'];
     $election->save();
+
+    //logging
+    $action = $id ? 'updated' : 'created';
+    $election->logaction($action);
+
     redirect(new moodle_url('ballot.php', array('election_id' => $election->id)));
 } else {
     echo $OUTPUT->header();

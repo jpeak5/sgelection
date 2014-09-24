@@ -35,6 +35,11 @@ if($form->is_cancelled()) {
 } else if($fromform = $form->get_data()){
         $office = new office($fromform);
         $office->save();
+
+        //logging
+        $action = $id ? 'updated' : 'created';
+        $office->logaction($action);
+
         redirect($rtnurl);
 } else {
     echo $OUTPUT->header();

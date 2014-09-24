@@ -117,3 +117,12 @@ $string['latest_end'] = '#days before grades due';
 $string['latest_end_desc'] = 'How many days before the semester ends is it ok to end an election ?';
 $string['census_window'] = 'Census cron window';
 $string['census_window_desc'] = 'How many hours before an election can we allow the census period to begin? NB that cron must have a chance to run between election census start and election start.';
+
+
+//logging
+$string['defaultlogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}).';
+$string['candidatelogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}) with userid {$a->relateduserid}.';
+
+//events
+$string['eventelectioncreated'] = 'Election Created';
+$string['eventelectionupdated'] = 'Election Updated';
