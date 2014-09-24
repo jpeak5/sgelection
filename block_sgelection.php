@@ -127,8 +127,11 @@ class block_sgelection extends block_list {
 
         // Iterate over each semester which is ready for eligibility calculation
         // creating block_sgelection_hours rows for each student enrolled.
-        foreach(sge::semesters_eligible_for_census() as $s){
-
+        $semesters_complete = array();
+        foreach(sge::semesters_eligible_for_census() as $eid => $s){
+            if(in_array($s->id, $semesters_complete)){
+                continue;
+            }
             // If any hours rows exist for this semester, remove them- we want fresh data.
             $DB->delete_records('block_sgelection_hours', array('semesterid' => $s->id));
 
@@ -138,16 +141,30 @@ class block_sgelection extends block_list {
             // If we get no results (should never happen, provided
             // ues users are enrolled), continue to the next one.
             if(false === $hours){
+                $semesters_complete[] = $s->id;
                 continue;
             }
 
+            // Log it.
+            $event = \block_sgelection\event\census_completed::create(array(
+                        'objectid' => $eid,
+                        'context' => context_system::instance()
+                            ));
+            $event->trigger();
             // Insert each row.
             // @TODO consider doing this using with a moodle batch
             // insert or a transaction (include the delete too...)
             foreach($hours as $row){
                 $DB->insert_record('block_sgelection_hours', $row);
             }
+
+            // Mark complete.
+            $semesters_complete[] = $s->id;
+            $election = Election::get_by_id($eid);
+            $election->hours_census_complete = time();
+            $election->save();
         }
+
 
         $elections = Election::get_active();
         if(count($elections) > 0){

@@ -126,3 +126,5 @@ $string['candidatelogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->targe
 //events
 $string['eventelectioncreated'] = 'Election Created';
 $string['eventelectionupdated'] = 'Election Updated';
+$string['censuscompleted'] = 'Election Census Complete';
+$string['censuscompleted_msg'] = 'Enrolled credit hours were calculated for election id {$a->objectid}';

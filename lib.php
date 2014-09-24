@@ -275,11 +275,11 @@ class sge {
         global $DB;
         $result = array();
         $where  = "hours_census_start < :now AND hours_census_complete IS NULL AND start_date > :then";
-        $raw    = $DB->get_fieldset_select(Election::$tablename, 'semesterid', $where, array('now'=>time(), 'then'=>time()));
+        $raw    = $DB->get_records_select(Election::$tablename, $where, array('now'=>time(), 'then'=>time()));
         foreach($raw as $r){
-            $s = ues_semester::by_id($r);
+            $s = ues_semester::by_id($r->semesterid);
             if($s){
-                $result[$s->id] = $s;
+                $result[$r->id] = $s;
             }
         }
         return $result;
