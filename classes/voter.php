@@ -41,6 +41,7 @@ class voter extends sge_database_object {
             $courseload,
             $ip_address,
             $time,
+            $id,
             $hours;
 
     const VOTER_NO_TIME   = 'X';

@@ -41,7 +41,8 @@ if($form->is_cancelled()){
     redirect($url);
 } else if($fromform = $form->get_data()){
     $election = new election($fromform);
-    $election->thanksforvoting = $fromform->thanksforvoting['text'];
+    var_dump($fromform);
+    $election->thanksforvoting = $fromform->thanksforvoting_editor['text'];
     $election->save();
     redirect(new moodle_url('ballot.php', array('election_id' => $election->id)));
 } else {

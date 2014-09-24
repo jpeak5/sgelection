@@ -30,6 +30,7 @@ class vote extends sge_database_object {
             $time,
             $typeid,
             $type,
-            $vote;
+            $vote,
+            $finalvote;
 
 }
