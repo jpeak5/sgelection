@@ -38,7 +38,7 @@ require_once('classes/vote.php');
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
-global $USER, $DB, $PAGE;
+global $USER, $DB, $PAGE, $SESSION;
 
 require_login();
 
@@ -156,10 +156,39 @@ if(null !== $voter){
     $customdata['courseload'] = $voter->courseload();
 }
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election->id)), $customdata, null,null,array('name' => 'ballot_form'));
+if($submitfinalvote == true){
+            echo 'inside submitfinalvote';
+            var_dump($_SESSION->collectionofvotes);
+            foreach($_SESSION->collectionofvotes as $individualvote){
+                echo "vote saving will happen here \n";
+                var_dump($individualvote);
+                $vote = new vote(array('voterid'=>$individualvote->voterid));
+                if($individualvote->type == 'resolution'){
+                    $vote->type = 'resolution';
+                }
+                else if($individualvote->type == 'candidate'){
+                    $vote->type = 'candidate';
+                }
+                
+                $vote->typeid = $individualvote->typeid;
+                $vote->vote =$individualvote->vote;
+                $_SESSION->collectionofvotes[]=$vote;                
+                $vote->save();
+            }
+            echo $OUTPUT->header();
+            echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
+            echo html_writer::tag('h1', $election->thanksforvoting);
+            echo html_writer::link($CFG->wwwroot, get_string('continue'));
+            $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
+            echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
+            require_once 'socialmediabuttons.php';
+            echo $OUTPUT->footer();
+//                    $voter->mark_as_voted($election);
 
-if($ballot_item_form->is_cancelled()) {
+}
+else if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
-} else if($fromform = $ballot_item_form->get_data()){
+}else if($fromform = $ballot_item_form->get_data()){
     if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$voter->college)));
     }elseif(strlen($vote) > 0){
@@ -172,12 +201,12 @@ if($ballot_item_form->is_cancelled()) {
         
         // -- MOVED TO --> if($submitfinalvote)
         // -----------------------------------
-        // $voter->time = time();
-        // $voter->save();
+         $voter->time = time();
+         $voter->save();
         // $collectionofvotes will be an array for collecting all of the users votes
         // then will be used to display their votes
         // then if approved, the vote objects will be individually ->save();'d 
-        
+       $_SESSION->collectionofvotes = array(); 
         $collectionofvotes =array();
    // Save votes for each candidate.
         foreach(candidate::get_full_candidates($election, $voter) as $c){
@@ -192,7 +221,6 @@ if($ballot_item_form->is_cancelled()) {
                 // $vote->save();
                 //redirect(sge::ballot_url($election->id));
                 //redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => $submitfinalvote)));                
-                echo 'click here to submit final vote';
             }
         }
 
@@ -204,33 +232,30 @@ if($ballot_item_form->is_cancelled()) {
                 $vote->typeid = $resid;
                 $vote->type = 'resolution';
                 $vote->vote = $fromform->$fieldname;
-                // -- MOVED TO --> if($submitfinalvote)
+                $_SESSION->collectionofvotes[]=$vote;
+		// -- MOVED TO --> if($submitfinalvote)
                 //$vote->save();
             }
         }
-        $_SESSION['collectionofvotes']=$collectionofvotes;
+        
         //$voter->mark_as_voted($election);
+	var_dump($_SESSION->collectionofvotes);
 
-        if($submitfinalvote == true){
-            echo 'inside submitfinalvote';
-            foreach($collectionofvotes as $individualvotes){
-                echo "vote saving will happen here \n";
-//                    $vote->save();
-            }
-//                    $voter->mark_as_voted($election);
-
-        }
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
-        echo html_writer::tag('h1', $election->thanksforvoting);
-        echo html_writer::link($CFG->wwwroot, get_string('continue'));
-        $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
-        echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
-        require_once 'socialmediabuttons.php';
+        echo html_writer::tag('p', "Ballot Review");
+        foreach($_SESSION->collectionofvotes as $cvote){
+            if($cvote->type == 'candidate'){
+                echo '<h1>candidate</h1> <br />';
+            }else{
+                echo '<h1>resolution</h1> <br />';
+            }
+        }
+        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1));                
+        echo '<a href = "' . $submitballotlink . '">click here to submit ballot </a>';
+
         echo $OUTPUT->footer();
-
     }
-
 } else {
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
