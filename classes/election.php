@@ -247,12 +247,12 @@ class election extends sge_database_object {
 
     }
 
-    public function message_admins() {
-        global $CFG, $DB;
+    public function email_results() {
+        global $DB;
         $summary = $this->get_summary();
-        foreach(explode(',', $CFG->siteadmins) as $admin){
-            $user = $DB->get_record('user', array('id'=>$admin));
-            email_to_user($user, 'no-reply', "Election Results", $summary, $summary);
+        foreach(explode(',', sge::config('results_recipients')) as $admin){
+            $user = $DB->get_record('user', array('username'=>$admin));
+            email_to_user($user, 'no-reply', get_string("election_summary", 'block_sgelection', $this->shortname()), $summary, $summary);
         }
     }
 

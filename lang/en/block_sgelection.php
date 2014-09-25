@@ -30,6 +30,7 @@ $string['election_fullname'] = '{$a->sem} [{$a->name}]';
 $string['election_shortname'] = '{$a->sem} [{$a->name}]';
 $string['create_election']    = 'Create new election';
 $string['thanks_for_voting'] = 'Thanks for voting!';
+$string['election_summary'] = 'Election summary: {$a}';
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
@@ -75,6 +76,7 @@ $string['election_id'] = 'election_id';
 $string['commissioner'] = 'Commissioner';
 $string['fulltime'] = 'Full Time';
 $string['parttime'] = 'Part Time';
+$string['results_recips'] = 'Results Recipients';
 $string['election_tool_administration'] = ' Election Tool Administration';
 $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 

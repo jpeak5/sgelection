@@ -169,7 +169,7 @@ class block_sgelection extends block_list {
         $elections = Election::get_active();
         if(count($elections) > 0){
             foreach($elections as $election){
-                $election->message_admins();
+                $election->email_results();
             }
         }
     return true;

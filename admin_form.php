@@ -27,6 +27,10 @@ class sg_admin_form extends moodleform {
         $mform->setType('parttime', PARAM_INT);
         $mform->addRule('parttime', null, 'required', null, 'client');
 
+        $mform->addElement('text', 'results_recipients', get_string('results_recips', 'block_sgelection'));
+        $mform->setType('results_recipients', PARAM_TEXT);
+        $mform->setDefault('results_recipients', $this->_customdata['default_results_recips']);
+
         $curriculum_codes = $DB->get_records_sql_menu("select id, value from mdl_enrol_ues_usermeta WHERE name = 'user_major' GROUP BY value;");
         $currCodesArray = array();
 
@@ -43,6 +47,7 @@ class sg_admin_form extends moodleform {
     public function validation($data, $files){
         $errors = parent::validation($data, $files);
         //$errors += sge::validate_commisioner($data, 'commissioner');
+        $errors += sge::validate_results_recipients($data, 'results_recipients');
         return $errors;
     }
 }

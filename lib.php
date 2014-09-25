@@ -40,12 +40,28 @@ class sge {
 
     public static function validate_username($data, $fieldname){
         global $DB;
-        $userexists = $DB->record_exists('user', array('username'=>$data[$fieldname]));
+        $userexists = $DB->record_exists('user', array('username'=>trim($data[$fieldname])));
         if($userexists){
             return array();
         }else{
             return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
         }
+    }
+
+    public static function validate_results_recipients($data, $fieldname){
+        $errors = array();
+
+        foreach(explode(',', $data[$fieldname]) as $name){
+            $username_check = self::validate_username(array($fieldname => $name), $fieldname);
+            if(!empty($username_check)){
+                $errors[] = $username_check[$fieldname];
+            }
+        }
+
+        if(!empty($errors)){
+            $errors = array($fieldname => implode(' ', $errors));
+        }
+        return $errors;
     }
 
     public static function validate_commisioner($data, $fieldname){

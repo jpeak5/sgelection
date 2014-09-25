@@ -24,7 +24,8 @@ $voter    = new voter($USER->id);
 $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
-$form = new sg_admin_form();
+$customdata['default_results_recips'] = sge::config('facadv') . ',' . sge::config('commissioner');
+$form = new sg_admin_form(null, $customdata);
 
 if($form->is_cancelled()){
     redirect('/');
@@ -33,6 +34,7 @@ if($form->is_cancelled()){
     sge::config('commissioner', $fromform->commissioner);
     sge::config('fulltime', $fromform->fulltime);
     sge::config('parttime', $fromform->parttime);
+    sge::config('results_recipients', str_replace(' ', '', $fromform->results_recipients));
     // @TODO if excl_curr_codes is not set, we have a problem.
     // Probably, supply a default value here.
     // Alternatively, provide a 'none' option in the form that will need to be checked here.
