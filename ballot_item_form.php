@@ -78,7 +78,7 @@ class ballot_item_form extends moodleform {
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), resolution::AGAINST);
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('abstain', 'block_sgelection'), resolution::ABSTAIN);
 
-            $mform->setDefault('resvote_'.$r->id, resolution::ABSTAIN);
+            //$mform->setDefault('resvote_'.$r->id, resolution::ABSTAIN);
             $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
 
         }

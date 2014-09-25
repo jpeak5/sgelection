@@ -160,20 +160,13 @@ $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('el
 // Ballot has been reviewed and user has pressed vote!
 if($submitfinalvote == true){
     $voter->id = $voterid;
-    var_dump($voter);
     $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voter->id));
-    var_dump($collectionofvotes);
-    //| id | voterid | typeid | type       | vote | finalvote |
     foreach($collectionofvotes as $indvote){
-        $vote = new vote(array('voterid'=>$voterid));
-        $vote->id = $indvote->id;
-        $vote->voterid = $indvote->voterid;
-        $vote->typeid = $indvote->typeid;
-        $vote->type = $indvote->type;
-        $vote->vote = $indvote->vote;
+        $vote = new vote($indvote);
         $vote->finalvote = 1;
+        var_dump($vote);
         $vote->save();
-        var_dump($indvote);
+        //$voter->mark_as_voted($election);
     }
 
     echo $OUTPUT->header();
@@ -184,12 +177,12 @@ if($submitfinalvote == true){
     echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
     require_once 'socialmediabuttons.php';
     echo $OUTPUT->footer();
-    //$voter->mark_as_voted($election);
 
 }
 else if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 }else if($fromform = $ballot_item_form->get_data()){
+    var_dump($fromform);
     if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$voter->college)));
     }elseif(strlen($vote) > 0){
@@ -199,49 +192,55 @@ else if($ballot_item_form->is_cancelled()) {
         }
         // Review Page begins here
         // -----------------------------------
-         $voter->time = time();
-         $voter->save();
-         $storedvotes = array();
+        $voter->time = time();
+        $voter->save();
+        $storedvotes = array();
         foreach(candidate::get_full_candidates($election, $voter) as $c){
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
-
                 $vote = new vote(array('voterid'=>$voter->id));
+                $vote->finalvote = 0;
                 $vote->typeid = $c->cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;
-                $vote->finalvote = 0;
-                $vote->save();
-                redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1)));                
+                $storedvotes[] = $vote->save();
+                //redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1)));       
             }
         }
-
         // Save vote values for each resolution.
+        var_dump(array_keys($resolutionsToForm));
         foreach(array_keys($resolutionsToForm) as $resid){
             $fieldname = 'resvote_'.$resid;
             if(isset($fromform->$fieldname)){
                 $vote = new vote(array('voterid'=>$voter->id));
+                $vote->finalvote = 0;
                 $vote->typeid = $resid;
                 $vote->type = 'resolution';
                 $vote->vote = $fromform->$fieldname;
                 $storedvotes[] = $vote->save();
             }
         }
+        var_dump($storedvotes);
         
 
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('p', "Ballot Review");
+        //var_dump($storedvotes);
         foreach($storedvotes as $cvote){
             if($cvote->type == 'candidate'){
                 echo '<h1>candidate</h1> <br />';
+                $candidaterecord = $DB->get_record_sql('SELECT u.id, u.firstname, u.lastname, o.name FROM {user} u JOIN {block_sgelection_candidate} c on u.id = c.userid JOIN {block_sgelection_office} o ON o.id = c.office where c.id = '. $cvote->typeid .';');
+                echo "<p> You voted for " ." <strong>". $candidaterecord->firstname ." " . $candidaterecord->lastname . "</strong> " . " for <strong>" .  $candidaterecord->name . "</strong></p>";
+                
             }else{
                 echo '<h1>resolution</h1> <br />';
             }
         }
         $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));                
+        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));                
         echo '<a href = "' . $submitballotlink . '">click here to submit ballot </a>';
-
+        echo '<br /><a href = "' . $editballotlink . '">click here to edit ballot </a>';
         echo $OUTPUT->footer();
     }
 } else {
@@ -265,6 +264,25 @@ else if($ballot_item_form->is_cancelled()) {
         }
 
     }
+        $defaults = new object();
+    if(isset($voterid)){
+        $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voterid));
+        $candidaterecord = $DB->get_records_sql('SELECT c.id cid, o.id oid FROM {block_sgelection_candidate} c JOIN {block_sgelection_office} o ON c.office = o.id JOIN {block_sgelection_votes} v where v.voterid = ' . $voterid .' AND type = "candidate";');
+        $resolutionrecord = $DB->get_records_sql('SELECT r.id, v.vote FROM {block_sgelection_resolution} r JOIN {block_sgelection_votes} v WHERE v.voterid = ' . $voterid .' AND type = "resolution";');
+        var_dump($candidaterecord);
+        foreach($candidaterecord as $cr){
+            $officeforcandidate = 'candidate_checkbox_' . $cr->cid .'_'.$cr->oid;
+            $formdata->$officeforcandidate = 1;
+        }
+        var_dump($resolutionrecord);
+        foreach($resolutionrecord as $rr){
+            $resolutionstring = 'resvote_'.$rr->id;
+                $defaults->$resolutionstring = $rr->vote;
+                var_dump($rr);
+        }
+    }
+    $ballot_item_form->set_data($defaults);
+    var_dump($defaults);
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
 
