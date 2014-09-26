@@ -267,9 +267,18 @@ else if($ballot_item_form->is_cancelled()) {
         $defaults = new object();
     if(isset($voterid)){
         $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voterid));
-        $candidaterecord = $DB->get_records_sql('SELECT c.id cid, o.id oid FROM {block_sgelection_candidate} c JOIN {block_sgelection_office} o ON c.office = o.id JOIN {block_sgelection_votes} v where v.voterid = ' . $voterid .' AND type = "candidate";');
-        $resolutionrecord = $DB->get_records_sql('SELECT r.id, v.vote FROM {block_sgelection_resolution} r JOIN {block_sgelection_votes} v WHERE v.voterid = ' . $voterid .' AND type = "resolution";');
-        var_dump($candidaterecord);
+        $candidaterecord = $DB->get_records_sql('SELECT c.id cid, o.id oid '
+                . 'FROM {block_sgelection_candidate} c '
+                . 'LEFT JOIN {block_sgelection_office} o ON c.office = o.id '
+                . 'LEFT JOIN {block_sgelection_votes} v on v.typeid = c.id '
+                . 'WHERE v.voterid = ' . $voterid .' '
+                . 'AND type = "candidate";');
+        $resolutionrecord = $DB->get_records_sql('SELECT r.id, v.vote '
+                . 'FROM {block_sgelection_resolution} r '
+                . 'JOIN {block_sgelection_votes} v ON v.typeid = r.id '
+                . 'WHERE v.voterid = ' . $voterid .' '
+                . 'AND type = "resolution";');
+
         foreach($candidaterecord as $cr){
             $officeforcandidate = 'candidate_checkbox_' . $cr->cid .'_'.$cr->oid;
             $formdata->$officeforcandidate = 1;
