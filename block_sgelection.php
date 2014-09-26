@@ -168,8 +168,14 @@ class block_sgelection extends block_list {
 
         $elections = Election::get_active();
         if(count($elections) > 0){
-            foreach($elections as $election){
-                $election->email_results();
+            $results_last_sent = sge::config('results_last_sent');
+            $results_last_sent = $results_last_sent ? $results_last_sent : 0;
+            $interval   = sge::config('results_interval') * 60;
+            if((time() - $results_last_sent) > $interval){
+                foreach($elections as $election){
+                    $election->email_results();
+                }
+                sge::config('results_last_sent', time());
             }
         }
     return true;

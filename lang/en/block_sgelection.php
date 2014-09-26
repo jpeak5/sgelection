@@ -77,6 +77,8 @@ $string['commissioner'] = 'Commissioner';
 $string['fulltime'] = 'Full Time';
 $string['parttime'] = 'Part Time';
 $string['results_recips'] = 'Results Recipients';
+$string['results_interval'] = "Results Email Interval";
+$string['results_interval_help'] = "Specify an interval (in minutes) that must elapse between email summaries";;
 $string['election_tool_administration'] = ' Election Tool Administration';
 $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 

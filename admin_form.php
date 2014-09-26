@@ -31,6 +31,11 @@ class sg_admin_form extends moodleform {
         $mform->setType('results_recipients', PARAM_TEXT);
         $mform->setDefault('results_recipients', $this->_customdata['default_results_recips']);
 
+        $mform->addElement('text', 'results_interval', get_string('results_interval', 'block_sgelection'));
+        $mform->setType('results_interval', PARAM_INT);
+        $mform->setDefault('results_interval', $this->_customdata['default_results_interval']);
+        $mform->addHelpButton('results_interval', 'results_interval', 'block_sgelection');
+
         $curriculum_codes = $DB->get_records_sql_menu("select id, value from mdl_enrol_ues_usermeta WHERE name = 'user_major' GROUP BY value;");
         $currCodesArray = array();
 
