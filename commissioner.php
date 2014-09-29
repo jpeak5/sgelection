@@ -3,6 +3,7 @@ require_once('../../config.php');
 require_once('commissioner_form.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
+require_once('classes/office.php');
 require_once 'lib.php';
 require_once('renderer.php');
 
@@ -44,6 +45,44 @@ if($form->is_cancelled()){
     $election = new election($fromform);
     $election->thanksforvoting = $fromform->thanksforvoting['text'];
     $election->save();
+
+    $collegemap = array();
+    foreach(office::get_all() as $office){
+        if(empty($collegemap[$office->college])){
+            $collegemap[$office->college] = array();
+        }
+        $exists = in_array($office->name, $collegemap[$office->college]);
+        if(!$exists){
+            $collegemap[$office->college][] = $office->name;
+        }else{
+            throw new Exception(sprintf("Multiple offices found: '%s' for college '%s', id: %d", $office, $college, $id));
+        }
+    }
+
+    // Update offices, if required
+    $offices = $fromform->common_college_offices;
+    if(!empty($offices)){
+        global $DB;
+        $offices = explode(',', $offices); // just submitted from the form.
+        $colleges = sge::get_distinct_colleges(); // DB row objects from enrolment.
+        $newconfig = array();
+        foreach($offices as $office){
+            $office = trim($office);
+            foreach($colleges as $college){
+                $found = array_key_exists($college->value, $collegemap) && in_array($office, $collegemap[$college->value]);
+                if(!$found){
+                    $newoffice = new stdClass();
+                    $newoffice->name = $office;
+                    $newoffice->college = $college->value;
+                    $newoffice->number = 1; //Arbitrary default.
+                    $newoffice->weight = 3; //Arbitrary default.
+                    $DB->insert_record('block_sgelection_office', $newoffice);
+                }
+            }
+            $newconfig[] = $office;
+        }
+        sge::config('common_college_offices', implode(',', $newconfig));
+    }
 
     //logging
     $action = $id ? 'updated' : 'created';
