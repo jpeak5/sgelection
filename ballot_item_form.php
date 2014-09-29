@@ -10,9 +10,9 @@ class ballot_item_form extends moodleform {
 
         $mform =& $this->_form;
 
+        // Get customdata into simple vars.
         $election   = $this->_customdata['election'];
         $candidates = $this->_customdata['candidates'];
-        $college    = $this->_customdata['college'];
         $voter      = $this->_customdata['voter'];
 
         // Setup preview controls.
@@ -24,7 +24,7 @@ class ballot_item_form extends moodleform {
             // Preview section
             $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
             $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
-            sge::get_college_selection_box($mform, $college);
+            sge::get_college_selection_box($mform, $voter->college);
 
             $ptftparams = array(1 =>'Part-Time', 2 =>'Full-Time');
             $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
@@ -72,7 +72,7 @@ class ballot_item_form extends moodleform {
                 $mform->addElement('static', 'edit_candidate', $edita);
             }
             $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
-            $mform->addElement('static','text', 'Full Text Link', '<div class="resolution_link"><a href="'.$r->link.'">' . html_writer::tag('p', $r->link) . '</a></div>');            
+            $mform->addElement('static','text', 'Full Text Link', '<div class="resolution_link"><a href="'.$r->link.'">' . html_writer::tag('p', $r->link) . '</a></div>');
             $radioarray=array();
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), resolution::AGAINST);
@@ -89,7 +89,7 @@ class ballot_item_form extends moodleform {
         );
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
     }
-    
+
     function validation($data, $files){
         $errors = parent::validation($data, $files);
         $officeKeepTrackArray = array();
@@ -105,15 +105,15 @@ class ballot_item_form extends moodleform {
                 }
             }
             if(strstr($key, 'number_of_office_votes_allowed')){
-                $numofvotesallowed = explode('_', $key);         
+                $numofvotesallowed = explode('_', $key);
                 $officeLimitKeepTrackArray[$numofvotesallowed[5]] = $value;
             }
         }
         foreach ($officeKeepTrackArray as $i=>$o){
-            if($o > $officeLimitKeepTrackArray[$i]){           
-                $errors += array('testbox_'.$i => 'Too Many Candidates Selected');            
+            if($o > $officeLimitKeepTrackArray[$i]){
+                $errors += array('testbox_'.$i => 'Too Many Candidates Selected');
             }
         }
-        return $errors; 
+        return $errors;
     }
 }

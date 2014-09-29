@@ -208,13 +208,13 @@ class voter extends sge_database_object {
     /**
      * @TODO perhaps this should return something useful in the event
      * that a field is not set.
-     * @return boolean
+     * @return false if all's well | first missing field
      */
-    public function has_required_metadata(){
+    public function is_missing_metadata(){
         $requiredfields = array('college', 'hours', 'courseload', 'year');
         foreach($requiredfields as $rf){
             if(!isset($this->$rf)){
-                return false;
+                return $rf;
             }
         }
         return true;
