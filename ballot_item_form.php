@@ -17,10 +17,7 @@ class ballot_item_form extends moodleform {
 
         // Setup preview controls.
         if($voter->is_privileged_user()){
-            // edit election link.
-            $editurl = new moodle_url('commissioner.php', array('id' => $election->id));
-            $edita   = html_writer::link($editurl, "Edit this Election");
-            $mform->addElement('static', 'edit_election', $edita);
+
             // Preview section
             $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
             $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
