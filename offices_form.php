@@ -22,15 +22,18 @@ class office_form extends moodleform {
 
         $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'name', get_string('title_of_office', 'block_sgelection'), $attributes);
+        $mform->addRule('name', null, 'required', null, 'client');
         $mform->setType('name', PARAM_TEXT);
 
         $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'number', get_string('number_of_openings', 'block_sgelection'), $attributes);
+        $mform->addRule('number', null, 'required', null, 'client');
         $mform->setType('number', PARAM_INT);
 
         $attributes = array('size' => '5', 'maxlength' => '4');
         $mform->addElement('text', 'weight', get_string('weight', 'block_sgelection'), $attributes);
         $mform->setType('weight', PARAM_INT);
+        $mform->setDefault('weight', 3);
 
 
         // Limit to College

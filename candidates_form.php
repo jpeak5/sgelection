@@ -31,6 +31,7 @@ class candidate_form extends moodleform {
             $attributes = array('size' => '50', 'maxlength' => '100');
             $mform->addElement('text', 'username', get_string('paws_id_of_candidate', 'block_sgelection'), $attributes);
             $mform->setType('username', PARAM_ALPHANUM);
+            $mform->addRule('username', null, 'required', null, 'client');
 
             //add office dropdown
             $mform->addElement('text', 'affiliation', get_string('affiliation', 'block_sgelection'));
