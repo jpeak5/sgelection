@@ -418,4 +418,10 @@ class block_sgelection_renderer extends plugin_renderer_base {
         
         return $thehtml;
     }
+
+    public static function print_readonly(){
+        global $OUTPUT;
+        print_error(get_string('readonly', 'block_sgelection'));
+        $OUTPUT->continue_button("/");
+    }
 }

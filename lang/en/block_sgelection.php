@@ -31,6 +31,7 @@ $string['election_shortname'] = '{$a->sem} [{$a->name}]';
 $string['create_election']    = 'Create new election';
 $string['thanks_for_voting'] = 'Thanks for voting!';
 $string['election_summary'] = 'Election summary: {$a}';
+$string['readonly'] = "This election is closed";
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';

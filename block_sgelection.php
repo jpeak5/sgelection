@@ -63,7 +63,7 @@ class block_sgelection extends block_list {
         $voter = new voter($USER->id);
 
         // See if this user should be allowed to view the block at all.
-        if(!isloggedin() || ($voter->courseload() == voter::VOTER_NO_TIME && !$voter->is_privileged_user())){
+        if(!isloggedin()){
             return $this->content;
         }
 
@@ -73,8 +73,14 @@ class block_sgelection extends block_list {
 
         $icon_class = array('class' => 'icon');
 
-        foreach(election::get_active() as $ae){
+        $elections = $voter->is_privileged_user() ? election::get_all() : election::get_active();
+        foreach($elections as $ae){
 
+            // If user courseload is not at least part-time for the current election semester, add nothing to the output.
+            $ues_semester = ues_semester::by_id($ae->semesterid);
+            if($ues_semester && $voter->courseload($ues_semester) == voter::VOTER_NO_TIME && !$voter->is_privileged_user()){
+                continue;
+            }
                 $semester = $ae->shortname();
                 $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$ae->id));
                 $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
