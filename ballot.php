@@ -164,9 +164,8 @@ if($submitfinalvote == true){
     foreach($collectionofvotes as $indvote){
         $vote = new vote($indvote);
         $vote->finalvote = 1;
-        var_dump($vote);
         $vote->save();
-        //$voter->mark_as_voted($election);
+        $voter->mark_as_voted($election);
     }
 
     echo $OUTPUT->header();
@@ -182,7 +181,6 @@ if($submitfinalvote == true){
 else if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 }else if($fromform = $ballot_item_form->get_data()){
-    var_dump($fromform);
     if($preview && $voter->candoanything){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$voter->college)));
     }elseif(strlen($vote) > 0){
@@ -208,7 +206,6 @@ else if($ballot_item_form->is_cancelled()) {
             }
         }
         // Save vote values for each resolution.
-        var_dump(array_keys($resolutionsToForm));
         foreach(array_keys($resolutionsToForm) as $resid){
             $fieldname = 'resvote_'.$resid;
             if(isset($fromform->$fieldname)){
@@ -219,22 +216,25 @@ else if($ballot_item_form->is_cancelled()) {
                 $vote->vote = $fromform->$fieldname;
                 $storedvotes[] = $vote->save();
             }
-        }
-        var_dump($storedvotes);
-        
+        }        
 
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->candoanything, $voter, $election);
         echo html_writer::tag('p', "Ballot Review");
-        //var_dump($storedvotes);
         foreach($storedvotes as $cvote){
             if($cvote->type == 'candidate'){
-                echo '<h1>candidate</h1> <br />';
                 $candidaterecord = $DB->get_record_sql('SELECT u.id, u.firstname, u.lastname, o.name FROM {user} u JOIN {block_sgelection_candidate} c on u.id = c.userid JOIN {block_sgelection_office} o ON o.id = c.office where c.id = '. $cvote->typeid .';');
-                echo "<p> You voted for " ." <strong>". $candidaterecord->firstname ." " . $candidaterecord->lastname . "</strong> " . " for <strong>" .  $candidaterecord->name . "</strong></p>";
+                echo '<h1>'.$candidaterecord->name .'</h1> <br />';
+                echo "<p> You voted for " ." <strong>". $candidaterecord->firstname ." " . $candidaterecord->lastname . "</strong> </p>";
                 
             }else{
-                echo '<h1>resolution</h1> <br />';
+                if($cvote->vote ==2){ $resvote = 'Yes'; }
+                if($cvote->vote ==1){ $resvote = 'No'; }
+                if($cvote->vote ==0){ $resvote = 'Abstain'; }
+                $resolutionrecord = $DB->get_record_sql('SELECT * FROM {block_sgelection_resolution} where id = '. $cvote->typeid .';');
+                echo '<h1>'.$resolutionrecord->title.'</h1> <br />';
+                echo "<p> You voted <strong> " . $resvote ." <strong/> </p>"; 
+
             }
         }
         $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));                
@@ -256,7 +256,8 @@ else if($ballot_item_form->is_cancelled()) {
         $candidate_form->display();
         $resolution_form->display();
         $office_form->display();
-    }elseif($preview && $voter->candoanything){
+    }
+    elseif($preview && $voter->candoanything){
         // preview functionality; also not for regular users.
         $formdata->college = $voter->college;
         if($preview){
@@ -264,7 +265,7 @@ else if($ballot_item_form->is_cancelled()) {
         }
 
     }
-        $defaults = new object();
+    $defaults = new object();
     if(isset($voterid)){
         $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voterid));
         $candidaterecord = $DB->get_records_sql('SELECT c.id cid, o.id oid '
@@ -283,15 +284,12 @@ else if($ballot_item_form->is_cancelled()) {
             $officeforcandidate = 'candidate_checkbox_' . $cr->cid .'_'.$cr->oid;
             $formdata->$officeforcandidate = 1;
         }
-        var_dump($resolutionrecord);
         foreach($resolutionrecord as $rr){
             $resolutionstring = 'resvote_'.$rr->id;
                 $defaults->$resolutionstring = $rr->vote;
-                var_dump($rr);
         }
     }
     $ballot_item_form->set_data($defaults);
-    var_dump($defaults);
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
 
@@ -307,7 +305,4 @@ else if($ballot_item_form->is_cancelled()) {
     }
 
     echo $OUTPUT->footer();
-
-
 }
-
