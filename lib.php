@@ -64,22 +64,6 @@ class sge {
         return $errors;
     }
 
-    public static function validate_commisioner($data, $fieldname){
-        global $DB;
-        $user = $DB->get_record('user', array('username'=>$data[$fieldname]));
-        $voter = new voter($user->id);
-        if($user){
-            if($voter->courseload == 'F'){
-                return array();
-            }
-            else{
-                return array($fieldname => get_string('err_user_notfulltime', 'block_sgelection',  $data[$fieldname]));
-            }
-        }else{
-            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
-        }
-    }
-
     /**
      * Helper fn to make requiring many classes easier.
      *
