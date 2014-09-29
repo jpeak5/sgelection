@@ -45,6 +45,7 @@ class sg_admin_form extends moodleform {
 
         $select = $mform->addElement('select', 'excluded_curr_codes', get_string('excluded_curriculum_code', 'block_sgelection'), $currCodesArray);
         $select->setMultiple(true);
+        $mform->setDefault('excluded_curr_codes', array('CCUR', 'LLM'));
         $mform->addElement('html', '</div>');
         $this->add_action_buttons();
     }
