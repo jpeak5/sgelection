@@ -122,8 +122,39 @@ class voter extends sge_database_object {
         }
     }
 
-    public function right_college() {
-        return array();
+    /**
+     * Determine eligibility based on enrolled hours
+     * and on voter membership in one of the excluded
+     * curric_codes; @see admin.php
+     * @return boolean whether eligible or not.
+     */
+    public function eligible(election $election){
+
+        // Test for excluded curric code.
+        $excl_curric_codes = sge::config('excluded_curr_codes');
+        $excl_curric_codes = $excl_curric_codes ? explode(',', $excl_curric_codes) : array();
+        $curric_code       = $this->curric_code();
+        if(in_array($curric_code, $excl_curric_codes)){
+            return false;
+        }
+
+        // Test for minimum enrollment per semester.
+        $ues_semester = ues_semester::by_id($election->semesterid);
+        if(!in_array($this->courseload($ues_semester), array(self::VOTER_FULL_TIME, self::VOTER_PART_TIME))){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Return the ues curric code for the student.
+     * @global type $DB
+     * @return mixed string|false if the record is not found @see moodlenativedb::get_field
+     */
+    public function curric_code() {
+        global $DB;
+        return $DB->get_field('enrol_ues_usermeta', 'value', array('userid'=>$this->userid, 'name'=>'user_major'));
     }
 
     /**
