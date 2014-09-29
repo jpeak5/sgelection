@@ -68,7 +68,6 @@ class voter extends sge_database_object {
         }
         parent::__construct($params);
         $this->ip_address = getremoteaddr();
-        $this->courseload = $this->courseload();
     }
 
     public function at_least_parttime(){
@@ -84,9 +83,14 @@ class voter extends sge_database_object {
         return $DB->get_record_sql($sql, $params);
     }
 
-    public function courseload(){
+    /**
+     * @todo modify this to take an election param. @see self::eligible()
+     * @global type $DB
+     * @return type
+     */
+    public function courseload(ues_semester $semester){
         global $DB;
-        $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid));
+        $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid, 'semesterid' => $semester->id));
         $parttime = sge::config('parttime');
         $fulltime = sge::config('fulltime');
         $this->hours = $hours ? $hours : 0;
@@ -99,8 +103,7 @@ class voter extends sge_database_object {
             $courseload = self::VOTER_FULL_TIME;
         }
 
-        $this->courseload = $courseload;
-        return $this->courseload;
+        return $courseload;
     }
 
     public static function courseload_string($courseload){

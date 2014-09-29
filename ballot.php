@@ -59,8 +59,8 @@ $PAGE->set_title($heading);
 // End PAGE init.
 
 // Begin security checks.
-$voter   = new voter($USER->id);
-
+$voter = new voter($USER->id);
+$voter->courseload = $voter->courseload(ues_semester::by_id($election->semesterid)); //Specific to this election!!
 /**
  * Establish SG admin status.
  *
@@ -153,7 +153,7 @@ $customdata        = array(
         );
 if(null !== $voter){
     $customdata['college'] = $voter->college;
-    $customdata['courseload'] = $voter->courseload();
+    $customdata['courseload'] = $voter->courseload;
 }
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election->id)), $customdata, null,null,array('name' => 'ballot_form'));
 
