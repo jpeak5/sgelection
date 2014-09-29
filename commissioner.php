@@ -4,6 +4,7 @@ require_once('commissioner_form.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
 require_once 'lib.php';
+require_once('renderer.php');
 
 global $DB, $OUTPUT, $PAGE, $USER;
 require_login();
@@ -54,6 +55,9 @@ if($form->is_cancelled()){
 
     if($id > 0){
         $election = election::get_by_id($id);
+        if($election->readonly()){
+            block_sgelection_renderer::print_readonly();
+        }
         $editor_options = array(
             'trusttext' => true,
             'subdirs' => 1,

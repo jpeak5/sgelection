@@ -264,4 +264,8 @@ class election extends sge_database_object {
         }
     }
 
+    public function readonly(){
+        return $this->end_date < time();
+    }
+
 }

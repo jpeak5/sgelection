@@ -34,7 +34,7 @@ require_once('classes/candidate.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
 require_once('classes/vote.php');
-
+require_once('renderer.php');
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
@@ -174,6 +174,9 @@ if($ballot_item_form->is_cancelled()) {
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
+        if($election->readonly()){
+            block_sgelection_renderer::print_readonly();
+        }
         // DWETODO -> I'm commenting out a lot of lines of where things used to be
         // then moving them to the if($submitfinalvote) branch is
 
@@ -245,8 +248,12 @@ if($ballot_item_form->is_cancelled()) {
     $renderer->set_nav(null, $voter);
     echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
     $formdata = new stdClass();
-    if(!$preview && $voter->is_privileged_user){
+    if(!$preview && $voter->is_privileged_user && !$election->readonly()){
         // form elements creation forms; not for regular users.
+        // edit election link.
+        $editurl = new moodle_url('commissioner.php', array('id' => $election->id));
+        echo html_writer::link($editurl, "Edit this Election");
+
         $candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election->id)), array('election'=> $election));
         $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
         $office_form     = new office_form(new moodle_url('offices.php', array('election_id'=>$election->id)), array('election_id'=> $election->id, 'rtn'=>'ballot'));

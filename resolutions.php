@@ -5,6 +5,7 @@ require_once('resolutions_form.php');
 require_once('classes/resolution.php');
 require_once('classes/election.php');
 require_once 'lib.php';
+require_once('renderer.php');
 
 global $DB, $OUTPUT, $PAGE;
 sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
@@ -36,6 +37,9 @@ $form = new resolution_form(new moodle_url('resolutions.php', array('election_id
 if($form->is_cancelled()) {
     redirect(sge::ballot_url($election_id));
 } else if($fromform = $form->get_data()){
+        if($election->readonly()){
+            block_sgelection_renderer::print_readonly();
+        }
         $resolution      = new resolution($fromform);
         $resolution->text = $fromform->text_editor['text'];
         $resolution->link = $fromform->link;
