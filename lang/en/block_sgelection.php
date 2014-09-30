@@ -123,7 +123,12 @@ $string['latest_end_desc'] = 'How many days before the semester ends is it ok to
 $string['census_window'] = 'Census cron window';
 $string['census_window_desc'] = 'How many hours before an election can we allow the census period to begin? NB that cron must have a chance to run between election census start and election start.';
 
-
+//lookup user page
+$string['didvote'] = 'did vote';
+$string['didntvote'] = 'did not vote';
+$string['lookupuser'] = 'Lookup User';
+$string['paws_id_of_student'] = 'PAWS ID of student';
+$string['check_to_see'] = 'Check to see if a specific student has voted';
 //logging
 $string['defaultlogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}).';
 $string['candidatelogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}) with userid {$a->relateduserid}.';

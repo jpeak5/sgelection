@@ -43,7 +43,8 @@ if($form->is_cancelled()){
     redirect($url);
 } else if($fromform = $form->get_data()){
     $election = new election($fromform);
-    $election->thanksforvoting = $fromform->thanksforvoting['text'];
+    var_dump($fromform);
+    $election->thanksforvoting = $fromform->thanksforvoting_editor['text'];
     $election->save();
 
     $collegemap = array();
@@ -115,6 +116,10 @@ if($form->is_cancelled()){
         echo $OUTPUT->continue_button(new moodle_url('/my'));
     }else{
         $form->display();
+    }
+    if(isset($id)){
+        $lookupvoter = new moodle_url('/blocks/sgelection/lookupvoter.php', array('election_id' => $id));
+        echo html_writer::link($lookupvoter, html_writer::tag('h1', get_string('check_to_see', 'block_sgelection')));
     }
     echo $OUTPUT->footer();
 }

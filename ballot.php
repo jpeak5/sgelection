@@ -50,6 +50,7 @@ if(!$election){
 
 $vote     = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 $submitfinalvote = optional_param('submitfinalvote', 0, PARAM_INT);
+$voterid = optional_param('voterid',null, PARAM_INT);
 
 // Preview-related vars
 $ptft     = optional_param('ptft', 0, PARAM_INT);
@@ -57,9 +58,7 @@ $college  = optional_param('college', '', PARAM_ALPHA);
 $preview  = strlen(optional_param('preview', '', PARAM_ALPHA)) > 0 ? true : false;
 // End page params.
 
-
 $context  = context_system::instance();
-
 
 // Begin initialize PAGE and local param vars.
 $PAGE->set_context($context);
@@ -68,7 +67,7 @@ $heading = get_string('ballot_page_header', 'block_sgelection', $election->fulln
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 // End PAGE init.
-
+$renderer = $PAGE->get_renderer('block_sgelection');
 
 // Establish SG admin status.
 $voter = new voter($USER->id);
@@ -136,7 +135,7 @@ if($voter->already_voted($election)){
 }
 
 if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
-    print_error(sprintf('Your user profile is missing required information', $voter->is_missing_metadata()));
+    print_error(sprintf('Your user profile is missing required information :%s', $voter->is_missing_metadata()));
 }
 
 // ----------------- End Security Checks -----------------------//
@@ -164,7 +163,28 @@ $customdata        = array(
 
 $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('election_id' => $election->id)), $customdata, null,null,array('name' => 'ballot_form'));
 
-if($ballot_item_form->is_cancelled()) {
+// Ballot has been reviewed and user has pressed vote!
+if($submitfinalvote == true){
+    $voter->id = $voterid;
+    $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voter->id));
+    foreach($collectionofvotes as $indvote){
+        $vote = new vote($indvote);
+        $vote->finalvote = 1;
+        $vote->save();
+        $voter->mark_as_voted($election);
+    }
+
+    echo $OUTPUT->header();
+    echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
+    echo html_writer::tag('h1', $election->thanksforvoting);
+    echo html_writer::link($CFG->wwwroot, get_string('continue'));
+    $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
+    echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
+    require_once 'socialmediabuttons.php';
+    echo $OUTPUT->footer();
+
+}
+else if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 } else if($fromform = $ballot_item_form->get_data()){
     if($preview && $voter->is_privileged_user){
@@ -174,77 +194,68 @@ if($ballot_item_form->is_cancelled()) {
             print_error("You have already voted in this election!");
             $OUTPUT->continue_button("/");
         }
+
         if($election->readonly()){
             block_sgelection_renderer::print_readonly();
-        }
-        // DWETODO -> I'm commenting out a lot of lines of where things used to be
-        // then moving them to the if($submitfinalvote) branch is
-
-        // -- MOVED TO --> if($submitfinalvote)
+        }        
+        
+        // Review Page begins here
         // -----------------------------------
-        // $voter->time = time();
-        // $voter->save();
-        // $collectionofvotes will be an array for collecting all of the users votes
-        // then will be used to display their votes
-        // then if approved, the vote objects will be individually ->save();'d
+        $voter->time = time();
+        $voter->save();
+        $storedvotes = array();
 
         $collectionofvotes =array();
-   // Save votes for each candidate.
         foreach(candidate::get_full_candidates($election, $voter) as $c){
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
-
                 $vote = new vote(array('voterid'=>$voter->id));
+                $vote->finalvote = 0;
                 $vote->typeid = $c->cid;
                 $vote->type = 'candidate';
                 $vote->vote = 1;
-                // -- MOVED TO --> if($submitfinalvote)
-                // $vote->save();
-                //redirect(sge::ballot_url($election->id));
-                //redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => $submitfinalvote)));
-                echo 'click here to submit final vote';
+                $storedvotes[] = $vote->save();
             }
         }
-
         // Save vote values for each resolution.
         foreach(array_keys($resolutionsToForm) as $resid){
             $fieldname = 'resvote_'.$resid;
             if(isset($fromform->$fieldname)){
                 $vote = new vote(array('voterid'=>$voter->id));
+                $vote->finalvote = 0;
                 $vote->typeid = $resid;
                 $vote->type = 'resolution';
                 $vote->vote = $fromform->$fieldname;
-                // -- MOVED TO --> if($submitfinalvote)
-                //$vote->save();
+                $storedvotes[] = $vote->save();
             }
-        }
-        $_SESSION['collectionofvotes']=$collectionofvotes;
-        //$voter->mark_as_voted($election);
+        }        
 
-        if($submitfinalvote == true){
-            echo 'inside submitfinalvote';
-            foreach($collectionofvotes as $individualvotes){
-                echo "vote saving will happen here \n";
-//                    $vote->save();
-            }
-//                    $voter->mark_as_voted($election);
-
-        }
         echo $OUTPUT->header();
-        $renderer = $PAGE->get_renderer('block_sgelection');
         echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
-        echo html_writer::tag('h1', $election->thanksforvoting);
-        echo html_writer::link($CFG->wwwroot, get_string('continue'));
-        $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
-        echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
-        require_once 'socialmediabuttons.php';
+        echo html_writer::tag('p', "Ballot Review");
+        foreach($storedvotes as $cvote){
+            if($cvote->type == 'candidate'){
+                $candidaterecord = $DB->get_record_sql('SELECT u.id, u.firstname, u.lastname, o.name FROM {user} u JOIN {block_sgelection_candidate} c on u.id = c.userid JOIN {block_sgelection_office} o ON o.id = c.office where c.id = '. $cvote->typeid .';');
+                echo '<h1>'.$candidaterecord->name .'</h1> <br />';
+                echo "<p> You voted for " ." <strong>". $candidaterecord->firstname ." " . $candidaterecord->lastname . "</strong> </p>";
+                
+            }else{
+                if($cvote->vote ==2){ $resvote = 'Yes'; }
+                if($cvote->vote ==1){ $resvote = 'No'; }
+                if($cvote->vote ==0){ $resvote = 'Abstain'; }
+                $resolutionrecord = $DB->get_record_sql('SELECT * FROM {block_sgelection_resolution} where id = '. $cvote->typeid .';');
+                echo '<h1>'.$resolutionrecord->title.'</h1> <br />';
+                echo "<p> You voted <strong> " . $resvote ." <strong/> </p>"; 
+            }
+        }
+        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));                
+        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));                
+        echo '<a href = "' . $submitballotlink . '">click here to submit ballot </a>';
+        echo '<br /><a href = "' . $editballotlink . '">click here to edit ballot </a>';
         echo $OUTPUT->footer();
-
     }
-
 } else {
     echo $OUTPUT->header();
-    $renderer = $PAGE->get_renderer('block_sgelection');
     $renderer->set_nav(null, $voter);
     echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
     $formdata = new stdClass();
@@ -267,12 +278,34 @@ if($ballot_item_form->is_cancelled()) {
         if($preview){
             $formdata->ptft    = $ptft;
         }
-
     }
+    $defaults = new object();
+    if(isset($voterid)){
+        $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voterid));
+        $candidaterecord = $DB->get_records_sql('SELECT c.id cid, o.id oid '
+                . 'FROM {block_sgelection_candidate} c '
+                . 'LEFT JOIN {block_sgelection_office} o ON c.office = o.id '
+                . 'LEFT JOIN {block_sgelection_votes} v on v.typeid = c.id '
+                . 'WHERE v.voterid = ' . $voterid .' '
+                . 'AND type = "candidate";');
+        $resolutionrecord = $DB->get_records_sql('SELECT r.id, v.vote '
+                . 'FROM {block_sgelection_resolution} r '
+                . 'JOIN {block_sgelection_votes} v ON v.typeid = r.id '
+                . 'WHERE v.voterid = ' . $voterid .' '
+                . 'AND type = "resolution";');
+
+        foreach($candidaterecord as $cr){
+            $officeforcandidate = 'candidate_checkbox_' . $cr->cid .'_'.$cr->oid;
+            $formdata->$officeforcandidate = 1;
+        }
+        foreach($resolutionrecord as $rr){
+            $resolutionstring = 'resvote_'.$rr->id;
+                $defaults->$resolutionstring = $rr->vote;
+        }
+    }
+    $ballot_item_form->set_data($defaults);
     $ballot_item_form->set_data($formdata);
     $ballot_item_form->display();
-
-
 
    $lengthOfCandidates = count($candidatesbyoffice);
 
@@ -282,9 +315,5 @@ if($ballot_item_form->is_cancelled()) {
         $officenumber = $cbo->id;
         $PAGE->requires->js_init_call('checkboxlimit', array($cbo->id, $cbo->number, $cbo->id));
     }
-
     echo $OUTPUT->footer();
-
-
 }
-
