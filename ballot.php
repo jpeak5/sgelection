@@ -263,7 +263,7 @@ else if($ballot_item_form->is_cancelled()) {
         // form elements creation forms; not for regular users.
         // edit election link.
         $editurl = new moodle_url('commissioner.php', array('id' => $election->id));
-        echo html_writer::link($editurl, "Edit this Election");
+        echo html_writer::tag('h2', html_writer::link($editurl, "Edit this Election"));
 
         $candidate_form  = new candidate_form(new moodle_url('candidates.php', array('election_id'=> $election->id)), array('election'=> $election));
         $resolution_form = new resolution_form(new moodle_url('resolutions.php'), array('election'=> $election));
