@@ -27,15 +27,12 @@ $renderer->set_nav(null, $voter);
 
 
 $form = new lookupvoter_form(new moodle_url('lookupvoter.php', array('election_id' => $election_id)));
-
+$stringforresults = '';
 if($form->is_cancelled()) {
-    // back to homepage i suppose
-    //redirect(sge::ballot_url($election_id));
-    echo 'cancelled';
+    redirect(new moodle_url('/blocks/sgelection/commissioner.php', array('id'=>$election_id)));
 } else if($voter = $form->get_data()){
     $userid = $DB->get_field('user', 'id', array('username' => $voter->username));
     $voter->userid = $userid;
-    $stringforresults = '';
     $didvote = $DB->get_records('block_sgelection_voted',array('userid'=>$userid, 'election_id'=>$election_id));
     if(empty($didvote)){
         $stringforresults .= $voter->username . ' ' . get_string('didntvote', 'block_sgelection');

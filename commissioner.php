@@ -117,5 +117,9 @@ if($form->is_cancelled()){
     }else{
         $form->display();
     }
+    if(isset($id)){
+        $lookupvoter = new moodle_url('/blocks/sgelection/lookupvoter.php', array('election_id' => $id));
+        echo html_writer::link($lookupvoter, '<h1>' . get_string('check_to_see', 'block_sgelection') . '</h1>');
+    }
     echo $OUTPUT->footer();
 }

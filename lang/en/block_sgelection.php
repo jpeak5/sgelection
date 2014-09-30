@@ -128,7 +128,7 @@ $string['didvote'] = 'did vote';
 $string['didntvote'] = 'did not vote';
 $string['lookupuser'] = 'Lookup User';
 $string['paws_id_of_student'] = 'PAWS ID of student';
-
+$string['check_to_see'] = 'Check to see if a specific student has voted';
 //logging
 $string['defaultlogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}).';
 $string['candidatelogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}) with userid {$a->relateduserid}.';
