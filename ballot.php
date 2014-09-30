@@ -67,18 +67,12 @@ $heading = get_string('ballot_page_header', 'block_sgelection', $election->fulln
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 // End PAGE init.
-$renderer = $PAGE->get_renderer('block_sgelection');
+
 
 // Establish SG admin status.
 $voter = new voter($USER->id);
 $voter->courseload = $voter->courseload(ues_semester::by_id($election->semesterid)); //Specific to this election!!
 $voter->is_privileged_user = $voter->is_privileged_user();
-
-
-// SG Admin status determines PAGE layout.
-$layout  = $voter->is_privileged_user && !$preview ? 'standard' : 'base';
-$PAGE->set_pagelayout($layout);
-
 
 // Setup preview, if applicable.
 if($preview && $voter->is_privileged_user){
@@ -141,6 +135,12 @@ if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
 // ----------------- End Security Checks -----------------------//
 
 
+// SG Admin status determines PAGE layout.
+$layout  = $voter->is_privileged_user && !$preview ? 'standard' : 'base';
+$PAGE->set_pagelayout('standard');
+
+// Now that layout is selected, we can get our renderer.
+$renderer = $PAGE->get_renderer('block_sgelection');
 
 
 // Setup resolutions, based on user courseload.
@@ -197,8 +197,8 @@ else if($ballot_item_form->is_cancelled()) {
 
         if($election->readonly()){
             block_sgelection_renderer::print_readonly();
-        }        
-        
+        }
+
         // Review Page begins here
         // -----------------------------------
         $voter->time = time();
@@ -228,7 +228,7 @@ else if($ballot_item_form->is_cancelled()) {
                 $vote->vote = $fromform->$fieldname;
                 $storedvotes[] = $vote->save();
             }
-        }        
+        }
 
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
