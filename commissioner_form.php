@@ -40,6 +40,13 @@ class commissioner_form extends moodleform {
         $mform->addElement('editor', 'thanksforvoting_editor', get_string('thanks_for_voting_message', 'block_sgelection'));
         $mform->setType('thanksforvoting', PARAM_RAW);
 
+        $mform->addElement('text', 'common_college_offices', get_string('common_college_offices', 'block_sgelection'), array('height'=>'20px'));
+        $mform->setType('common_college_offices', PARAM_TEXT);
+        $common_offices_defaults = sge::config('common_college_offices');
+        $common_offices_defaults = $common_offices_defaults ? $common_offices_defaults : implode(',', array(
+            'College Council President', 'College Council Vice-President', 'Council Member-at-Large', 'Senate Full', 'Senate Half'));
+        $mform->setDefault('common_college_offices', $common_offices_defaults);
+
         $this->add_action_buttons();
     }
 

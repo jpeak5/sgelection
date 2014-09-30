@@ -63,7 +63,7 @@ class block_sgelection extends block_list {
         $voter = new voter($USER->id);
 
         // See if this user should be allowed to view the block at all.
-        if(!isloggedin() || ($voter->courseload() == voter::VOTER_NO_TIME && !$voter->is_privileged_user())){
+        if(!isloggedin()){
             return $this->content;
         }
 
@@ -73,8 +73,14 @@ class block_sgelection extends block_list {
 
         $icon_class = array('class' => 'icon');
 
-        foreach(election::get_active() as $ae){
+        $elections = $voter->is_privileged_user() ? election::get_all() : election::get_active();
+        foreach($elections as $ae){
 
+            // If user courseload is not at least part-time for the current election semester, add nothing to the output.
+            $ues_semester = ues_semester::by_id($ae->semesterid);
+            if($ues_semester && $voter->courseload($ues_semester) == voter::VOTER_NO_TIME && !$voter->is_privileged_user()){
+                continue;
+            }
                 $semester = $ae->shortname();
                 $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$ae->id));
                 $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
@@ -127,8 +133,11 @@ class block_sgelection extends block_list {
 
         // Iterate over each semester which is ready for eligibility calculation
         // creating block_sgelection_hours rows for each student enrolled.
-        foreach(sge::semesters_eligible_for_census() as $s){
-
+        $semesters_complete = array();
+        foreach(sge::semesters_eligible_for_census() as $eid => $s){
+            if(in_array($s->id, $semesters_complete)){
+                continue;
+            }
             // If any hours rows exist for this semester, remove them- we want fresh data.
             $DB->delete_records('block_sgelection_hours', array('semesterid' => $s->id));
 
@@ -138,21 +147,41 @@ class block_sgelection extends block_list {
             // If we get no results (should never happen, provided
             // ues users are enrolled), continue to the next one.
             if(false === $hours){
+                $semesters_complete[] = $s->id;
                 continue;
             }
 
+            // Log it.
+            $event = \block_sgelection\event\census_completed::create(array(
+                        'objectid' => $eid,
+                        'context' => context_system::instance()
+                            ));
+            $event->trigger();
             // Insert each row.
             // @TODO consider doing this using with a moodle batch
             // insert or a transaction (include the delete too...)
             foreach($hours as $row){
                 $DB->insert_record('block_sgelection_hours', $row);
             }
+
+            // Mark complete.
+            $semesters_complete[] = $s->id;
+            $election = Election::get_by_id($eid);
+            $election->hours_census_complete = time();
+            $election->save();
         }
+
 
         $elections = Election::get_active();
         if(count($elections) > 0){
-            foreach($elections as $election){
-                $election->message_admins();
+            $results_last_sent = sge::config('results_last_sent');
+            $results_last_sent = $results_last_sent ? $results_last_sent : 0;
+            $interval   = sge::config('results_interval') * 60;
+            if((time() - $results_last_sent) > $interval){
+                foreach($elections as $election){
+                    $election->email_results();
+                }
+                sge::config('results_last_sent', time());
             }
         }
     return true;
