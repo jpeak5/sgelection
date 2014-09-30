@@ -35,17 +35,18 @@ if($form->is_cancelled()) {
 } else if($voter = $form->get_data()){
     $userid = $DB->get_field('user', 'id', array('username' => $voter->username));
     $voter->userid = $userid;
+    $stringforresults = '';
     $didvote = $DB->get_records('block_sgelection_voted',array('userid'=>$userid, 'election_id'=>$election_id));
     if(empty($didvote)){
-        echo $voter->username . ' ' . get_string('didntvote', 'block_sgelection');
+        $stringforresults .= $voter->username . ' ' . get_string('didntvote', 'block_sgelection');
     }
     else{
-        echo $voter->username . ' ' . get_string('didvote', 'block_sgelection');
+        $stringforresults .= $voter->username . ' ' . get_string('didvote', 'block_sgelection');
     }
-    
-} else {
+}
+
     // form didn't validate or this is the first display
     echo $OUTPUT->header();
     $form->display();
+    echo $stringforresults;
     echo $OUTPUT->footer();
-}
