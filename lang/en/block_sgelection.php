@@ -138,3 +138,6 @@ $string['eventelectioncreated'] = 'Election Created';
 $string['eventelectionupdated'] = 'Election Updated';
 $string['censuscompleted'] = 'Election Census Complete';
 $string['censuscompleted_msg'] = 'Enrolled credit hours were calculated for election id {$a->objectid}';
+
+//lookupvoter
+$string['check_vote_status'] = 'Check vote status for election:   {$a}';

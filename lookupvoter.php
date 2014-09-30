@@ -44,6 +44,7 @@ if($form->is_cancelled()) {
 
     // form didn't validate or this is the first display
     echo $OUTPUT->header();
+    echo html_writer::tag('h1', get_string('check_vote_status', 'block_sgelection', $election->fullname()));
     $form->display();
     echo $stringforresults;
     echo $OUTPUT->footer();
