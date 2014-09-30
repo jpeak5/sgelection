@@ -43,7 +43,6 @@ if($form->is_cancelled()){
     redirect($url);
 } else if($fromform = $form->get_data()){
     $election = new election($fromform);
-    var_dump($fromform);
     $election->thanksforvoting = $fromform->thanksforvoting_editor['text'];
     $election->save();
 
@@ -62,6 +61,7 @@ if($form->is_cancelled()){
 
     // Update offices, if required
     $offices = $fromform->common_college_offices;
+
     if(!empty($offices)){
         global $DB;
         $offices = explode(',', $offices); // just submitted from the form.
