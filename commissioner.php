@@ -107,6 +107,9 @@ if($form->is_cancelled()){
         );
         $election = file_prepare_standard_editor($election, 'thanksforvoting', $editor_options);
         $form->set_data($election);
+
+        $lookupvoter = new moodle_url('/blocks/sgelection/lookupvoter.php', array('election_id' => $id));
+        echo html_writer::link($lookupvoter, html_writer::tag('h1', get_string('check_to_see', 'block_sgelection')));
     }
     if(empty($data['semesters'])){
         // In the extremely rare case that there are no available semesters, redirect to /my.
@@ -117,9 +120,6 @@ if($form->is_cancelled()){
     }else{
         $form->display();
     }
-    if(isset($id)){
-        $lookupvoter = new moodle_url('/blocks/sgelection/lookupvoter.php', array('election_id' => $id));
-        echo html_writer::link($lookupvoter, html_writer::tag('h1', get_string('check_to_see', 'block_sgelection')));
-    }
+
     echo $OUTPUT->footer();
 }
