@@ -137,7 +137,7 @@ if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
 
 // SG Admin status determines PAGE layout.
 $layout  = $voter->is_privileged_user && !$preview ? 'standard' : 'base';
-$PAGE->set_pagelayout('standard');
+$PAGE->set_pagelayout($layout);
 
 // Now that layout is selected, we can get our renderer.
 $renderer = $PAGE->get_renderer('block_sgelection');
