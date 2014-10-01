@@ -24,7 +24,7 @@
   text-align: center;
 } 
 
-#page-blocks-sgelection-ballot fieldset.hidden>div div.candidates {
+#page-blocks-sgelection-ballot div.candidates {
   background-color: #fff;
   display: block;
   width: auto;
@@ -69,10 +69,6 @@
   background-color: #fff;
 }
 
-#page-blocks-sgelection-ballot div.candidates div.candidate div.fitem.fitem_fcheckbox {
-  width: auto;
-}
-
 #page-blocks-sgelection-ballot div.candidates div.candidate div.fitemtitle {
   width: auto;
   clear: right;
@@ -88,20 +84,6 @@
   padding: 0;
 }
 
-#page-blocks-sgelection-ballot div.candidates div.candidate div.felement.fcheckbox>span {
-  display: block;
-  margin: 0;
-  padding: 0;
-}
-
-#page-blocks-sgelection-ballot div.candidates div.candidate div.felement.fcheckbox input[type='checkbox'] {
-  width: 2em;
-  height: 2em;
-  background-color: #ccc;
-  border: 1px solid #000;
-  margin: 0;
-}
-
 #page-blocks-sgelection-ballot fieldset.hidden>div>div.fitem {
   text-align: center;
 }
@@ -112,15 +94,7 @@
   text-align: center;
 }
 
-#page-blocks-sgelection-ballot fieldset.hidden>div div.candidates>div.candidate div.vp {
+#page-blocks-sgelection-ballot div.candidates div.candidate div.vp {
   margin: 0;
   text-align: left;
-}
-#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.candidates>div.candidate div.vp: {
-  content: 'VP';
-}
-
-#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.fitemtitle>div.fstaticlable>label>h1 {
-}
-#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.fitemtitle>div.fstaticlable>label>h1 {
 }
