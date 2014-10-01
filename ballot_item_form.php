@@ -56,13 +56,13 @@ class ballot_item_form extends moodleform {
                 $affiliation = '';
 
                 if(!empty($c->affiliation)){
-                    $affiliation = html_writer::div(' &mdash; ' . $c->affiliation, 'vp');
+                    $affiliation = ' &mdash; ' . $c->affiliation;
                 }
 
                 $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeid]);
                 $mform->setType('number_of_office_votes_allowed_'.$officeid, PARAM_INT);
                 $mform->addElement('html', '<div class="candidate">');
-                $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname . $affiliation, null, array('class'=>'candidate_office_'.$officeid));
+                $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , NULL, '<span></span>' . $c->firstname . ' ' . $c->lastname . $affiliation, array('class'=>'candidate_office_'.$officeid));
                 $mform->addElement('html', '<div class="candidatebox"></div>');
                 $mform->addElement('html', '</div>');
             }
@@ -72,9 +72,8 @@ class ballot_item_form extends moodleform {
 
         $resolutions = $this->_customdata['resolutions'];
 
+        $mform->addElement('html', '<div class="resolutions">');
         foreach($resolutions as $r){
-            $mform->addElement('html', html_writer::tag('h1', $r->title));
-            $mform->addElement('html', '<div class="singleresolution">');
 
             if($voter->is_privileged_user()){
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
@@ -82,14 +81,16 @@ class ballot_item_form extends moodleform {
                 $mform->addElement('html', $edita);
             }
 
-            $mform->addElement('html', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
-            $mform->addElement('html', '<div class="resolution_link"><a href="'.$r->link.'">' . html_writer::tag('p', $r->link) . '</a></div>');
+            $mform->addElement('html', '<div class="resolution">' . html_writer::tag('h1', $r->title) . $r->text);
+            $mform->addElement('html', '<div class="resolution_link"><a href="' . $r->link . '">' . $r->link . '</a></div>');
             $radioarray=array();
-            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);
-            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), resolution::AGAINST);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', '<span></span>' . get_string('yes'), resolution::IN_FAVOR);
+            $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', '<span></span>' . get_string('no'), resolution::AGAINST);
 
             $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
+            $mform->addElement('html', '</div>');
         }
+        $mform->addElement('html', '</div>');
 
         $buttons = array(
         $mform->createElement('submit', 'vote', get_string('vote', 'block_sgelection')),
