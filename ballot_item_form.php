@@ -20,7 +20,7 @@ class ballot_item_form extends moodleform {
 
             // Preview section
             $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
-            $mform->addElement('static', 'preview_ballot', '<h1>Preview</h1>');
+            $mform->addElement('html', html_writer::tag('h1', get_string('preview'), array('class'=>'preview_ballot')));
             sge::get_college_selection_box($mform, $voter->college);
 
             $ptftparams = array(1 =>'Part-Time', 2 =>'Full-Time');
@@ -36,10 +36,9 @@ class ballot_item_form extends moodleform {
 
             if($office->candidates != null && count($office->candidates) > 0){
                 $number_of_office_votes_allowed[$officeid] = $office->number;
-                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name, array('class'=>'itemtitle')));
-
-                if(count($office->number) > 1){
-                    $mform->addElement('static', 'numberofoffices', get_string('select_up_to', 'block_sgelection', $office->number));
+                $mform->addElement('html', html_writer::tag('h1', $office->name, array('class'=>'itemtitle')));
+                if($office->number > 1){
+                    $mform->addElement('html', html_writer::tag('p', get_string('select_up_to', 'block_sgelection', $office->number)));
                 }
                 shuffle($office->candidates);
             }
@@ -52,7 +51,7 @@ class ballot_item_form extends moodleform {
                 if($voter->is_privileged_user() && !$this->_customdata['preview']){
                     $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
                     $edita   = html_writer::link($editurl, 'edit', array('class'=>'editlink'));
-                    $mform->addElement('static', 'edit_candidate', $edita);
+                    $mform->addElement('html', $edita);
                 }
 
                 $affiliation = '';
@@ -71,17 +70,16 @@ class ballot_item_form extends moodleform {
         $resolutions = $this->_customdata['resolutions'];
 
         foreach($resolutions as $r){
-            $mform->addElement('static','title',  html_writer::tag('h1', $r->title));
-
+            $mform->addElement('html', html_writer::tag('h1', $r->title));
             $mform->addElement('html', '<div class="singleresolution">');
 
             if($voter->is_privileged_user()){
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
                 $edita   = html_writer::link($editurl, 'edit');
-                $mform->addElement('static', 'edit_candidate', $edita);
+                $mform->addElement('html', $edita);
             }
-            $mform->addElement('static','text', 'Resolution Description', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
-            $mform->addElement('static','text', 'Full Text Link', '<div class="resolution_link"><a href="'.$r->link.'">' . html_writer::tag('p', $r->link) . '</a></div>');
+            $mform->addElement('html', '<div class="resolution">' . html_writer::tag('p', $r->text) . '</div>');
+            $mform->addElement('html', '<div class="resolution_link"><a href="'.$r->link.'">' . html_writer::tag('p', $r->link) . '</a></div>');
             $radioarray=array();
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('yes'), resolution::IN_FAVOR);
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', get_string('no'), resolution::AGAINST);
