@@ -41,9 +41,14 @@
   margin-top: 2em;
 }
 
-#page-blocks-sgelection-ballot div.resolution>h1 {
-  margin :0;
+#page-blocks-sgelection-ballot h1 {
+  font-weight: bold;
+  margin-bottom: .5em;
   text-align: center;
+  font-size: 18px;
+}
+
+#page-blocks-sgelection-ballot div.resolution>h1 {
 }
 
 #page-blocks-sgelection-ballot div.resolution>p {
@@ -140,4 +145,9 @@
 
 #page-blocks-sgelection-ballot input[type="radio"]:checked + label span {
   background-position: -57px 0px;
+}
+
+#page-blocks-sgelection-ballot .fitem_actionbuttons div.fgroup {
+  width: 100%;
+  margin: 10px auto;
 }
