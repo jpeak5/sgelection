@@ -28,12 +28,15 @@ class ballot_item_form extends moodleform {
             $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
         }
         $number_of_office_votes_allowed = array();
+
+        $mform->addElement('html', '<div class="ballot">');
+
         foreach($candidates as $officeid => $office){
             $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid. ' class="hiddenCandidateWarningBox felement fstatic  error"><span class = "error">You have selected too many candidates, please select at most ' . $office->number . '</span></div>' );
 
             if($office->candidates != null && count($office->candidates) > 0){
                 $number_of_office_votes_allowed[$officeid] = $office->number;
-                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name));
+                $mform->addElement('static', 'office title',  html_writer::tag('h1', $office->name, array('class'=>'itemtitle')));
 
                 if(count($office->number) > 1){
                     $mform->addElement('static', 'numberofoffices', get_string('select_up_to', 'block_sgelection', $office->number));
@@ -41,27 +44,36 @@ class ballot_item_form extends moodleform {
                 shuffle($office->candidates);
             }
 
+            $mform->addElement('html', '<div class="candidates">');
             foreach($office->candidates as $c){
-                $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
+
+                $mform->addElement('html', '<div class="candidate">');
+
                 if($voter->is_privileged_user() && !$this->_customdata['preview']){
-                    $edita   = html_writer::link($editurl, 'edit');
+                    $editurl = new moodle_url('candidates.php', array('id'=>$c->cid, 'election_id'=>$election->id));
+                    $edita   = html_writer::link($editurl, 'edit', array('class'=>'editlink'));
                     $mform->addElement('static', 'edit_candidate', $edita);
                 }
 
-                $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname, null,  array('class'=>'candidate_office_'.$officeid));
+                $affiliation = '';
                 if(!empty($c->affiliation)){
-                    $mform->addElement('static', 'affiliation', '' . $c->affiliation);
+                    $affiliation = html_writer::div($c->affiliation, 'vp');
                 }
+                $mform->addElement('checkbox', 'candidate_checkbox_' . $c->cid .'_'.$officeid , $c->firstname . ' ' . $c->lastname . $affiliation, null, array('class'=>'candidate_office_'.$officeid));
                 $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeid]);
                 $mform->setType('number_of_office_votes_allowed_'.$officeid, PARAM_INT);
                 $mform->addElement('html', '<div class="candidatebox"></div>');
+                $mform->addElement('html', '</div>');
             }
+            $mform->addElement('html', '</div>');
 
         }
         $resolutions = $this->_customdata['resolutions'];
 
         foreach($resolutions as $r){
             $mform->addElement('static','title',  html_writer::tag('h1', $r->title));
+
+            $mform->addElement('html', '<div class="singleresolution">');
 
             if($voter->is_privileged_user()){
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
@@ -77,14 +89,14 @@ class ballot_item_form extends moodleform {
 
             //$mform->setDefault('resvote_'.$r->id, resolution::ABSTAIN);
             $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
-
+            $mform->addElement('html', '</div>');
         }
-
         $buttons = array(
         $mform->createElement('submit', 'vote', get_string('vote', 'block_sgelection')),
         $mform->createElement('cancel')
         );
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
+        $mform->addElement('html', '</div>');
     }
 
     function validation($data, $files){

@@ -2,9 +2,6 @@
 
 }
 
-.resolution{
-
-}
 #page-blocks-sgelection-results .winnerresolution{
     background-color: #aaffaa;
 }
@@ -15,4 +12,111 @@
 
 #page-blocks-sgelection-admin .yui3-aclist-content .yui3-aclist-list{
     color: #461d7c;
+}
+
+#page-blocks-sgelection-ballot div.candidates, #page-blocks-sgelection-ballot div.singleresolution {
+  background-color: #fff;
+  display: block;
+  width: 30em;
+  margin: 0 auto 0 auto;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+} 
+
+#page-blocks-sgelection-ballot div.candidate {
+  padding-bottom: .25em;
+  padding-top: .25em;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div {
+  border-bottom: 1px solid #aaa;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:first-of-type {
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:last-of-type {
+  border: none;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:nth-of-type(odd) {
+  background-color: #ece8f2;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:nth-of-type(even) {
+  background-color: #fff;
+}
+
+#page-blocks-sgelection-ballot div.candidates div.candidate div.fitem.fitem_fcheckbox {
+  width: auto;
+}
+
+#page-blocks-sgelection-ballot div.candidates div.candidate div.fitemtitle {
+  width: auto;
+  clear: right;
+  margin: .5em 0 0 3em;
+}
+
+#page-blocks-sgelection-ballot div.candidates div.candidate div.felement.fcheckbox {
+  float: left;
+  clear: left;
+  margin: -1.75em 0 0 1em;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+}
+
+#page-blocks-sgelection-ballot div.candidates div.candidate div.felement.fcheckbox>span {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+#page-blocks-sgelection-ballot div.candidates div.candidate div.felement.fcheckbox input[type='checkbox'] {
+  width: 2em;
+  height: 2em;
+  background-color: #ccc;
+  border: 1px solid #000;
+  margin: 0;
+}
+
+#page-blocks-sgelection-ballot div.ballot {
+  border: 1px solid #000;
+  width: 800px;
+  background-color: #fff;
+  margin: 20px auto 0 auto;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+
+#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.fitem {
+  text-align: center;
+}
+
+#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.fitem>div.fitemtitle {
+  margin: 0 auto;
+  float: none;
+  text-align: center;
+}
+
+#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.dcandidates>div.candidate>div.fitem>div.fitemtitle>label>div.vp {
+  display: block;
+}
+
+#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.fitemtitle>div.fstaticlable>label>h1 {
+}
+#page-blocks-sgelection-ballot div.ballot fieldset.hidden>div>div.fitemtitle>div.fstaticlable>label>h1 {
 }
