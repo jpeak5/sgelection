@@ -424,4 +424,20 @@ class block_sgelection_renderer extends plugin_renderer_base {
         print_error(get_string('readonly', 'block_sgelection'));
         $OUTPUT->continue_button("/");
     }
+    public static function print_office_title($office){
+        echo get_string('office_title', 'block_sgelection',$office);
+    }
+    public static function candidate_review($candidate){
+        echo get_string('you_voted_for', 'block_sgelection',$candidate);
+        echo '<br/>';
+    }
+    public static function print_resolution_review($k, $v){
+        $a = new stdClass();
+        $a->name = $k;
+        $a->value = $v;
+        echo '<br />';
+        echo get_string('you_voted_on_res', 'block_sgelection', $a);
+        echo '<br />';
+
+    }
 }

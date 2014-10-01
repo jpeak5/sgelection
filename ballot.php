@@ -206,6 +206,7 @@ else if($ballot_item_form->is_cancelled()) {
         $storedvotes = array();
 
         $collectionofvotes =array();
+        $resolutionvotedfor =array();
         foreach(candidate::get_full_candidates($election, $voter) as $c){
             $fieldname = 'candidate_checkbox_' . $c->cid . '_' . $c->oid;
             if(isset($fromform->$fieldname)){
@@ -235,19 +236,32 @@ else if($ballot_item_form->is_cancelled()) {
         echo html_writer::tag('p', "Ballot Review");
         foreach($storedvotes as $cvote){
             if($cvote->type == 'candidate'){
-                $candidaterecord = $DB->get_record_sql('SELECT u.id, u.firstname, u.lastname, o.name FROM {user} u JOIN {block_sgelection_candidate} c on u.id = c.userid JOIN {block_sgelection_office} o ON o.id = c.office where c.id = '. $cvote->typeid .';');
-                echo '<h1>'.$candidaterecord->name .'</h1> <br />';
-                echo "<p> You voted for " ." <strong>". $candidaterecord->firstname ." " . $candidaterecord->lastname . "</strong> </p>";
-                
+                $candidaterecord = $DB->get_record_sql('SELECT u.id, u.firstname, u.lastname, o.name, o.id oid, c.id cid '
+                                                     . 'FROM {user} u JOIN {block_sgelection_candidate} c '
+                                                     . 'ON u.id = c.userid '
+                                                     . 'JOIN {block_sgelection_office} o '
+                                                     . 'ON o.id = c.office where c.id = '. $cvote->typeid .';');
+                $candidatevotearray[] = $candidaterecord;
             }else{
                 if($cvote->vote ==2){ $resvote = 'Yes'; }
                 if($cvote->vote ==1){ $resvote = 'No'; }
                 if($cvote->vote ==0){ $resvote = 'Abstain'; }
-                $resolutionrecord = $DB->get_record_sql('SELECT * FROM {block_sgelection_resolution} where id = '. $cvote->typeid .';');
-                echo '<h1>'.$resolutionrecord->title.'</h1> <br />';
-                echo "<p> You voted <strong> " . $resvote ." <strong/> </p>"; 
+                $resolutionrecord = $DB->get_field('block_sgelection_resolution', 'title', array('id'=>$cvote->typeid));
+                $resolutionvotedfor[$resolutionrecord] = $resvote;
+            }
+    }
+        $candidatesbyofficevotedfor = candidate::candidates_by_office($election, $voter,$candidatevotearray);
+
+        foreach($candidatesbyofficevotedfor as $officeid => $office){
+            $renderer->print_office_title($office);
+            foreach($office->candidates as $c){
+                $renderer-> candidate_review($c);
             }
         }
+        foreach($resolutionvotedfor as $k => $v){
+            $renderer->print_resolution_review($k, $v);
+        }
+
         $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));                
         $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));                
         echo '<a href = "' . $submitballotlink . '">click here to submit ballot </a>';
