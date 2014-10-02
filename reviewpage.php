@@ -11,6 +11,7 @@ if($voter->already_voted($election)){
         // Review Page begins here
         // -----------------------------------
         $voter->time = time();
+        $voter->election_id = $election->id;
         $voter->save();
         $storedvotes = array();
 
@@ -71,9 +72,8 @@ if($voter->already_voted($election)){
             $renderer->print_resolution_review($k, $v);
         }
 
-        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));                
-        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));                
+        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));
+        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));
         echo '<a href = "' . $submitballotlink . '">click here to submit ballot </a>';
         echo '<br /><a href = "' . $editballotlink . '">click here to edit ballot </a>';
         echo $OUTPUT->footer();
-    
