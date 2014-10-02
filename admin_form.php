@@ -27,6 +27,15 @@ class sg_admin_form extends moodleform {
         $mform->setType('parttime', PARAM_INT);
         $mform->addRule('parttime', null, 'required', null, 'client');
 
+        $mform->addElement('text', 'results_recipients', get_string('results_recips', 'block_sgelection'));
+        $mform->setType('results_recipients', PARAM_TEXT);
+        $mform->setDefault('results_recipients', $this->_customdata['default_results_recips']);
+
+        $mform->addElement('text', 'results_interval', get_string('results_interval', 'block_sgelection'));
+        $mform->setType('results_interval', PARAM_INT);
+        $mform->setDefault('results_interval', $this->_customdata['default_results_interval']);
+        $mform->addHelpButton('results_interval', 'results_interval', 'block_sgelection');
+
         $curriculum_codes = $DB->get_records_sql_menu("select id, value from mdl_enrol_ues_usermeta WHERE name = 'user_major' GROUP BY value;");
         $currCodesArray = array();
 
@@ -36,6 +45,7 @@ class sg_admin_form extends moodleform {
 
         $select = $mform->addElement('select', 'excluded_curr_codes', get_string('excluded_curriculum_code', 'block_sgelection'), $currCodesArray);
         $select->setMultiple(true);
+        $mform->setDefault('excluded_curr_codes', array('CCUR', 'LLM'));
         $mform->addElement('html', '</div>');
         $this->add_action_buttons();
     }
@@ -43,6 +53,7 @@ class sg_admin_form extends moodleform {
     public function validation($data, $files){
         $errors = parent::validation($data, $files);
         //$errors += sge::validate_commisioner($data, 'commissioner');
+        $errors += sge::validate_results_recipients($data, 'results_recipients');
         return $errors;
     }
 }

@@ -2,17 +2,148 @@
 
 }
 
-.resolution{
-
-}
 #page-blocks-sgelection-results .winnerresolution{
     background-color: #aaffaa;
 }
 
-.hiddenCandidateWarningBox{
-    display: none;
-}
-
 #page-blocks-sgelection-admin .yui3-aclist-content .yui3-aclist-list{
     color: #461d7c;
+}
+
+#page-blocks-sgelection-ballot fieldset.hidden>div {
+  width: 100%;
+  background-color: #fff;
+  display: block;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  text-align: center;
+  margin; 0 10px 0 10px;
+} 
+
+#page-blocks-sgelection-ballot div.candidates, #page-blocks-sgelection-ballot div.resolutions {
+  background-color: #fff;
+  display: block;
+  width: 90%;
+  margin: 0 auto 0 auto;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+} 
+
+#page-blocks-sgelection-ballot div.candidate .fitemtitle, #page-blocks-sgelection-ballot div.resolutions .fitemtitle {
+  display: none!important;
+}
+
+#page-blocks-sgelection-ballot div.resolutions {
+  margin-top: 2em;
+}
+
+#page-blocks-sgelection-ballot h1 {
+  font-weight: bold;
+  margin-bottom: .5em;
+  text-align: center;
+  font-size: 18px;
+}
+
+#page-blocks-sgelection-ballot div.resolution>h1 {
+}
+
+#page-blocks-sgelection-ballot div.resolution>p {
+}
+
+#page-blocks-sgelection-ballot div.candidate, #page-blocks-sgelection-ballot div.resolution {
+  padding-bottom: .25em;
+  padding-top: .25em;
+  text-align: left;
+  padding-left: 1em;
+}
+
+#page-blocks-sgelection-ballot div.candidate .felement, #page-blocks-sgelection-ballot div.resolutions .felement {
+  padding: 0;
+  margin:0;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div, #page-blocks-sgelection-ballot div.resolutions>div {
+  border-bottom: 1px solid #aaa;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:first-of-type, #page-blocks-sgelection-ballot div.resolutions>div:first-of-type {
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:last-of-type, #page-blocks-sgelection-ballot div.resolutions>div:last-of-type {
+  border: none;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:nth-of-type(odd), #page-blocks-sgelection-ballot div.resolutions>div:nth-of-type(odd) {
+  background-color: #ece8f2;
+}
+
+#page-blocks-sgelection-ballot div.candidates>div:nth-of-type(even), #page-blocks-sgelection-ballot div.resolutions>div:nth-of-type(even) {
+  background-color: #fff;
+}
+
+#page-blocks-sgelection-ballot fieldset.hidden>div>div.fitem {
+  text-align: center;
+}
+
+
+
+
+#page-blocks-sgelection-ballot input[type="checkbox"] {
+  display: none;
+}
+
+#page-blocks-sgelection-ballot input[type="checkbox"] + label {
+  display: block;
+  padding-left: 23px;
+  margin: 0;
+
+}
+
+#page-blocks-sgelection-ballot input[type="checkbox"] + label span {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  margin: -1px 4px 0 -23px;
+  vertical-align: middle;
+  background: url([[pix:block_sgelection|button_sheet]]) 0px 0px no-repeat;
+  cursor: pointer;
+}
+
+#page-blocks-sgelection-ballot input[type="checkbox"]:checked + label span {
+  background-position: -19px 0px;
+}
+
+#page-blocks-sgelection-ballot input[type="radio"] {
+  display: none;
+}
+
+#page-blocks-sgelection-ballot input[type="radio"] + label span {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  margin: -1px 4px 0 0;
+  vertical-align: middle;
+  background:url([[pix:block_sgelection|button_sheet]]) -38px 0px no-repeat;
+  cursor:pointer;
+}
+
+#page-blocks-sgelection-ballot input[type="radio"]:checked + label span {
+  background-position: -57px 0px;
+}
+
+#page-blocks-sgelection-ballot .fitem_actionbuttons div.fgroup {
+  width: 100%;
+  margin: 10px auto;
 }

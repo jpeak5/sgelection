@@ -115,6 +115,14 @@ class election extends sge_database_object {
         $start  = $data['start_date'];
         $cstart = $data['hours_census_start'];
 
+        // If the census has already run, we're good.
+        if(!empty($data['id'])){
+            $e = election::get_by_id($data['id']);
+            if(!empty($e->hours_census_complete)){
+                return array();
+            }
+        }
+
         $semester = ues_semester::by_id($data['semesterid']);
         $earliest = sge::config('earliest_start') * 86400 + $semester->classes_start;
         // Perhaps let the window be user-configurable.
@@ -158,7 +166,7 @@ class election extends sge_database_object {
     }
 
     public static function validate_future_start($data, $files) {
-        $soonest = sge::config('census_window') * 3600 + time();
+        $soonest = sge::config('census_window') * 3600 + $data['hours_census_start'];
         if($data['start_date'] <= $soonest){
             $msg = get_string('err_election_future_start', 'block_sgelection', strftime('%F %T', $soonest));
             return array('start_date' => $msg);
@@ -247,13 +255,17 @@ class election extends sge_database_object {
 
     }
 
-    public function message_admins() {
-        global $CFG, $DB;
+    public function email_results() {
+        global $DB;
         $summary = $this->get_summary();
-        foreach(explode(',', $CFG->siteadmins) as $admin){
-            $user = $DB->get_record('user', array('id'=>$admin));
-            email_to_user($user, 'no-reply', "Election Results", $summary, $summary);
+        foreach(explode(',', sge::config('results_recipients')) as $admin){
+            $user = $DB->get_record('user', array('username'=>$admin));
+            email_to_user($user, 'no-reply', get_string("election_summary", 'block_sgelection', $this->shortname()), $summary, $summary);
         }
+    }
+
+    public function readonly(){
+        return $this->end_date < time();
     }
 
 }

@@ -418,4 +418,34 @@ class block_sgelection_renderer extends plugin_renderer_base {
         
         return $thehtml;
     }
+
+    public static function print_readonly(){
+        global $OUTPUT;
+        print_error(get_string('readonly', 'block_sgelection'));
+        $OUTPUT->continue_button("/");
+    }
+    public static function print_office_title($office){
+        echo get_string('office_title', 'block_sgelection',$office);
+    }
+    public static function candidate_review($candidate){
+        echo get_string('you_voted_for', 'block_sgelection',$candidate);
+        echo '<br/>';
+    }
+    public static function print_resolution_review($k, $v){
+        $a = new stdClass();
+        $a->name = $k;
+        $a->value = $v;
+        echo '<br />';
+        echo get_string('you_voted_on_res', 'block_sgelection', $a);
+        echo '<br />';
+
+    }
+    public static function print_thank_you_message($election){
+        global $DB, $CFG;
+        echo html_writer::tag('h1', $election->thanksforvoting);
+        echo html_writer::link($CFG->wwwroot, get_string('continue'));
+        $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
+        echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
+        require_once 'socialmediabuttons.php';
+    }
 }

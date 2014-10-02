@@ -15,30 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * General purpose delete script.
+ * The office_deleted event.
+ *
  * @package    block_sgelection
- * @copyright  2014 Louisiana State University
+ * @copyright  2014 Louisiana State Unviersity
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once(dirname(__FILE__) . '/../../config.php');
-require_once 'lib.php';
-sge::require_db_classes();
+namespace block_sgelection\event;
+defined('MOODLE_INTERNAL') || die();
+/**
+ * The office_deleted event class.
+ * @since     Moodle 2.7
+ * @copyright 2014 YOUR NAME
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ **/
+abstract class base extends \core\event\base {
 
-global $OUTPUT, $PAGE;
+    protected function init() {
+        $this->data['edulevel'] = self::LEVEL_OTHER;
+    }
 
-// Don't allow anyone to use this who shouldn't.
-require_login();
-sge::allow_only(sge::COMMISSIONER, sge::FACADVISOR);
+    public static function get_name() {
+        $class = get_called_class();
+        $leaf  = substr(strrchr($class, '\\'), 1);
+        return ucwords(str_replace('_', ' ', $leaf));
+    }
 
-$id    = required_param('id', PARAM_INT);
-$class = required_param('class', PARAM_ALPHANUMEXT);
-$eid   = optional_param('election_id', false, PARAM_INT);
-$rtn   = required_param('rtn', PARAM_ALPHAEXT);
-
-$object = $class::get_by_id($id);
-if($object){
-    $object->delete();
-    $object->logaction('deleted');
+    public function get_description() {
+        return get_string('defaultlogmessage', 'block_sgelection', $this->data);
+    }
 }
-$rtnparams = $eid ? array('election_id'=>$eid) : array();
-redirect(new moodle_url(sprintf('/blocks/sgelection/%s.php',$rtn), $rtnparams), '', 5);

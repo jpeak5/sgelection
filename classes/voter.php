@@ -41,6 +41,7 @@ class voter extends sge_database_object {
             $courseload,
             $ip_address,
             $time,
+            $id,
             $hours;
 
     const VOTER_NO_TIME   = 'X';
@@ -68,7 +69,6 @@ class voter extends sge_database_object {
         }
         parent::__construct($params);
         $this->ip_address = getremoteaddr();
-        $this->courseload = $this->courseload();
     }
 
     public function at_least_parttime(){
@@ -84,9 +84,14 @@ class voter extends sge_database_object {
         return $DB->get_record_sql($sql, $params);
     }
 
-    public function courseload(){
+    /**
+     * @todo modify this to take an election param. @see self::eligible()
+     * @global type $DB
+     * @return type
+     */
+    public function courseload(ues_semester $semester){
         global $DB;
-        $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid));
+        $hours = $DB->get_field('block_sgelection_hours', 'hours', array('userid'=>$this->userid, 'semesterid' => $semester->id));
         $parttime = sge::config('parttime');
         $fulltime = sge::config('fulltime');
         $this->hours = $hours ? $hours : 0;
@@ -99,8 +104,7 @@ class voter extends sge_database_object {
             $courseload = self::VOTER_FULL_TIME;
         }
 
-        $this->courseload = $courseload;
-        return $this->courseload;
+        return $courseload;
     }
 
     public static function courseload_string($courseload){
@@ -119,8 +123,39 @@ class voter extends sge_database_object {
         }
     }
 
-    public function right_college() {
-        return array();
+    /**
+     * Determine eligibility based on enrolled hours
+     * and on voter membership in one of the excluded
+     * curric_codes; @see admin.php
+     * @return boolean whether eligible or not.
+     */
+    public function eligible(election $election){
+
+        // Test for excluded curric code.
+        $excl_curric_codes = sge::config('excluded_curr_codes');
+        $excl_curric_codes = $excl_curric_codes ? explode(',', $excl_curric_codes) : array();
+        $curric_code       = $this->curric_code();
+        if(in_array($curric_code, $excl_curric_codes)){
+            return false;
+        }
+
+        // Test for minimum enrollment per semester.
+        $ues_semester = ues_semester::by_id($election->semesterid);
+        if(!in_array($this->courseload($ues_semester), array(self::VOTER_FULL_TIME, self::VOTER_PART_TIME))){
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Return the ues curric code for the student.
+     * @global type $DB
+     * @return mixed string|false if the record is not found @see moodlenativedb::get_field
+     */
+    public function curric_code() {
+        global $DB;
+        return $DB->get_field('enrol_ues_usermeta', 'value', array('userid'=>$this->userid, 'name'=>'user_major'));
     }
 
     /**
@@ -174,16 +209,16 @@ class voter extends sge_database_object {
     /**
      * @TODO perhaps this should return something useful in the event
      * that a field is not set.
-     * @return boolean
+     * @return false if all's well | first missing field
      */
-    public function has_required_metadata(){
+    public function is_missing_metadata(){
         $requiredfields = array('college', 'hours', 'courseload', 'year');
         foreach($requiredfields as $rf){
             if(!isset($this->$rf)){
-                return false;
+                return $rf;
             }
         }
-        return true;
+        return false;
     }
 
     public function can_view_results() {

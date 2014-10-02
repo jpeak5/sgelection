@@ -42,9 +42,11 @@ class resolution_form extends moodleform {
         $attributes = array('size' => '50');
         $mform->addElement('text', 'title', get_string('title_of_resolution', 'block_sgelection'), $attributes);
         $mform->setType('title', PARAM_TEXT);
+        $mform->addRule('title', null, 'required', null, 'client');
 
         $mform->addElement('editor', 'text_editor', get_string('resolution_text', 'block_sgelection'));
         $mform->setType('text', PARAM_RAW);
+        $mform->addRule('text_editor', null, 'required', null, 'client');
 
         $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'link', get_string('link_to_fulltext', 'block_sgelection'), $attributes);

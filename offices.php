@@ -9,8 +9,8 @@ require_once 'lib.php';
 global $DB, $OUTPUT, $PAGE;
 
 $id = optional_param('id', 0, PARAM_INT);
-$election_id = required_param('election_id', PARAM_INT);
-$rtn = required_param('rtn', PARAM_ALPHAEXT);
+$election_id = optional_param('election_id', false, PARAM_INT);
+$rtn = optional_param('rtn', '/', PARAM_ALPHAEXT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/sgelection/offices.php');
@@ -35,6 +35,11 @@ if($form->is_cancelled()) {
 } else if($fromform = $form->get_data()){
         $office = new office($fromform);
         $office->save();
+
+        //logging
+        $action = $id ? 'updated' : 'created';
+        $office->logaction($action);
+
         redirect($rtnurl);
 } else {
     echo $OUTPUT->header();

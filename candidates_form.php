@@ -14,9 +14,16 @@ class candidate_form extends moodleform {
         // ADD CANDIDATES HEADER
         $offices = $DB->get_records('block_sgelection_office');
         $options = array();
-        foreach($offices as $id => $office){
-            $college = !empty($office->college) ? sprintf(" [%s]", $office->college) : '';
-            $options[$id] = $office->name.$college;
+        $configoffices = explode(',', sge::config('common_college_offices'));
+        foreach($offices as $officeid => $office){
+            $college = '';
+            if(!empty($office->college)){
+                if(!in_array($office->college, $configoffices)){
+                    continue;
+                }
+                $college = sprintf(" [%s]", $office->college);
+            }
+            $options[$officeid] = $office->name.$college;
         }
         if(count($options) > 0){
 
@@ -31,6 +38,7 @@ class candidate_form extends moodleform {
             $attributes = array('size' => '50', 'maxlength' => '100');
             $mform->addElement('text', 'username', get_string('paws_id_of_candidate', 'block_sgelection'), $attributes);
             $mform->setType('username', PARAM_ALPHANUM);
+            $mform->addRule('username', null, 'required', null, 'client');
 
             //add office dropdown
             $mform->addElement('text', 'affiliation', get_string('affiliation', 'block_sgelection'));

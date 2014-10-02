@@ -63,14 +63,15 @@ class candidate extends sge_database_object{
                . ' JOIN'
                . ' {block_sgelection_office} o on o.id = c.office'
                . ' JOIN'
-               . ' {user} u on c.userid = u.id '. $wheres . 'ORDER BY o.weight ASC';
+               . ' {user} u on c.userid = u.id '. $wheres . ' ORDER BY o.weight ASC';
 
         return $DB->get_records_sql($query);
     }
 
-    public static function candidates_by_office(election $election = null, voter $voter = null){
-
-        $candidates = self::get_full_candidates($election, $voter);
+    public static function candidates_by_office(election $election = null, voter $voter = null, $candidates = array()){
+        if(empty($candidates)){
+            $candidates = self::get_full_candidates($election, $voter);
+        }
 
         $officetocandidates = array();
         foreach($candidates as $c){

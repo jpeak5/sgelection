@@ -30,6 +30,8 @@ $string['election_fullname'] = '{$a->sem} [{$a->name}]';
 $string['election_shortname'] = '{$a->sem} [{$a->name}]';
 $string['create_election']    = 'Create new election';
 $string['thanks_for_voting'] = 'Thanks for voting!';
+$string['election_summary'] = 'Election summary: {$a}';
+$string['readonly'] = "This election is closed";
 
 // Candidates
 $string['candidates_pagetitle'] = 'Add or Edit a Candidate';
@@ -75,6 +77,9 @@ $string['election_id'] = 'election_id';
 $string['commissioner'] = 'Commissioner';
 $string['fulltime'] = 'Full Time';
 $string['parttime'] = 'Part Time';
+$string['results_recips'] = 'Results Recipients';
+$string['results_interval'] = "Results Email Interval";
+$string['results_interval_help'] = "Specify an interval (in minutes) that must elapse between email summaries";;
 $string['election_tool_administration'] = ' Election Tool Administration';
 $string['excluded_curriculum_code'] = 'Excluded Curriculum Code';
 
@@ -88,7 +93,7 @@ $string['ballot'] ='ballot';
 $string['hours_census_start'] = 'Date to pull student eligibility data';
 $string['hours_census_start_help'] = 'This time setting defines the first second in which Moodle may calculate enrollment eligibility (enrolled hours) for users.';
 $string['thanks_for_voting_message'] = 'Message you want displayed after student votes';
-
+$string['common_college_offices'] = "Offices for each college in this election";
 // errors
 $string['err_user_nonexist'] = 'User {$a} does not exist.';
 $string['err_user_nonunique'] = 'User {$a->username} already running for office {$a->office} in the {$a->semestername} election (election id {$a->eid}).';
@@ -102,6 +107,10 @@ $string['err_start_end_outofbounds'] = 'Election start and end dates must fall w
 $string['err_election_future_start'] = 'In order to allow time for the enrollment census to run, election can be set to start no sooner than {$a}.';
 $string['err_census_future_start']   = 'Census cannot start in the past.';
 
+//review page
+$string['you_voted_for'] = 'You voted for <strong>{$a->firstname} {$a->lastname}</strong>';
+$string['office_title'] = '<h1> {$a->name} </h1>';
+$string['you_voted_on_res'] = 'You voted {$a->value} on resolution {$a->name}';
 //results
 $string['results_page_header'] = 'Results';
 
@@ -117,3 +126,22 @@ $string['latest_end'] = '#days before grades due';
 $string['latest_end_desc'] = 'How many days before the semester ends is it ok to end an election ?';
 $string['census_window'] = 'Census cron window';
 $string['census_window_desc'] = 'How many hours before an election can we allow the census period to begin? NB that cron must have a chance to run between election census start and election start.';
+
+//lookup user page
+$string['didvote'] = 'did vote';
+$string['didntvote'] = 'did not vote';
+$string['lookupuser'] = 'Lookup User';
+$string['paws_id_of_student'] = 'PAWS ID of student';
+$string['check_to_see'] = 'Check to see if a specific student has voted';
+//logging
+$string['defaultlogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}).';
+$string['candidatelogmessage'] = 'User (id {$a->userid}) {$a->action} {$a->target} (id {$a->objectid}) with userid {$a->relateduserid}.';
+
+//events
+$string['eventelectioncreated'] = 'Election Created';
+$string['eventelectionupdated'] = 'Election Updated';
+$string['censuscompleted'] = 'Election Census Complete';
+$string['censuscompleted_msg'] = 'Enrolled credit hours were calculated for election id {$a->objectid}';
+
+//lookupvoter
+$string['check_vote_status'] = 'Check vote status for election:   {$a}';

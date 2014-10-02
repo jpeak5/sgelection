@@ -40,7 +40,7 @@ class sge {
 
     public static function validate_username($data, $fieldname){
         global $DB;
-        $userexists = $DB->record_exists('user', array('username'=>$data[$fieldname]));
+        $userexists = $DB->record_exists('user', array('username'=>trim($data[$fieldname])));
         if($userexists){
             return array();
         }else{
@@ -48,20 +48,20 @@ class sge {
         }
     }
 
-    public static function validate_commisioner($data, $fieldname){
-        global $DB;
-        $user = $DB->get_record('user', array('username'=>$data[$fieldname]));
-        $voter = new voter($user->id);
-        if($user){
-            if($voter->courseload == 'F'){
-                return array();
+    public static function validate_results_recipients($data, $fieldname){
+        $errors = array();
+
+        foreach(explode(',', $data[$fieldname]) as $name){
+            $username_check = self::validate_username(array($fieldname => $name), $fieldname);
+            if(!empty($username_check)){
+                $errors[] = $username_check[$fieldname];
             }
-            else{
-                return array($fieldname => get_string('err_user_notfulltime', 'block_sgelection',  $data[$fieldname]));
-            }
-        }else{
-            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
         }
+
+        if(!empty($errors)){
+            $errors = array($fieldname => implode(' ', $errors));
+        }
+        return $errors;
     }
 
     /**
@@ -181,14 +181,19 @@ class sge {
      */
     public static function get_college_selection_box($mform, $selected = false){
         global $DB;
-        $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
-        $colleges = $DB->get_records_sql($sql);
+        $colleges = self::get_distinct_colleges();
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
         $collegeselector = $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
         if($selected && in_array($selected, array_keys($colleges))){
             $collegeselector->setSelected($selected);
         }
+    }
+
+    public static function get_distinct_colleges(){
+        global $DB;
+        $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
+        return $DB->get_records_sql($sql);
     }
 
     /**
@@ -275,11 +280,11 @@ class sge {
         global $DB;
         $result = array();
         $where  = "hours_census_start < :now AND hours_census_complete IS NULL AND start_date > :then";
-        $raw    = $DB->get_fieldset_select(Election::$tablename, 'semesterid', $where, array('now'=>time(), 'then'=>time()));
+        $raw    = $DB->get_records_select(Election::$tablename, $where, array('now'=>time(), 'then'=>time()));
         foreach($raw as $r){
-            $s = ues_semester::by_id($r);
+            $s = ues_semester::by_id($r->semesterid);
             if($s){
-                $result[$s->id] = $s;
+                $result[$r->id] = $s;
             }
         }
         return $result;
