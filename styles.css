@@ -10,6 +10,14 @@
     color: #461d7c;
 }
 
+#page-blocks-sgelection-ballot .fitem.femptylabel {
+    display: none;
+}
+
+#page-blocks-sgelection-ballot .candidates .fitem.femptylabel, #page-blocks-sgelection-ballot .resolutions .fitem.femptylabel {
+    display: block;
+}
+
 #page-blocks-sgelection-ballot fieldset.hidden>div {
   width: 100%;
   background-color: #fff;
@@ -17,17 +25,32 @@
   border: 1px solid #aaa;
   border-radius: 10px;
   text-align: center;
-  margin; 0 10px 0 10px;
+  margin: 0 10px 0 10px;
 } 
 
 #page-blocks-sgelection-ballot div.candidates, #page-blocks-sgelection-ballot div.resolutions {
   background-color: #fff;
   display: block;
-  width: 90%;
-  margin: 0 auto 0 auto;
+  width: auto;
+  margin: 0 10px 0 10px;
   border: 1px solid #aaa;
   border-radius: 10px;
 } 
+
+#page-blocks-sgelection-ballot.mobiletheme fieldset.hidden>div {
+  width: 90%;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+#page-blocks-sgelection-ballot.mobiletheme div.candidates, #page-blocks-sgelection-ballot.mobiletheme div.resolutions {
+  width: auto;
+  margin: 0 2px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}
 
 #page-blocks-sgelection-ballot div.candidate .fitemtitle, #page-blocks-sgelection-ballot div.resolutions .fitemtitle {
   display: none!important;
