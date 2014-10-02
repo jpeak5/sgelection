@@ -80,34 +80,32 @@ class block_sgelection extends block_list {
             $ues_semester = ues_semester::by_id($ae->semesterid);
             if(!$voter->eligible($ae) && !$voter->is_privileged_user){
                 continue;
-            }
+            } else {
+                $semester = $ae->shortname();
+                $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$ae->id));
+                $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
+                if(!$voter->already_voted($ae)){
+                    $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester, array('class'=>'election')) . ' ' . $numberOfVotesTotalString;
+                    $this->content->icons[] = $OUTPUT->pix_icon('t/w_check', 'admin', 'moodle', $icon_class);
+                } else {
+                    $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString, array('class'=>'election'));
+                    $this->content->icons[] = $OUTPUT->pix_icon('t/w_check', 'admin', 'moodle', $icon_class);
 
-            $semester = $ae->shortname();
-            $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$ae->id));
-            $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
-            if(!$voter->already_voted($ae)){
-                $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester ) . ' ' . $numberOfVotesTotalString;
-                $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
+                }
             }
-            else{
-                $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString);
-                $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
-
-            }
-
         }
 
         $issgadmin = $voter->is_faculty_advisor() || is_siteadmin();
         if($issgadmin){
             $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), get_string('configure', 'block_sgelection'));
             $this->content->items[] = $administrate;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
+            $this->content->icons[] = $OUTPUT->pix_icon('t/w_edit', 'admin', 'moodle', $icon_class);
         }
 
         if($voter->is_privileged_user){
             $commissioner = html_writer::link(new moodle_url('/blocks/sgelection/commissioner.php'), get_string('create_election', 'block_sgelection'));
             $this->content->items[] = $commissioner;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
+            $this->content->icons[] = $OUTPUT->pix_icon('t/w_edit', 'admin', 'moodle', $icon_class);
         }
 
 
