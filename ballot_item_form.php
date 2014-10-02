@@ -67,7 +67,7 @@ class ballot_item_form extends moodleform {
                 $mform->addElement('html', '</div>');
             }
                 $mform->addElement('html', '</div>');
-                $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid. ' class="hiddenCandidateWarningBox felement fstatic  error"><span class = "error">You have selected too many candidates, please select at most ' . $office->number . '</span></div>' );
+                $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid. ' style="display:none;" class="hiddenCandidateWarningBox felement fstatic  error"><span class = "error">You have selected too many candidates, please select at most ' . $office->number . '</span></div>' );
         }
 
         $resolutions = $this->_customdata['resolutions'];
