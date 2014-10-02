@@ -38,6 +38,7 @@ class candidate extends sge_database_object{
             $affiliation;
 
     static $tablename = "block_sgelection_candidate";
+    static $type = 'C';
 
     public static function get_full_candidates(election $election=null, voter $voter = null, $candid = null){
         global $DB;

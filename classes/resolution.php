@@ -34,11 +34,12 @@ class resolution extends ballot_item{
             $link;
 
     static $tablename = "block_sgelection_resolution";
+    static $type = 'R';
 
     const IN_FAVOR = 2;
     const AGAINST = 1;
     const ABSTAIN = 0;
-    
+
 
     public static function highest_vote_for_resolution($r, $tCell, $yCell, $nCell, $aCell){
         $highest = max($r->yes, $r->against, $r->abstain);
