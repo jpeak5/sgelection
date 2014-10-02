@@ -44,4 +44,16 @@ class office extends sge_database_object {
         }
         return array();
     }
+
+    /**
+     * @override
+     */
+    public function delete(){
+        global $DB;
+        if($DB->record_exists(candidate::$tablename, array('office'=>$this->id))){
+            print_error('There are candidates for this office. Please delete them first.');
+        }else{
+            parent::delete();
+        }
+    }
 }

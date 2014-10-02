@@ -70,4 +70,16 @@ class resolution extends ballot_item{
             return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
         }
     }
+
+    /**
+     * @override
+     */
+    public function delete(){
+        global $DB;
+        if($DB->record_exists(vote::$tablename, array('type'=>resolution::$type, 'typeid'=>$this->id))){
+            print_error('Votes have been cast for this resolution, cannot delete.');
+        }else{
+            parent::delete();
+        }
+    }
 }
