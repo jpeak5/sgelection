@@ -1,3 +1,32 @@
+.mobiletheme .block_sgelection.list_block {
+  padding: 0;
+}
+
+.block_sgelection.list_block .content {
+  background-color: #461d7c;
+  color: #ffffff;
+}
+
+.block_sgelection.list_block .header, .mobiletheme .block_sgelection.list_block .header {
+  background: #461d7c;
+  color: #ffffff;
+}
+
+.block_sgelection.list_block .header h2, .mobiletheme .block_sgelection.list_block .header h2 {
+  text-shadow: none;
+  color: #ffffff;
+  text-align: center;
+  font-weight: normal;
+}
+
+.block_sgelection.list_block .content a {
+  color: #fcecae;
+}
+
+.block_sgelection.list_block .header .block_action {
+  display: none;
+}
+
 .candidatebox{
 
 }
