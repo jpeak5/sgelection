@@ -132,6 +132,9 @@ if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
     print_error(sprintf('Your user profile is missing required information :%s', $voter->is_missing_metadata()));
 }
 
+if(!$voter->is_privileged_user && !$voter->eligible($election)){
+    print_error("Either your major (curric_code) or your part-time status renders you ineligible to vote in this election");;
+}
 // ----------------- End Security Checks -----------------------//
 
 
