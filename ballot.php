@@ -132,6 +132,9 @@ if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
     print_error(sprintf('Your user profile is missing required information :%s', $voter->is_missing_metadata()));
 }
 
+if(!$voter->is_privileged_user && !$voter->eligible($election)){
+    print_error("Either your major (curric_code) or your part-time status renders you ineligible to vote in this election");;
+}
 // ----------------- End Security Checks -----------------------//
 
 
@@ -221,12 +224,12 @@ else if($ballot_item_form->is_cancelled()) {
                 . 'LEFT JOIN {block_sgelection_office} o ON c.office = o.id '
                 . 'LEFT JOIN {block_sgelection_votes} v on v.typeid = c.id '
                 . 'WHERE v.voterid = ' . $voterid .' '
-                . 'AND type = "candidate";');
+                . 'AND type = "'.candidate::$type.'";');
         $resolutionrecord = $DB->get_records_sql('SELECT r.id, v.vote '
                 . 'FROM {block_sgelection_resolution} r '
                 . 'JOIN {block_sgelection_votes} v ON v.typeid = r.id '
                 . 'WHERE v.voterid = ' . $voterid .' '
-                . 'AND type = "resolution";');
+                . 'AND type = "'.resolution::$type.'";');
 
         foreach($candidaterecord as $cr){
             $officeforcandidate = 'candidate_checkbox_' . $cr->cid .'_'.$cr->oid;

@@ -11,6 +11,7 @@ if($voter->already_voted($election)){
         // Review Page begins here
         // -----------------------------------
         $voter->time = time();
+        $voter->election_id = $election->id;
         $voter->save();
         $storedvotes = array();
 
@@ -22,7 +23,7 @@ if($voter->already_voted($election)){
                 $vote = new vote(array('voterid'=>$voter->id));
                 $vote->finalvote = 0;
                 $vote->typeid = $c->cid;
-                $vote->type = 'candidate';
+                $vote->type = candidate::$type;
                 $vote->vote = 1;
                 $storedvotes[] = $vote->save();
             }
@@ -34,7 +35,7 @@ if($voter->already_voted($election)){
                 $vote = new vote(array('voterid'=>$voter->id));
                 $vote->finalvote = 0;
                 $vote->typeid = $resid;
-                $vote->type = 'resolution';
+                $vote->type = resolution::$type;
                 $vote->vote = $fromform->$fieldname;
                 $storedvotes[] = $vote->save();
             }
@@ -44,7 +45,7 @@ if($voter->already_voted($election)){
         echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
         echo html_writer::tag('p', "Ballot Review");
         foreach($storedvotes as $cvote){
-            if($cvote->type == 'candidate'){
+            if($cvote->type == candidate::$type){
                 $candidaterecord = $DB->get_record_sql('SELECT u.id, u.firstname, u.lastname, o.name, o.id oid, c.id cid '
                                                      . 'FROM {user} u JOIN {block_sgelection_candidate} c '
                                                      . 'ON u.id = c.userid '
@@ -71,9 +72,8 @@ if($voter->already_voted($election)){
             $renderer->print_resolution_review($k, $v);
         }
 
-        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));                
-        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));                
+        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));
+        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));
         echo '<a href = "' . $submitballotlink . '">click here to submit ballot </a>';
         echo '<br /><a href = "' . $editballotlink . '">click here to edit ballot </a>';
         echo $OUTPUT->footer();
-    

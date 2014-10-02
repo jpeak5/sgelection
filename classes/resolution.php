@@ -34,11 +34,12 @@ class resolution extends ballot_item{
             $link;
 
     static $tablename = "block_sgelection_resolution";
+    static $type = 'R';
 
     const IN_FAVOR = 2;
     const AGAINST = 1;
     const ABSTAIN = 0;
-    
+
 
     public static function highest_vote_for_resolution($r, $tCell, $yCell, $nCell, $aCell){
         $highest = max($r->yes, $r->against, $r->abstain);
@@ -67,6 +68,18 @@ class resolution extends ballot_item{
             return array();
         }else{
             return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
+        }
+    }
+
+    /**
+     * @override
+     */
+    public function delete(){
+        global $DB;
+        if($DB->record_exists(vote::$tablename, array('type'=>resolution::$type, 'typeid'=>$this->id))){
+            print_error('Votes have been cast for this resolution, cannot delete.');
+        }else{
+            parent::delete();
         }
     }
 }
