@@ -6,7 +6,7 @@ class ballot_item_form extends moodleform {
     function definition() {
         global $DB, $OUTPUT;
 
-        $mform = $this->_form;
+        $mform =& $this->_form;
 
         // Get customdata into simple vars.
         $election   = $this->_customdata['election'];
@@ -77,11 +77,11 @@ class ballot_item_form extends moodleform {
 
             if($voter->is_privileged_user()){
                 $editurl = new moodle_url('resolutions.php', array('id'=>$r->id, 'election_id'=>$election->id));
-                $edita   = html_writer::link($editurl, 'edit');
+                $edita   = html_writer::link($editurl, 'edit', array('class'=>'editlink'));
                 $mform->addElement('html', $edita);
             }
 
-            $mform->addElement('html', '<div class="resolution">' . html_writer::tag('h1', $r->title) . $r->text);
+            $mform->addElement('html', '<div class="resolution">' . html_writer::tag('h1', $r->title, array('class'=>'itemtitle')) . $r->text);
             $mform->addElement('html', '<div class="resolution_link"><a href="' . $r->link . '">' . $r->link . '</a></div>');
             $radioarray=array();
             $radioarray[] =& $mform->createElement('radio', 'resvote_'.$r->id, '', '<span></span>' . get_string('yes'), resolution::IN_FAVOR);
