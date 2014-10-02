@@ -141,7 +141,7 @@ $PAGE->set_pagelayout($layout);
 
 // Now that layout is selected, we can get our renderer.
 $renderer = $PAGE->get_renderer('block_sgelection');
-
+$renderer->set_nav(null, $voter);
 
 // Setup resolutions, based on user courseload.
 $resparams = array('election_id' => $election->id);
