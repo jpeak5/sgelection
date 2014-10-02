@@ -440,4 +440,12 @@ class block_sgelection_renderer extends plugin_renderer_base {
         echo '<br />';
 
     }
+    public static function print_thank_you_message($election){
+        global $DB, $CFG;
+        echo html_writer::tag('h1', $election->thanksforvoting);
+        echo html_writer::link($CFG->wwwroot, get_string('continue'));
+        $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
+        echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
+        require_once 'socialmediabuttons.php';
+    }
 }

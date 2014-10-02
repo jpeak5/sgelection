@@ -176,11 +176,7 @@ if($submitfinalvote == true){
 
     echo $OUTPUT->header();
     echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
-    echo html_writer::tag('h1', $election->thanksforvoting);
-    echo html_writer::link($CFG->wwwroot, get_string('continue'));
-    $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
-    echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
-    require_once 'socialmediabuttons.php';
+    print_thank_you_message($election);
     echo $OUTPUT->footer();
 
 }
