@@ -60,6 +60,8 @@ class block_sgelection extends block_list {
     public function get_content() {
         global $USER, $CFG, $COURSE, $OUTPUT, $DB;
 
+        $wwwroot = $CFG->wwwroot;
+
         $voter = new voter($USER->id);
 
         // See if this user should be allowed to view the block at all.
@@ -71,7 +73,6 @@ class block_sgelection extends block_list {
         $this->content->items = array();
         $this->content->icons = array();
 
-        $icon_class = array('class' => 'icon');
         $voter->is_privileged_user = $voter->is_privileged_user();
         $elections = $voter->is_privileged_user ? election::get_all() : election::get_active();
         foreach($elections as $ae){
@@ -86,10 +87,10 @@ class block_sgelection extends block_list {
                 $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
                 if(!$voter->already_voted($ae)){
                     $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester, array('class'=>'election')) . ' ' . $numberOfVotesTotalString;
-                    $this->content->icons[] = $OUTPUT->pix_icon('t/w_check', 'admin', 'moodle', $icon_class);
+                    $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot . '/blocks/sgelection/pix/w_check.svg', 'class' => 'icon'));
                 } else {
                     $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString, array('class'=>'election'));
-                    $this->content->icons[] = $OUTPUT->pix_icon('t/w_check', 'admin', 'moodle', $icon_class);
+                    $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_check.svg', 'class' => 'icon'));
 
                 }
             }
@@ -99,13 +100,13 @@ class block_sgelection extends block_list {
         if($issgadmin){
             $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), get_string('configure', 'block_sgelection'));
             $this->content->items[] = $administrate;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/w_edit', 'admin', 'moodle', $icon_class);
+            $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_edit.svg', 'class' => 'icon'));
         }
 
         if($voter->is_privileged_user){
             $commissioner = html_writer::link(new moodle_url('/blocks/sgelection/commissioner.php'), get_string('create_election', 'block_sgelection'));
             $this->content->items[] = $commissioner;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/w_edit', 'admin', 'moodle', $icon_class);
+            $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_edit.svg', 'class' => 'icon'));
         }
 
 

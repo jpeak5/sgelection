@@ -10,6 +10,7 @@
 .block_sgelection.list_block .header, .mobiletheme .block_sgelection.list_block .header {
   background: #461d7c;
   color: #ffffff;
+  text-transform: uppercase;
 }
 
 .block_sgelection.list_block .header h2, .mobiletheme .block_sgelection.list_block .header h2 {
