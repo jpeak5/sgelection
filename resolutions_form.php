@@ -52,7 +52,7 @@ class resolution_form extends moodleform {
         $mform->addElement('text', 'link', get_string('link_to_fulltext', 'block_sgelection'), $attributes);
         $mform->setType('link', PARAM_TEXT);
 
-        $mform->addElement('checkbox', 'restrict_fulltime', get_string('restrict_to_fulltime', 'block_sgelection'));
+        $mform->addElement('checkbox', 'restrict_fulltime', NULL, '<span></span>' . get_string('restrict_to_fulltime', 'block_sgelection'));
 
         $buttons = array(
             $mform->createElement('submit', 'save_resolution', get_string('savechanges')),
