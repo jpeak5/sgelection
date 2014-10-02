@@ -40,7 +40,7 @@ if($voter->already_voted($election)){
                 $storedvotes[] = $vote->save();
             }
         }
-
+        $candidatevotearray = array();
         echo $OUTPUT->header();
         echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
         echo html_writer::tag('p', "Ballot Review");
