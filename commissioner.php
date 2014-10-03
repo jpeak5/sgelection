@@ -64,10 +64,10 @@ if($form->is_cancelled()){
 
     if(!empty($offices)){
         global $DB;
-        $offices = explode(',', $offices); // just submitted from the form.
-        $colleges = sge::get_distinct_colleges(); // DB row objects from enrolment.
+
+        $colleges = sge::get_distinct_colleges(); // {enrol_ues_usermeta} row objects
         $newconfig = array();
-        foreach($offices as $office){
+        foreach(explode(',', $offices) as $office){ //comma-separated strings from user
             $office = trim($office);
             foreach($colleges as $college){
                 $found = array_key_exists($college->value, $collegemap) && in_array($office, $collegemap[$college->value]);

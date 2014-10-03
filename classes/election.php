@@ -228,7 +228,7 @@ class election extends sge_database_object {
                 . 'AS count FROM {block_sgelection_votes} AS v '
             . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
             . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
-            . 'WHERE type = "candidate" '
+            . 'WHERE type = "'.candidate::$type.'" '
                 . 'AND o.id = :oid '
                 . 'AND c.election_id = :eid'
             . 'GROUP BY typeid;';
@@ -240,9 +240,9 @@ class election extends sge_database_object {
     public function get_resolution_votes(){
         global $DB;
         $sql = 'SELECT res.title, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 2) AS yes, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 1) AS against, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 0) AS abstain '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "'.resolution::$type.'" AND vote = 2) AS yes, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "'.resolution::$type.'" AND vote = 1) AS against, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "'.resolution::$type.'" AND vote = 0) AS abstain '
         . 'FROM {block_sgelection_resolution} AS res WHERE res.election_id = :eid';
         $params = array('eid' => $this->id);
         return $DB->get_records_sql($sql, $params);

@@ -18,7 +18,7 @@ class candidate_form extends moodleform {
         foreach($offices as $officeid => $office){
             $college = '';
             if(!empty($office->college)){
-                if(!in_array($office->college, $configoffices)){
+                if(!in_array($office->name, $configoffices)){
                     continue;
                 }
                 $college = sprintf(" [%s]", $office->college);

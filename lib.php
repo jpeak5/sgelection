@@ -226,7 +226,12 @@ class sge {
     public static function get_list_of_usernames(){
         global $DB;
         $listofusers = array();
-        $users = $DB->get_records('user');
+        $sql = "select u.username "
+                . "from {user} u "
+                . "RIGHT JOIN {enrol_ues_usermeta} um "
+                .     "ON u.id = um.userid WHERE um.name = 'user_ferpa' and value = 0;";
+
+        $users = $DB->get_records_sql($sql);
         foreach ($users as $user) {
             $listofusers[] = $user->username;
         }

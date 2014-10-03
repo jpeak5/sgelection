@@ -60,6 +60,8 @@ class block_sgelection extends block_list {
     public function get_content() {
         global $USER, $CFG, $COURSE, $OUTPUT, $DB;
 
+        $wwwroot = $CFG->wwwroot;
+
         $voter = new voter($USER->id);
 
         // See if this user should be allowed to view the block at all.
@@ -71,43 +73,40 @@ class block_sgelection extends block_list {
         $this->content->items = array();
         $this->content->icons = array();
 
-        $icon_class = array('class' => 'icon');
-
-        $elections = $voter->is_privileged_user() ? election::get_all() : election::get_active();
+        $voter->is_privileged_user = $voter->is_privileged_user();
+        $elections = $voter->is_privileged_user ? election::get_all() : election::get_active();
         foreach($elections as $ae){
 
             // If user courseload is not at least part-time for the current election semester, add nothing to the output.
             $ues_semester = ues_semester::by_id($ae->semesterid);
-            if($ues_semester && $voter->courseload($ues_semester) == voter::VOTER_NO_TIME && !$voter->is_privileged_user()){
+            if(!$voter->eligible($ae) && !$voter->is_privileged_user){
                 continue;
-            }
+            } else {
                 $semester = $ae->shortname();
                 $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$ae->id));
                 $numberOfVotesTotalString =  html_writer::tag('p', 'votes cast so far ' . $numberOfVotesTotal);
                 if(!$voter->already_voted($ae)){
-                    $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester ) . ' ' . $numberOfVotesTotalString;
-                    $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
-                }
-                else{
-                    $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString);
-                    $this->content->icons[] = $OUTPUT->pix_icon('t/check', 'admin', 'moodle', $icon_class);
+                    $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester, array('class'=>'election')) . ' ' . $numberOfVotesTotalString;
+                    $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot . '/blocks/sgelection/pix/w_check.svg', 'class' => 'icon'));
+                } else {
+                    $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString, array('class'=>'election'));
+                    $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_check.svg', 'class' => 'icon'));
 
                 }
-
+            }
         }
 
         $issgadmin = $voter->is_faculty_advisor() || is_siteadmin();
         if($issgadmin){
             $administrate = html_writer::link(new moodle_url('/blocks/sgelection/admin.php', array('blockid' => $this->instance->id, 'courseid' => $COURSE->id)), get_string('configure', 'block_sgelection'));
             $this->content->items[] = $administrate;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
+            $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_edit.svg', 'class' => 'icon'));
         }
 
-        $caneditelections = $voter->is_commissioner() || $voter->is_faculty_advisor() || is_siteadmin();
-        if($caneditelections){
+        if($voter->is_privileged_user){
             $commissioner = html_writer::link(new moodle_url('/blocks/sgelection/commissioner.php'), get_string('create_election', 'block_sgelection'));
             $this->content->items[] = $commissioner;
-            $this->content->icons[] = $OUTPUT->pix_icon('t/edit', 'admin', 'moodle', $icon_class);
+            $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_edit.svg', 'class' => 'icon'));
         }
 
 

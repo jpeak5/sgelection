@@ -1,3 +1,33 @@
+.mobiletheme .block_sgelection.list_block {
+  padding: 0;
+}
+
+.block_sgelection.list_block .content {
+  background-color: #461d7c;
+  color: #ffffff;
+}
+
+.block_sgelection.list_block .header, .mobiletheme .block_sgelection.list_block .header {
+  background: #461d7c;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.block_sgelection.list_block .header h2, .mobiletheme .block_sgelection.list_block .header h2 {
+  text-shadow: none;
+  color: #ffffff;
+  text-align: center;
+  font-weight: normal;
+}
+
+.block_sgelection.list_block .content a {
+  color: #fcecae;
+}
+
+.block_sgelection.list_block .header .block_action {
+  display: none;
+}
+
 .candidatebox{
 
 }
@@ -10,6 +40,14 @@
     color: #461d7c;
 }
 
+#page-blocks-sgelection-ballot .fitem.femptylabel {
+}
+
+#page-blocks-sgelection-ballot a.editlink {
+ float: left;
+ padding: 10px;
+}
+
 #page-blocks-sgelection-ballot fieldset.hidden>div {
   width: 100%;
   background-color: #fff;
@@ -17,34 +55,76 @@
   border: 1px solid #aaa;
   border-radius: 10px;
   text-align: center;
-  margin; 0 10px 0 10px;
+  margin: 0 10px 0 10px;
 } 
 
 #page-blocks-sgelection-ballot div.candidates, #page-blocks-sgelection-ballot div.resolutions {
   background-color: #fff;
   display: block;
-  width: 90%;
-  margin: 0 auto 0 auto;
+  width: auto;
+  margin: 0 10px 0 10px;
   border: 1px solid #aaa;
   border-radius: 10px;
 } 
+
+#page-blocks-sgelection-ballot.mobiletheme fieldset.hidden>div {
+  width: 100%;
+  width: calc(100% + 10px);
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  margin: 0 0 0 -15px;
+  padding: 0;
+}
+
+#page-blocks-sgelection-ballot.mobiletheme div.candidates, #page-blocks-sgelection-ballot.mobiletheme div.resolutions {
+  width: auto;
+  margin: 0 2px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+}
+
+#page-blocks-sgelection-ballot div.resolutions, #page-blocks-sgelection-ballot.mobiletheme div.resolutions {
+  margin-top: 2em;
+}
 
 #page-blocks-sgelection-ballot div.candidate .fitemtitle, #page-blocks-sgelection-ballot div.resolutions .fitemtitle {
   display: none!important;
 }
 
-#page-blocks-sgelection-ballot div.resolutions {
-  margin-top: 2em;
-}
-
-#page-blocks-sgelection-ballot h1 {
+#page-blocks-sgelection-ballot h1.itemtitle {
   font-weight: bold;
-  margin-bottom: .5em;
+  margin: 0;
+  padding: 0;
   text-align: center;
   font-size: 18px;
+  line-height: 33px;
+  -webkit-margin-before: 0px;
+  -webkit-margin-after: 0px;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  margin-before: 0px;
+  margin-after: 0px;
+  margin-start: 0px;
+  margin-end: 0px;
+  margin-bottom: .5em;
 }
 
-#page-blocks-sgelection-ballot div.resolution>h1 {
+#page-blocks-sgelection-ballot.mobiletheme #page-header>h1 {
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 18px;
+  line-height: 33px;
+  -webkit-margin-before: 0px;
+  -webkit-margin-after: 0px;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  margin-before: 0px;
+  margin-after: 0px;
+  margin-start: 0px;
+  margin-end: 0px;
+  margin-bottom: .5em;
 }
 
 #page-blocks-sgelection-ballot div.resolution>p {

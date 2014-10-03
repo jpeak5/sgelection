@@ -38,6 +38,7 @@ class candidate extends sge_database_object{
             $affiliation;
 
     static $tablename = "block_sgelection_candidate";
+    static $type = 'C';
 
     public static function get_full_candidates(election $election=null, voter $voter = null, $candid = null){
         global $DB;
@@ -116,5 +117,17 @@ class candidate extends sge_database_object{
             return array($fieldname => $errmsg);
         }
         return array();
+    }
+
+    /**
+     * @override
+     */
+    public function delete(){
+        global $DB;
+        if($DB->record_exists(vote::$tablename, array('type'=>candidate::$type, 'typeid'=>$this->id))){
+            print_error('Votes have been cast for this candidate, cannot delete.');
+        }else{
+            parent::delete();
+        }
     }
 }
