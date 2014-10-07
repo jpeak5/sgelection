@@ -29,7 +29,6 @@ class sg_admin_form extends moodleform {
 
         $mform->addElement('text', 'results_recipients', get_string('results_recips', 'block_sgelection'));
         $mform->setType('results_recipients', PARAM_TEXT);
-        $mform->setDefault('results_recipients', $this->_customdata['default_results_recips']);
 
         $mform->addElement('text', 'results_interval', get_string('results_interval', 'block_sgelection'));
         $mform->setType('results_interval', PARAM_INT);
