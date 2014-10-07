@@ -34,7 +34,8 @@ class election extends sge_database_object {
             $end_date,
             $id,
             $ballot,
-            $thanksforvoting;
+            $thanksforvoting,
+            $test_users;
 
     public static $tablename = 'block_sgelection_election';
 
@@ -268,4 +269,12 @@ class election extends sge_database_object {
         return $this->end_date < time();
     }
 
+    public function is_test_election(){
+        return !empty($this->test_users);
+    }
+
+    public function is_test_user($username){
+        $usernames = explode(',',$this->test_users);
+        return in_array($username, $usernames);
+    }
 }

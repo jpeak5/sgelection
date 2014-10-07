@@ -145,6 +145,10 @@ class voter extends sge_database_object {
             return false;
         }
 
+        if($election->is_test_election() && !$election->is_test_user($this->username)){
+            return false;
+        }
+
         return true;
     }
 

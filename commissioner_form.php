@@ -19,6 +19,10 @@ class commissioner_form extends moodleform {
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
 
+        // census_complete field for editing.
+        $mform->addElement('hidden', 'hours_census_complete');
+        $mform->setType('hours_census_complete', PARAM_INT);
+
         $mform->addELement('select', 'semesterid', get_string('semester', 'block_sgelection'), $this->_customdata['semesters']);
         $mform->setType('semesterid', PARAM_INT);
         $mform->addRule('semesterid', null, 'required', null, 'client');
@@ -47,6 +51,9 @@ class commissioner_form extends moodleform {
             'College Council President', 'College Council Vice-President', 'Council Member-at-Large', 'Senate Full', 'Senate Half'));
         $mform->setDefault('common_college_offices', $common_offices_defaults);
 
+        $mform->addElement('textarea', 'test_users', get_string('test_users', 'block_sgelection'), array('rows'=>'10'));
+        $mform->setType('test_users', PARAM_TEXT);
+
         $this->add_action_buttons();
     }
 
@@ -57,6 +64,7 @@ class commissioner_form extends moodleform {
         $errors += election::validate_census_start($data, $files);
         $errors += election::validate_times_in_bounds($data, $files);
         $errors += election::validate_future_start($data, $files);
+        $errors += sge::validate_csv_usernames($data, 'test_users');
         return $errors;
     }
 }
