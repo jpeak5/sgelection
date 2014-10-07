@@ -169,12 +169,13 @@ $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('el
 // Ballot has been reviewed and user has pressed vote!
 if($submitfinalvote == true){
     $voter->id = $voterid;
+    // @TODO perhaps wait to mark as voted until a transaction has completed.
+    $voter->mark_as_voted($election);
     $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voter->id));
     foreach($collectionofvotes as $indvote){
         $vote = new vote($indvote);
         $vote->finalvote = 1;
         $vote->save();
-        $voter->mark_as_voted($election);
     }
 
     echo $OUTPUT->header();
