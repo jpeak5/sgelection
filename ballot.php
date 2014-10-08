@@ -139,7 +139,7 @@ if(!$voter->is_privileged_user && !$voter->eligible($election)){
 
 
 // SG Admin status determines PAGE layout.
-$layout  = $voter->is_privileged_user && !$preview ? 'standard' : 'base';
+$layout  = $voter->is_privileged_user && !$preview ? 'social' : 'socialnb';
 $PAGE->set_pagelayout($layout);
 
 // Now that layout is selected, we can get our renderer.

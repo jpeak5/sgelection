@@ -18,10 +18,7 @@
 
 <div class = "socialmediabuttons">
     <div class ="facingbooksharebutton">
-        <div class="fb-share-button" data-href=<?php 
-                
-                echo '"' . $CFG->wwwroot . '"';
-                ?>
+        <div class="fb-share-button" data-href= "<?php echo $CFG->wwwroot . '/blocks/sgelection/fb.php';?>"
                 ></div>    
     </div>
     <div class="twitterbutton">
