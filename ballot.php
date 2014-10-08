@@ -154,7 +154,7 @@ if($preview && $voter->courseload == VOTER::VOTER_PART_TIME){
 $resolutionsToForm  = resolution::get_all($resparams);
 
 // Get candidates for the election which are appropriate for the voter.
-$candidatesbyoffice = candidate::candidates_by_office($election, $voter);
+$candidatesbyoffice = candidate::candidates_by_office($election, $voter, null, $preview);
 
 $customdata        = array(
     'resolutions' => $resolutionsToForm,

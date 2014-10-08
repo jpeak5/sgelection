@@ -33,7 +33,7 @@ class ballot_item_form extends moodleform {
 
 
             $mform->addElement('static', 'name', NULL);
-            $mform->addElement('html', html_writer::tag('h1', $office->name, array('class'=>'itemtitle')));
+            $mform->addElement('html', html_writer::tag('h1', $office->name.' '.$office->college, array('class'=>'itemtitle')));
 
             $number_of_office_votes_allowed[$officeid] = $office->number;
 
