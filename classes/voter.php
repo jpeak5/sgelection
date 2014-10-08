@@ -150,8 +150,8 @@ class voter extends sge_database_object {
         $excl_curric_codes = $excl_curric_codes ? explode(',', $excl_curric_codes) : array();
         $curric_code       = $this->curric_code();
 
-        if($election->is_test_election() && $election->is_test_user($this->username)){
-            return true;
+        if($election->is_test_election() && !$election->is_test_user($this->username)){
+            return false;
         }
 
         if(in_array($curric_code, $excl_curric_codes)){
