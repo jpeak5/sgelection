@@ -228,6 +228,12 @@ class block_sgelection_renderer extends plugin_renderer_base {
         require_once($CFG->dirroot.'/blocks/sgelection/classes/resolution.php');
         $out = '';
         $offices = office::get_all();
+	usort($offices, function ($a, $b){
+	    if ($a->college == $b->college) {
+	        return 0;
+    	    }
+	    return ($a->college < $b->college) ? -1 : 1;
+	});
         foreach($offices as $o){
             //$votes = vote::get_all();
             $candidates = candidate::get_all(array('election_id'=>$election->id, 'office'=>$o->id));
