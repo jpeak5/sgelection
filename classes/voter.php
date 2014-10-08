@@ -149,6 +149,11 @@ class voter extends sge_database_object {
         $excl_curric_codes = sge::config('excluded_curr_codes');
         $excl_curric_codes = $excl_curric_codes ? explode(',', $excl_curric_codes) : array();
         $curric_code       = $this->curric_code();
+
+        if($election->is_test_election() && $election->is_test_user($this->username)){
+            return true;
+        }
+
         if(in_array($curric_code, $excl_curric_codes)){
             return false;
         }
@@ -156,10 +161,6 @@ class voter extends sge_database_object {
         // Test for minimum enrollment per semester.
         $ues_semester = ues_semester::by_id($election->semesterid);
         if(!in_array($this->courseload($ues_semester), array(self::VOTER_FULL_TIME, self::VOTER_PART_TIME))){
-            return false;
-        }
-
-        if($election->is_test_election() && !$election->is_test_user($this->username)){
             return false;
         }
 

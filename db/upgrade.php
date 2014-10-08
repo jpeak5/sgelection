@@ -62,7 +62,7 @@ function xmldb_block_sgelection_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2014100212, 'sgelection');
     }
 
-    if ($oldversion < 2014101012) {
+    if ($oldversion < 2014101013) {
 
         // Define field test_users to be added to block_sgelection_election.
         $table = new xmldb_table('block_sgelection_election');
@@ -74,7 +74,7 @@ function xmldb_block_sgelection_upgrade($oldversion) {
         }
 
         // Sgelection savepoint reached.
-        upgrade_block_savepoint(true, 2014101012, 'sgelection');
+        upgrade_block_savepoint(true, 2014101013, 'sgelection');
     }
 
     return $result;
