@@ -61,9 +61,9 @@ if($voter->already_voted($election)){
                 $resolutionvotedfor[$resolutionrecord] = $resvote;
             }
     }
+        echo html_writer::start_div('review_content');
         if(!empty($candidatevotearray)){
             $candidatesbyofficevotedfor = candidate::candidates_by_office($election, $voter,$candidatevotearray);
-            echo html_writer::start_div('review_content');
             echo html_writer::start_div('office_area');
             foreach($candidatesbyofficevotedfor as $officeid => $office){
                 $renderer->print_office_title($office);
