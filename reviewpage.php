@@ -56,7 +56,7 @@ if($voter->already_voted($election)){
             }else{
                 if($cvote->vote ==2){ $resvote = 'Yes'; }
                 if($cvote->vote ==1){ $resvote = 'No'; }
-                if($cvote->vote ==0){ $resvote = 'Abstain'; }
+                if($cvote->vote ==3){ $resvote = 'Abstain'; }
                 $resolutionrecord = $DB->get_field('block_sgelection_resolution', 'title', array('id'=>$cvote->typeid));
                 $resolutionvotedfor[$resolutionrecord] = $resvote;
             }
