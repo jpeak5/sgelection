@@ -307,7 +307,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
 
     public static function print_analytics_tables(election $election){
         global $DB, $PAGE;
-        $result = $DB->get_records('block_sgelection_voters');
+        $result = $DB->get_records('block_sgelection_voters', array('election_id'=>$election->id));
 
         $dataarray=array();
         // EXCESSIVE AMOUNT OF ARRAYS -> ARRAY ORIENTATED PROGRAMMING -> http://www.epixa.com/2012/04/array-oriented-programming.html
