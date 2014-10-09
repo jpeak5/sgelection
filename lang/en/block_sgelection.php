@@ -112,7 +112,9 @@ $string['err_census_future_start']   = 'Census cannot start in the past.';
 //review page
 $string['you_voted_for'] = 'You voted for <strong>{$a->firstname} {$a->lastname}</strong>';
 $string['office_title'] = '<h1> {$a->name} </h1>';
-$string['you_voted_on_res'] = 'You voted {$a->value} on resolution {$a->name}';
+$string['you_voted_on_res'] = 'You voted <strong>{$a->value}</strong> on resolution: <strong>{$a->name}</strong>';
+$string['resolution'] = 'Resolution';
+$string['resolutions'] = 'Resolutions';
 //results
 $string['results_page_header'] = 'Results';
 
