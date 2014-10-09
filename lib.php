@@ -287,7 +287,10 @@ class sge {
     public static function semesters_eligible_for_census(){
         global $DB;
         $result = array();
-        $where  = "hours_census_start < :now AND hours_census_complete IS NULL AND start_date > :then";
+        $where  = "hours_census_start < :now "
+                . "AND (hours_census_complete IS NULL "
+                .    "OR hours_census_complete = 0) " // May never actually be null (@see commissioner_form).
+                . "AND start_date > :then";
         $raw    = $DB->get_records_select(Election::$tablename, $where, array('now'=>time(), 'then'=>time()));
         foreach($raw as $r){
             $s = ues_semester::by_id($r->semesterid);
