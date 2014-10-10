@@ -64,7 +64,7 @@ $context  = context_system::instance();
 // Begin initialize PAGE and local param vars.
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
-$heading = get_string('ballot_page_header', 'block_sgelection', $election->fullname());
+$heading = sge::_str('ballot_page_header', $election->fullname());
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 // End PAGE init.

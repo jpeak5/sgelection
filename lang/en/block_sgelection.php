@@ -119,7 +119,7 @@ $string['err_ineligible'] = 'Either your major (curric_code) or your part-time s
 $string['err_toomanycands'] = 'Too Many Candidates Selected';
 //Exceptions
 $string['exc_nocourseload'] = 'Courseload must be specified when preview mode is selected';
-$strin['exc_invalidid'] = '{$a} is not a valid election id';
+$string['exc_invalidid'] = '{$a} is not a valid election id';
 
 //review page
 $string['you_voted_for'] = 'You voted for <strong>{$a->firstname} {$a->lastname}</strong>';
