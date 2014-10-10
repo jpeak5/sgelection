@@ -148,7 +148,7 @@ $renderer->set_nav(null, $voter);
 
 // Setup resolutions, based on user courseload.
 $resparams = array('election_id' => $election->id);
-if($voter->courseload == VOTER::VOTER_PART_TIME){
+if($voter->courseload == VOTER::VOTER_PART_TIME && !$voter->is_privileged_user()){
    $resparams['restrict_fulltime'] = 0;
 }
 $resolutionsToForm  = resolution::get_all($resparams);
