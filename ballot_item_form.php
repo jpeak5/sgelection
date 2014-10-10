@@ -120,7 +120,7 @@ class ballot_item_form extends moodleform {
         }
         foreach ($officeKeepTrackArray as $i=>$o){
             if($o > $officeLimitKeepTrackArray[$i]){
-                $errors += array('testbox_'.$i => 'Too Many Candidates Selected');
+                $errors += array('testbox_'.$i => sge::_str('err_toomanycands'));
             }
         }
         return $errors;
