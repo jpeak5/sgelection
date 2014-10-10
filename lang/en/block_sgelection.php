@@ -129,6 +129,7 @@ $string['resolution'] = 'Resolution';
 $string['resolutions'] = 'Resolutions';
 //results
 $string['results_page_header'] = 'Results';
+$string['resultsreport'] = 'Election Report';
 
 // voter
 $string['ptorft'] = 'Part Time or Full Time';
@@ -161,3 +162,6 @@ $string['censuscompleted_msg'] = 'Enrolled credit hours were calculated for elec
 
 //lookupvoter
 $string['check_vote_status'] = 'Check vote status for election:   {$a}';
+
+//misc
+$string['savesuccess'] = 'changes saved';
