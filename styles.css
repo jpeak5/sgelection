@@ -232,7 +232,7 @@
   text-align: center;
 }
 
-#page-blocks-sgelection-ballot .ballotreview_parent {
+#page-blocks-sgelection-ballot .ballotreview_parent, #page-blocks-sgelection-ballot div.final_page_content {
   display: inline-block;
   margin: 20px auto;
   text-align: center;
@@ -256,7 +256,7 @@
   margin: 0;
 }
 
-#page-blocks-sgelection-ballot .ballotreview_parent div.candidate_div, #page-blocks-sgelection-ballot .ballotreview_parent div.resolution_div {
+#page-blocks-sgelection-ballot .ballotreview_parent div.candidate_div, #page-blocks-sgelection-ballot .ballotreview_parent div.resolution_div, #page-blocks-sgelection-ballot div.facingbooksharebutton, #page-blocks-sgelection-ballot div.twitterbutton, #page-blocks-sgelection-ballot div.tumblrbutton {
   border-radius: 5px;
   background-color: #fff;
   padding: 5px 10px;
