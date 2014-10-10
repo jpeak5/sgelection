@@ -15,7 +15,7 @@ $PAGE->requires->js('/blocks/sgelection/js/autouserlookup.js');
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($selfurl);
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('admin_page_header', 'block_sgelection'));
+$PAGE->set_heading(sge::_str('admin_page_header'));
 
 require_login();
 

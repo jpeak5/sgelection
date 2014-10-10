@@ -114,7 +114,7 @@ class candidate extends sge_database_object{
             }
             // @todo There should never be more than one office in the db per cand/election.
             $a->office = implode(' and ', $offices);
-            $errmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
+            $errmsg = sge::_str('err_user_nonunique', $a);
 
             return array($fieldname => $errmsg);
         }

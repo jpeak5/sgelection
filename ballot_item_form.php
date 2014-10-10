@@ -17,13 +17,13 @@ class ballot_item_form extends moodleform {
         if($voter->is_privileged_user()){
 
             // Preview section
-            $mform->addElement('header', 'displayinfo', get_string('preview_ballot', 'block_sgelection'));
+            $mform->addElement('header', 'displayinfo', sge::_str('preview_ballot'));
             $mform->addElement('html', html_writer::tag('h1', get_string('preview'), array('class'=>'preview_ballot')));
             sge::get_college_selection_box($mform, $voter->college);
 
             $ptftparams = array(1 =>'Part-Time', 2 =>'Full-Time');
-            $mform->addElement('select', 'ptft', get_string('ptorft', 'block_sgelection'), $ptftparams);
-            $mform->addElement('submit', 'preview', get_string('preview', 'block_sgelection'));
+            $mform->addElement('select', 'ptft', sge::_str('ptorft'), $ptftparams);
+            $mform->addElement('submit', 'preview', sge::_str('preview'));
         }
 
         $number_of_office_votes_allowed = array();
@@ -39,7 +39,7 @@ class ballot_item_form extends moodleform {
 
             if($office->candidates != null && count($office->candidates) > 0){
                 if($office->number > 1){
-                    $mform->addElement('html', html_writer::tag('p', get_string('select_up_to', 'block_sgelection', $office->number)));
+                    $mform->addElement('html', html_writer::tag('p', sge::_str('select_up_to', $office->number)));
                 }
                 shuffle($office->candidates);
             }
@@ -93,7 +93,7 @@ class ballot_item_form extends moodleform {
         $mform->addElement('html', '</div>');
 
         $buttons = array(
-        $mform->createElement('submit', 'vote', get_string('review_vote', 'block_sgelection')),
+        $mform->createElement('submit', 'vote', sge::_str('review_vote')),
         $mform->createElement('cancel', 'cancel', get_string('cancel', 'moodle'))
         );
         $mform->addGroup($buttons, 'buttons', 'actions', array(' '), false);
@@ -120,7 +120,7 @@ class ballot_item_form extends moodleform {
         }
         foreach ($officeKeepTrackArray as $i=>$o){
             if($o > $officeLimitKeepTrackArray[$i]){
-                $errors += array('testbox_'.$i => 'Too Many Candidates Selected');
+                $errors += array('testbox_'.$i => sge::_str('err_toomanycands'));
             }
         }
         return $errors;
