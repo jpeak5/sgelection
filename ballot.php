@@ -103,7 +103,7 @@ if($preview && $voter->is_privileged_user){
  * to use this form (including especially the ballot editing features).
  */
 if(!$voter->is_privileged_user && !$election->polls_are_open()){
-    print_error(sge::['err_pollsclosed']);
+    print_error(sge::_str('err_pollsclosed'));
 }
 
 /**
@@ -129,7 +129,7 @@ if($voter->already_voted($election) && !$voter->is_privileged_user()){
 }
 
 if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
-    print_error(sge::_str('err_missingmeta', $voter->is_missing_metadata());
+    print_error(sge::_str('err_missingmeta', $voter->is_missing_metadata()));
 }
 
 if(!$voter->is_privileged_user && !$voter->eligible($election)){
