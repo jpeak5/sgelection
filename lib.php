@@ -44,7 +44,7 @@ class sge {
         if($userexists){
             return array();
         }else{
-            return array($fieldname => sge::_str('err_user_nonexist',  $data[$fieldname]));
+            return array($fieldname => self::_str('err_user_nonexist',  $data[$fieldname]));
         }
     }
 
@@ -187,7 +187,7 @@ class sge {
         $colleges = self::get_distinct_colleges();
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
-        $collegeselector = $mform->addElement('select', 'college', sge::_str('limit_to_college'), $attributes);
+        $collegeselector = $mform->addElement('select', 'college', self::_str('limit_to_college'), $attributes);
         if($selected && in_array($selected, array_keys($colleges))){
             $collegeselector->setSelected($selected);
         }
