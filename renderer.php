@@ -326,7 +326,7 @@ class block_sgelection_renderer extends plugin_renderer_base {
         $timearray=array();
 
         $thehtml = '<br /><br />';
-        $thehtml .=  html_writer::div('<h1>Election Report</h1>', 'datatablesdiv', array('id' => 'tophat'));
+        $thehtml .=  html_writer::div(html_writer::tag('h1', sge::_str('resultsreport')), 'datatablesdiv', array('id' => 'tophat'));
         foreach($result as $r){
             $collegearray[] = $r->college;
             $majorarray[] = $r->major;

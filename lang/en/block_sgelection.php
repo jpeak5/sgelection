@@ -129,6 +129,7 @@ $string['resolution'] = 'Resolution';
 $string['resolutions'] = 'Resolutions';
 //results
 $string['results_page_header'] = 'Results';
+$string['resultsreport'] = 'Election Report';
 
 // voter
 $string['ptorft'] = 'Part Time or Full Time';
