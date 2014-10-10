@@ -35,7 +35,11 @@ class sg_admin_form extends moodleform {
         $mform->setDefault('results_interval', $this->_customdata['default_results_interval']);
         $mform->addHelpButton('results_interval', 'results_interval', 'block_sgelection');
 
-        $curriculum_codes = $DB->get_records_sql_menu("select id, value from mdl_enrol_ues_usermeta WHERE name = 'user_major' GROUP BY value;");
+        $sql = "SELECT id, value "
+                . "FROM {enrol_ues_usermeta} "
+                . "WHERE name = :name "
+                . "GROUP BY value;";
+        $curriculum_codes = $DB->get_records_sql_menu($sql, array('name' => 'user_major'));
         $currCodesArray = array();
 
         foreach($curriculum_codes as $k => $v){
@@ -51,7 +55,6 @@ class sg_admin_form extends moodleform {
 
     public function validation($data, $files){
         $errors = parent::validation($data, $files);
-        //$errors += sge::validate_commisioner($data, 'commissioner');
         $errors += sge::validate_csv_usernames($data, 'results_recipients');
         return $errors;
     }
