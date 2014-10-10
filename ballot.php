@@ -124,7 +124,7 @@ if(!$voter->is_privileged_user && $preview){
 /**
  * Don't allow a second vote.
  */
-if($voter->already_voted($election)){
+if($voter->already_voted($election) && !$voter->is_privileged_user()){
     print_error('You have already voted in this election');
 }
 
