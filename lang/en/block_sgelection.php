@@ -108,6 +108,17 @@ $string['err_census_start_too_soon'] = 'Census start time must be set after the 
 $string['err_start_end_outofbounds'] = 'Election start and end dates must fall within the acceptable range as defined by the Moodle administrator. [{$a->earliest} - {$a->latest}]';
 $string['err_election_future_start'] = 'In order to allow time for the enrollment census to run, election can be set to start no sooner than {$a}.';
 $string['err_census_future_start']   = 'Census cannot start in the past.';
+$string['err_notenrolled'] ='Must be enrolled to vote';
+$string['err_pollsclosed'] = 'polls are not open yet';
+$string['err_notevenparttime'] = 'You need to be at least a parttime student to vote';
+$string['nopreviewpermission'] = 'Only the SG Commissioner can preview the ballot.';
+$string['err_alreadyvoted'] = 'You have already voted in this election';
+$string['err_missingmeta'] = 'Your user profile is missing required information: {$a}';
+$string['err_ineligible'] = 'Either your major (curric_code) or your part-time status renders you ineligible to vote in this election';
+
+//Exceptions
+$string['exc_nocourseload'] = 'Courseload must be specified when preview mode is selected';
+$strin['exc_invalidid'] = '{$a} is not a valid election id';
 
 //review page
 $string['you_voted_for'] = 'You voted for <strong>{$a->firstname} {$a->lastname}</strong>';

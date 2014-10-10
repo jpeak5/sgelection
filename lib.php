@@ -314,4 +314,8 @@ class sge {
 
         return $DB->get_records_sql($sql, array('semid'=>$s->id));
     }
+
+    public static function _str($key, $a=null){
+       return get_string($key, 'block_sgelection', $a);
+    }
 }
