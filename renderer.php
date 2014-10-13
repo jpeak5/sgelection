@@ -342,7 +342,6 @@ class block_sgelection_renderer extends plugin_renderer_base {
         }
         //  sort IP array
         $iparray = array_count_values($iparray);
-        var_dump($iparray);
         foreach($iparray as $key => $value){
             if($key > 1){
                 $newIParray[$value] = $key;
