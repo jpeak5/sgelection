@@ -89,6 +89,7 @@ class block_sgelection extends block_list {
                     $this->content->items[] = html_writer::link( new moodle_url('/blocks/sgelection/ballot.php', array('election_id' => $ae->id)), 'Ballot for ' . $semester, array('class'=>'election')) . ' ' . $numberOfVotesTotalString;
                     $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot . '/blocks/sgelection/pix/w_check.svg', 'class' => 'icon'));
                 } else {
+                    //@todo convert to get_string()
                     $this->content->items[] = html_writer::tag('p','Ballot for ' . $semester . ' ' . $numberOfVotesTotalString, array('class'=>'election'));
                     $this->content->icons[] = html_writer::empty_tag('img', array('src'=>$wwwroot .'/blocks/sgelection/pix/w_check.svg', 'class' => 'icon'));
 
