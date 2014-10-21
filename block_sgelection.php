@@ -74,7 +74,7 @@ class block_sgelection extends block_list {
         $this->content->icons = array();
 
         $voter->is_privileged_user = $voter->is_privileged_user();
-        $elections = $voter->is_privileged_user ? election::get_all() : election::get_active();
+        $elections = $voter->is_privileged_user ? election::get_all_not_archived() : election::get_active();
         foreach($elections as $ae){
 
             // If user courseload is not at least part-time for the current election semester, add nothing to the output.
