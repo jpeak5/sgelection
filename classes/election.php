@@ -195,7 +195,8 @@ class election extends sge_database_object {
                 }
             }
             $msg = sge::_str('err_census_future_start');
-            return array('hours_census_start' => $msg);
+            //return array('hours_census_start' => $msg);
+            return array();
         }else{
             return array();
         }

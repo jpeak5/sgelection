@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rows xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../schema/INSTRUCTORS.xsd">
+    <ROW>
+       <IDNUMBER>lawinst001</IDNUMBER>
+        <PRIMARY_INSTRUCTOR>Y</PRIMARY_INSTRUCTOR>
+        <CLASS_DEPT_CODE>LAW</CLASS_DEPT_CODE>
+        <CLASS_COURSE_NBR>1001</CLASS_COURSE_NBR>
+        <SECTION_NBR>001</SECTION_NBR>
+        <INDIV_NAME>instructor001, law</INDIV_NAME>
+        <PRIMARY_ACCESS_ID>lawinst001</PRIMARY_ACCESS_ID>
+    </ROW>
+    <ROW>
+       <IDNUMBER>lawinst001</IDNUMBER>
+        <PRIMARY_INSTRUCTOR>Y</PRIMARY_INSTRUCTOR>
+        <CLASS_DEPT_CODE>LAW</CLASS_DEPT_CODE>
+        <CLASS_COURSE_NBR>5001</CLASS_COURSE_NBR>
+        <SECTION_NBR>001</SECTION_NBR>
+        <INDIV_NAME>instructor001, law</INDIV_NAME>
+        <PRIMARY_ACCESS_ID>lawinst001</PRIMARY_ACCESS_ID>
+    </ROW>
+    <ROW>
+       <IDNUMBER>lawinst001</IDNUMBER>
+        <PRIMARY_INSTRUCTOR>Y</PRIMARY_INSTRUCTOR>
+        <CLASS_DEPT_CODE>LAW</CLASS_DEPT_CODE>
+        <CLASS_COURSE_NBR>5501</CLASS_COURSE_NBR>
+        <SECTION_NBR>001</SECTION_NBR>
+        <INDIV_NAME>instructor001, law</INDIV_NAME>
+        <PRIMARY_ACCESS_ID>lawinst001</PRIMARY_ACCESS_ID>
+    </ROW>
+</rows>

@@ -415,7 +415,9 @@ class block_sgelection_renderer extends plugin_renderer_base {
                 }
             }
             $ipdata  = json_encode($ipdata);
-            $ipobject = json_encode($ipobject);
+            if(!empty($ipobject)){
+                $ipobject = json_encode($ipobject);
+            }
         }
 //time
         if(!empty($timearraycount)){

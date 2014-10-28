@@ -1,6 +1,6 @@
 <?php
 $string['pluginname'] = 'SGElection Block';
-$string['sgelection'] = 'Student Gov\'t Election';
+$string['sgelection'] = 'Student Govt Election';
 $string['sgelection:addinstance'] = 'Add a new Student Government Election block';
 $string['sgelection:myaddinstance'] = 'Add a new Student Government Election to the My Moodle page';
 $string['blockstring'] = 'What should the block say';
@@ -24,7 +24,7 @@ $string['displaydate'] = 'Display Date';
 
 //block_sge...
 $string['create_election'] = 'Create Election';
-$string['configure'] = 'Configure';
+$string['configure'] = 'Settings';
 
 // Election
 $string['election_fullname'] = '{$a->sem} [{$a->name}]';
