@@ -13,13 +13,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
+
 /**
  * @package    block_sgelection
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'tests/sgetestbase.php';
+global $CFG;
+require_once $CFG->dirroot.'/blocks/sgelection/tests/sgetestbase.php';
 
 class candidates_form_testcase extends block_sgelection_base {
 

@@ -20,9 +20,10 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'lib.php';
-require_once 'tests/sgetestbase.php';
-require_once 'tests/sgdatabaseobject_test.php';
+global $CFG;
+require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
+require_once $CFG->dirroot.'/blocks/sgelection/tests/sgetestbase.php';
+require_once $CFG->dirroot.'/blocks/sgelection/tests/sgdatabaseobject_test.php';
 
 class sge_testcase extends sge_database_object_testcase {
 

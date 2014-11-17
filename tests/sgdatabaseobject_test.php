@@ -22,9 +22,10 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once 'classes/sgedatabaseobject.php';
-require_once 'classes/candidate.php';
-require_once 'tests/sgetestbase.php';
+global $CFG;
+require_once $CFG->dirroot.'/blocks/sgelection/classes/sgedatabaseobject.php';
+require_once $CFG->dirroot.'/blocks/sgelection/classes/candidate.php';
+require_once $CFG->dirroot.'/blocks/sgelection/tests/sgetestbase.php';
 
 class myclass extends sge_database_object {
 
@@ -72,7 +73,7 @@ class sge_database_object_testcase extends block_sgelection_base {
         $this->assertEquals('!', $testobj->c);
         $this->assertInstanceOf('myclass', $testobj);
     }
-    
+
     public function test_save(){
         global $DB;
         $params = array(
@@ -82,23 +83,23 @@ class sge_database_object_testcase extends block_sgelection_base {
             'affiliation' => "Lions",
         );
         $candidate = new candidate($params);
-        
+
         $this->assertEmpty($candidate->id);
         $this->assertEquals(2, $candidate->userid);
         $this->assertEquals(3, $candidate->election_id);
         $this->assertEquals(4, $candidate->office);
         $this->assertEquals('Lions', $candidate->affiliation);
-        
+
         $candidate->save();
         $this->assertNotEmpty($candidate->id);
-        
+
         $test = $DB->get_record(candidate::$tablename, array('id'=>$candidate->id));
         $this->assertEquals(2, $test->userid);
         $this->assertEquals(3, $test->election_id);
         $this->assertEquals(4, $test->office);
         $this->assertEquals('Lions', $test->affiliation);
         $this->assertInstanceOf('stdClass', $test);
-        
+
         // get an instance of candidate from the DB row.
         $instance = new candidate($test);
         $instance->affiliation = 'new affiliation';
@@ -106,12 +107,12 @@ class sge_database_object_testcase extends block_sgelection_base {
 
         // save with new value.
         $instance->save();
-        
+
         // ensure save persisted the updated value
         $testupdate = $DB->get_record(candidate::$tablename, array('id'=>$instance->id));
         $this->assertEquals('new affiliation', $testupdate->affiliation);
     }
-    
+
     public function test_get_by_id(){
         $params = array(
             'userid' => "2",

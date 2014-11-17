@@ -19,7 +19,8 @@
  * @copyright  2014 Louisiana State University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('classes/resolution.php');
+global $CFG;
+require_once($CFG->dirroot.'/blocks/sgelection/classes/resolution.php');
 
 class resolution_testcase extends block_sgelection_base {
 

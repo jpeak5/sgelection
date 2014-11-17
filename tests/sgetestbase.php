@@ -23,7 +23,7 @@
  */
 global $CFG;
 require_once $CFG->libdir.'/testing/generator/data_generator.php';
-require_once 'classes/resolution.php';
+require_once $CFG->dirroot.'/blocks/sgelection/classes/resolution.php';
 require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
 sge::require_db_classes();
 

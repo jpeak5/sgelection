@@ -1,4 +1,3 @@
-@wip
 Feature: Vote
   In order to verify the correctness of the vote count, I need to vote as many 
   users and check the results.

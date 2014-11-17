@@ -24,11 +24,11 @@
  */
 global $CFG;
 
-require_once 'classes/candidate.php';
-require_once 'classes/election.php';
-require_once 'classes/office.php';
-require_once 'tests/sgetestbase.php';
-require_once 'lib.php';
+require_once $CFG->dirroot.'/blocks/sgelection/classes/candidate.php';
+require_once $CFG->dirroot.'/blocks/sgelection/classes/election.php';
+require_once $CFG->dirroot.'/blocks/sgelection/classes/office.php';
+require_once $CFG->dirroot.'/blocks/sgelection/tests/sgetestbase.php';
+require_once $CFG->dirroot.'/blocks/sgelection/lib.php';
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
 
