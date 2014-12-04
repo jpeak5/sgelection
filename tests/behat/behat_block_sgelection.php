@@ -56,6 +56,18 @@ class behat_block_sgelection extends behat_base{
         );
     }
 
+    /**
+     * @Given /^I open the election$/
+     */
+    public function iOpenTheElection()
+    {
+        global $DB;
+        $election = $DB->get_record('block_sgelection_election', array('id'=>1));
+        $election->start_date = time();
+        $DB->update_record('block_sgelection_election', $election);
+    }
+
+
     public function configure_block(){
         set_config('census_window', 0, 'block_sgelection');
     }
@@ -109,6 +121,13 @@ class behat_block_sgelection extends behat_base{
         cron_run();
     }
 
+    /**
+     * @When /^I go to "([^"]*)"$/
+     */
+    public function iGoTo($arg1)
+    {
+        $this->getSession()->visit($this->locate_path($arg1));
+    }
 }
 
 
