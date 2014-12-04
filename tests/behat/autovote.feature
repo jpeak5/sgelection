@@ -1,32 +1,26 @@
-@wip
 Feature: AutoVote
   In order to verify the correctness of the vote count, I need to vote as many 
   users and check the results.
 
   Background: Create Election
     Given I log in as "admin"
-      
+
+# begin get enrollment
+    # enable UES
       And I follow "My home"
       And I expand "Site administration" node
       And I expand "Plugins" node
       And I expand "Enrolments" node
       And I follow "Manage enrol plugins"
       And I click on "Enable" "link" in the "UES Enrollment" "table_row"
+    # end enable UES
 
       And I configure ues
       And I initialize ues users
       And I run cron
+# end get enrollment
 
-      And I follow "My home"
-      And I expand "Site administration" node
-      And I expand "Plugins" node
-      And I expand "Blocks" node
-      And I follow "SGElection Block"
-      And I set the following fields to these values:
-         | Faculty Advisor | facadv001 |
-         | Census cron window | 0 |
-      And I press "Save changes"
-
+# begin set block to all My pages
       And I follow "Home"
       And I follow "Turn editing on"
       And I add the "sgelection" block
@@ -43,9 +37,22 @@ Feature: AutoVote
       And I set the following fields to these values:
          | Display on page types | My home page |
       And I press "Save changes"
+# end set block to all My pages
+
+# begin set faculty advisor
+      And I follow "My home"
+      And I expand "Site administration" node
+      And I expand "Plugins" node
+      And I expand "Blocks" node
+      And I follow "SGElection Block"
+      And I set the following fields to these values:
+         | Faculty Advisor | facadv001 |
+         | Census cron window | 0 |
+      And I press "Save changes"
+# end set faculty advisor
 
       And I log out
-
+# begin configure block settings as fac advisor
       And I log in as "facadv001"
       And I follow "My home"
       And I should see "Create new election"
@@ -58,21 +65,24 @@ Feature: AutoVote
          | Results Recipients | admin |
       And I press "Save changes"
       And I log out
-
+# end configure block settings as fac advisor
 
 
   @javascript
   Scenario: Vote
 
+# begin create new election
       And I log in as "commissioner001"
       And I follow "My home"
       And I should see "Create new election"
       And I click on "Create new election" "link" in the "block_sgelection" "block"
-      And the following elections exist:
+      # @see behat_block_sgelection::theFollowingElectionsExist
+      And the following elections exist: 
       |Name | General Election |
       |id_thanksforvoting_editor | Thanks! |
+# end create new election
 
-
+# begin setup candidates
       And I set the following fields to these values:
       | Title of Resolution | res1 |
       | Resolution Text | This resolution is open only to Full-time students |
@@ -293,11 +303,12 @@ Feature: AutoVote
       | paws ID of Candidate | vetm3 |
       | Office the Candidate is running for | College Council President [VETM] |
       And I press "save_candidate"
+# end setup candidates
 
-      And I run cron
+      And I run cron # cron to pickup enrolled hours info for election
       And I log out
 
-
+# begin voting
       And I log in as "test1"
       And I follow "My home"
       And I click on "Ballot for Fall [General Election]" "link"
@@ -1726,17 +1737,18 @@ Feature: AutoVote
       Then I should see "Thanks!"
       Then I should see "Number of votes cast so far 55"
       And I log out
+# end voting
 
-
-
+# begin commissioner goes to results page
       And I log in as "commissioner001"
       And I follow "My home"
       And I click on "Ballot for Fall [General Election]" "link"
       And I expand "SG Elections Admin" node
       And I expand "Results" node
       And I click on "Fall [General Election]" "link" in the "//li[p/span[text() = 'SG Elections Admin']]/ul/li[p/span[text() = 'Results']]" "xpath_element"
+# end commissioner goes to results page
 
-
+# begin verify results
       Then I should see "13" in the "//tr[td[text() = 'res1']]/td[2]" "xpath_element"
       Then I should see "11" in the "//tr[td[text() = 'res1']]/td[3]" "xpath_element"
       Then I should see "20" in the "//tr[td[text() = 'res1']]/td[4]" "xpath_element"
@@ -1786,3 +1798,4 @@ Feature: AutoVote
       Then I should see "0" in the "vetm candidate1" "table_row"
       Then I should see "1" in the "vetm candidate2" "table_row"
       Then I should see "2" in the "vetm candidate3" "table_row"
+# end verify results
