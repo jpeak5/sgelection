@@ -11,13 +11,40 @@ class behat_block_sgelection extends behat_base{
     public function theFollowingElectionsExist(TableNode $table)
     {
 
-        $date = new DateTime('now');
-        $census_start = $date->sub(new DateInterval('PT1M'));
-        $end_date = $date->add(new DateInterval('P1D'));
-
         $rows = $table->getRows();
-        $rows[] = array('id_hours_census_start_minute', $census_start->format('i'));
-        $rows[] = array('id_end_date_day', $end_date->format('d'));
+
+        // Anchor date object for all derivatives.
+        $date = new DateTime('now');
+
+        // helper fn to compute date offsets [from munutes]
+        $offset = function($minutes, $unit) {
+            $now      = new DateTime('now');
+            $add      = $minutes < 0 ? false : true;
+            $prefix   = $unit == 'D' ? 'P' : 'PT';
+            $interval = new DateInterval(sprintf("%s%d%s",$prefix, abs($minutes), $unit));
+            return $add ? $now->add($interval) : $now->sub($interval);
+        };
+
+        // Setup default dates.
+        $id_start_date_day = $date;
+        $id_hours_census_start_minute = $offset(1, 'M');
+        $id_end_date_day = $offset(1, 'D');
+
+        // Override default start, census and end dates, if provided.
+        foreach($rows as $k => $row){
+            $options = array('id_hours_census_start_minute', 'id_start_date_day', 'id_end_date_day');
+            if(in_array($row[0], $options)){
+                $elements = explode('_', $row[0]);
+                $tail     = array_pop($elements);
+                $unit     = strtoupper(substr($tail, 0, 1));
+                $$row[0]  = $offset($row[1], $unit);
+                unset($rows[$k]);
+            }
+        }
+
+        $rows[] = array('id_hours_census_start_minute', intval($id_hours_census_start_minute->format('i')));
+        $rows[] = array('id_start_date_day', intval($id_start_date_day->format('d')));
+        $rows[] = array('id_end_date_day', intval($id_end_date_day->format('d')));
 
         $table->setRows($rows);
 
