@@ -73,6 +73,10 @@ class block_sgelection extends block_list {
         $this->content->items = array();
         $this->content->icons = array();
 
+        // Don't show anything to regular users if nothing is going on...
+        if(!$voter->is_privileged_user() && empty(election::get_active())){
+            return $this->content;
+        }
         $voter->is_privileged_user = $voter->is_privileged_user();
         $elections = $voter->is_privileged_user ? election::get_all_not_archived() : election::get_active();
         foreach($elections as $ae){
