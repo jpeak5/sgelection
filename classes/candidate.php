@@ -127,7 +127,7 @@ class candidate extends sge_database_object{
     public function delete(){
         global $DB;
         if($DB->record_exists(vote::$tablename, array('type'=>candidate::$type, 'typeid'=>$this->id))){
-            print_error('Votes have been cast for this candidate, cannot delete.');
+            print_error(sge::_str('err_deletedependencies'));
         }else{
             parent::delete();
         }

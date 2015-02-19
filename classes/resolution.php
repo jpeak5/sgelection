@@ -77,7 +77,7 @@ class resolution extends ballot_item{
     public function delete(){
         global $DB;
         if($DB->record_exists(vote::$tablename, array('type'=>resolution::$type, 'typeid'=>$this->id))){
-            print_error('Votes have been cast for this resolution, cannot delete.');
+            print_error(sge::_str('err_deletedependenciesres'));
         }else{
             parent::delete();
         }

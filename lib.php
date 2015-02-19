@@ -44,7 +44,7 @@ class sge {
         if($userexists){
             return array();
         }else{
-            return array($fieldname => sge::_str('err_user_nonexist',  $data[$fieldname]));
+            return array($fieldname => self::_str('err_user_nonexist',  $data[$fieldname]));
         }
     }
 
@@ -187,7 +187,7 @@ class sge {
         $colleges = self::get_distinct_colleges();
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
-        $collegeselector = $mform->addElement('select', 'college', sge::_str('limit_to_college'), $attributes);
+        $collegeselector = $mform->addElement('select', 'college', self::_str('limit_to_college'), $attributes);
         if($selected && in_array($selected, array_keys($colleges))){
             $collegeselector->setSelected($selected);
         }
@@ -289,8 +289,11 @@ class sge {
         $result = array();
         $where  = "hours_census_start < :now "
                 . "AND (hours_census_complete IS NULL "
-                .    "OR hours_census_complete = 0) " // May never actually be null (@see commissioner_form).
-                . "AND start_date > :then";
+                .    "OR hours_census_complete = 0) "; // May never actually be null (@see commissioner_form).
+              // Removing this constraint to ease testing, but we probably
+              // don't want this being computed on every cron run during an
+              // election.
+              //. "AND start_date > :then";
         $raw    = $DB->get_records_select(Election::$tablename, $where, array('now'=>time(), 'then'=>time()));
         foreach($raw as $r){
             $s = ues_semester::by_id($r->semesterid);
@@ -308,8 +311,13 @@ class sge {
                 . " FROM {enrol_ues_students} as ustu"
                 . "    JOIN {enrol_ues_sections} usec ON usec.id = ustu.sectionid"
                 . "    JOIN {enrol_ues_semesters} usem ON usem.id = usec.semesterid"
-                . " WHERE ustu.status = 'enrolled'"
-                . "    AND usem.id = :semid"
+                . " WHERE usem.id = :semid"
+                . "    AND "
+                . "    (
+                          usec.status = 'skipped'  AND ustu.status = 'processed'
+                          OR
+                          usec.status = 'manifested'  AND ustu.status = 'enrolled'
+                       )"
                 . " GROUP BY ustu.userid;";
 
         return $DB->get_records_sql($sql, array('semid'=>$s->id));

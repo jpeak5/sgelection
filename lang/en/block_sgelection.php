@@ -117,6 +117,11 @@ $string['err_alreadyvoted'] = 'You have already voted in this election';
 $string['err_missingmeta'] = 'Your user profile is missing required information: {$a}';
 $string['err_ineligible'] = 'Either your major (curric_code) or your part-time status renders you ineligible to vote in this election';
 $string['err_toomanycands'] = 'Too Many Candidates Selected';
+$string['err_toomanycandsjs'] = 'You have selected too many candidates, please select at most {$a}';
+$string['err_deletedependencies'] = 'Votes have been cast for this candidate, cannot delete.';
+$string['err_deletedependenciesres'] = 'Votes have been cast for this resolution, cannot delete.';
+$string['err_deletedependenciesoff'] = 'There are candidates for this office. Please delete them first.';
+
 //Exceptions
 $string['exc_nocourseload'] = 'Courseload must be specified when preview mode is selected';
 $string['exc_invalidid'] = '{$a} is not a valid election id';

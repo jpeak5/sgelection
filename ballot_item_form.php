@@ -13,6 +13,10 @@ class ballot_item_form extends moodleform {
         $candidates = $this->_customdata['candidates'];
         $voter      = $this->_customdata['voter'];
 
+        if(!empty($voter->id)){
+            $mform->addElement('hidden', 'voterid', $voter->id);
+            $mform->setType('voterid', PARAM_INT);
+        }
         // Setup preview controls.
         if($voter->is_privileged_user()){
 
@@ -67,7 +71,9 @@ class ballot_item_form extends moodleform {
                 $mform->addElement('html', '</div>');
             }
                 $mform->addElement('html', '</div>');
-                $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid. ' style="display:none;" class="hiddenCandidateWarningBox felement fstatic  error"><span class = "error">You have selected too many candidates, please select at most ' . $office->number . '</span></div>' );
+                $mform->addElement('html', '<div id=hiddenCandidateWarningBox_'.$officeid
+                        . ' style="display:none;" class="hiddenCandidateWarningBox felement fstatic  error">'
+                        . '<span class = "error">'.sge::_str('err_toomanycandsjs',$office->number) . '</span></div>' );
         }
 
         $resolutions = $this->_customdata['resolutions'];
@@ -89,6 +95,9 @@ class ballot_item_form extends moodleform {
 
             $mform->addGroup($radioarray, 'radioar', '', array(' '), false);
             $mform->addElement('html', '</div>');
+            if (empty($candidates)) {
+            $mform->addElement('html', '</div>');
+            }
         }
         $mform->addElement('html', '</div>');
 
