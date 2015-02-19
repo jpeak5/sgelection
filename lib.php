@@ -44,12 +44,15 @@ class sge {
         if($userexists){
             return array();
         }else{
-            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
+            return array($fieldname => sge::_str('err_user_nonexist',  $data[$fieldname]));
         }
     }
 
-    public static function validate_results_recipients($data, $fieldname){
+    public static function validate_csv_usernames($data, $fieldname){
         $errors = array();
+        if(empty($data[$fieldname])){
+            return $errors;
+        }
 
         foreach(explode(',', $data[$fieldname]) as $name){
             $username_check = self::validate_username(array($fieldname => $name), $fieldname);
@@ -184,7 +187,7 @@ class sge {
         $colleges = self::get_distinct_colleges();
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
-        $collegeselector = $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
+        $collegeselector = $mform->addElement('select', 'college', sge::_str('limit_to_college'), $attributes);
         if($selected && in_array($selected, array_keys($colleges))){
             $collegeselector->setSelected($selected);
         }
@@ -284,7 +287,10 @@ class sge {
     public static function semesters_eligible_for_census(){
         global $DB;
         $result = array();
-        $where  = "hours_census_start < :now AND hours_census_complete IS NULL AND start_date > :then";
+        $where  = "hours_census_start < :now "
+                . "AND (hours_census_complete IS NULL "
+                .    "OR hours_census_complete = 0) " // May never actually be null (@see commissioner_form).
+                . "AND start_date > :then";
         $raw    = $DB->get_records_select(Election::$tablename, $where, array('now'=>time(), 'then'=>time()));
         foreach($raw as $r){
             $s = ues_semester::by_id($r->semesterid);
@@ -307,5 +313,9 @@ class sge {
                 . " GROUP BY ustu.userid;";
 
         return $DB->get_records_sql($sql, array('semid'=>$s->id));
+    }
+
+    public static function _str($key, $a=null){
+       return get_string($key, 'block_sgelection', $a);
     }
 }

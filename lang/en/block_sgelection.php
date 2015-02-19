@@ -4,7 +4,8 @@ $string['sgelection'] = 'Student Gov\'t Election';
 $string['sgelection:addinstance'] = 'Add a new Student Government Election block';
 $string['sgelection:myaddinstance'] = 'Add a new Student Government Election to the My Moodle page';
 $string['blockstring'] = 'What should the block say';
-$string['vote'] = 'Vote!';
+$string['vote'] = 'Vote';
+$string['review_vote'] = 'Review Choices';
 $string['textfields'] = 'Text Fields';
 $string['admin_page_header'] = 'Student Gov\'t Admin Page';
 $string['sgelectionsettings'] = 'SG Election Settings';
@@ -94,6 +95,8 @@ $string['hours_census_start'] = 'Date to pull student eligibility data';
 $string['hours_census_start_help'] = 'This time setting defines the first second in which Moodle may calculate enrollment eligibility (enrolled hours) for users.';
 $string['thanks_for_voting_message'] = 'Message you want displayed after student votes';
 $string['common_college_offices'] = "Offices for each college in this election";
+$string['test_users'] = "Test Users";
+
 // errors
 $string['err_user_nonexist'] = 'User {$a} does not exist.';
 $string['err_user_nonunique'] = 'User {$a->username} already running for office {$a->office} in the {$a->semestername} election (election id {$a->eid}).';
@@ -106,13 +109,27 @@ $string['err_census_start_too_soon'] = 'Census start time must be set after the 
 $string['err_start_end_outofbounds'] = 'Election start and end dates must fall within the acceptable range as defined by the Moodle administrator. [{$a->earliest} - {$a->latest}]';
 $string['err_election_future_start'] = 'In order to allow time for the enrollment census to run, election can be set to start no sooner than {$a}.';
 $string['err_census_future_start']   = 'Census cannot start in the past.';
+$string['err_notenrolled'] ='Must be enrolled to vote';
+$string['err_pollsclosed'] = 'polls are not open yet';
+$string['err_notevenparttime'] = 'You need to be at least a parttime student to vote';
+$string['nopreviewpermission'] = 'Only the SG Commissioner can preview the ballot.';
+$string['err_alreadyvoted'] = 'You have already voted in this election';
+$string['err_missingmeta'] = 'Your user profile is missing required information: {$a}';
+$string['err_ineligible'] = 'Either your major (curric_code) or your part-time status renders you ineligible to vote in this election';
+$string['err_toomanycands'] = 'Too Many Candidates Selected';
+//Exceptions
+$string['exc_nocourseload'] = 'Courseload must be specified when preview mode is selected';
+$string['exc_invalidid'] = '{$a} is not a valid election id';
 
 //review page
 $string['you_voted_for'] = 'You voted for <strong>{$a->firstname} {$a->lastname}</strong>';
 $string['office_title'] = '<h1> {$a->name} </h1>';
-$string['you_voted_on_res'] = 'You voted {$a->value} on resolution {$a->name}';
+$string['you_voted_on_res'] = 'You voted <strong>{$a->value}</strong> on resolution: <strong>{$a->name}</strong>';
+$string['resolution'] = 'Resolution';
+$string['resolutions'] = 'Resolutions';
 //results
 $string['results_page_header'] = 'Results';
+$string['resultsreport'] = 'Election Report';
 
 // voter
 $string['ptorft'] = 'Part Time or Full Time';
@@ -145,3 +162,6 @@ $string['censuscompleted_msg'] = 'Enrolled credit hours were calculated for elec
 
 //lookupvoter
 $string['check_vote_status'] = 'Check vote status for election:   {$a}';
+
+//misc
+$string['savesuccess'] = 'changes saved';

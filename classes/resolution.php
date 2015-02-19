@@ -38,7 +38,7 @@ class resolution extends ballot_item{
 
     const IN_FAVOR = 2;
     const AGAINST = 1;
-    const ABSTAIN = 0;
+    const ABSTAIN = 3;
 
 
     public static function highest_vote_for_resolution($r, $tCell, $yCell, $nCell, $aCell){
@@ -67,7 +67,7 @@ class resolution extends ballot_item{
         if(($count == 1 && $update) || $count == 0){
             return array();
         }else{
-            return array('title'=> get_string('err_resolution_title_nonunique', 'block_sgelection'));
+            return array('title'=> sge::_str('err_resolution_title_nonunique'));
         }
     }
 

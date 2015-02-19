@@ -34,6 +34,7 @@ require_once('classes/candidate.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
 require_once('classes/vote.php');
+require_once('classes/securelib.php');
 require_once('renderer.php');
 require_once($CFG->dirroot.'/enrol/ues/publiclib.php');
 ues::require_daos();
@@ -45,7 +46,7 @@ require_login();
 // Establish election - basis of the page.
 $election = election::get_by_id(required_param('election_id', PARAM_INT));
 if(!$election){
-    throw new Exception(sprintf("%d is not a valid election id", required_param('election_id', PARAM_INT)));
+    throw new Exception(sge::_str('exc_invalidid', required_param('election_id', PARAM_INT)));
 }
 
 $vote     = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
@@ -63,7 +64,7 @@ $context  = context_system::instance();
 // Begin initialize PAGE and local param vars.
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/ballot.php');
-$heading = get_string('ballot_page_header', 'block_sgelection', $election->fullname());
+$heading = sge::_str('ballot_page_header', $election->fullname());
 $PAGE->set_heading($heading);
 $PAGE->set_title($heading);
 // End PAGE init.
@@ -82,7 +83,7 @@ if($preview && $voter->is_privileged_user){
     // Courseload
     switch($ptft){
         case 0:
-            throw new Exception('courseload must be specified when preview mode is selected');
+            throw new Exception(sge::_str('exc_nocourseload'));
         case 1:
             $voter->courseload = VOTER::VOTER_PART_TIME;
             break;
@@ -90,52 +91,14 @@ if($preview && $voter->is_privileged_user){
             $voter->courseload = VOTER::VOTER_FULL_TIME;
             break;
         default:
-            print_error('Must be enrolled to vote');
+            print_error(sge::_str('err_notenrolled'));
     }
     // College
     $voter->college = $college;
 }
 
-// ----------------- Security Checks ---------------------------//
+ballotsecurity::allchecks($voter, $preview, $election);
 
-/**
- * If the polls aren't open, allow only voters with doanything status
- * to use this form (including especially the ballot editing features).
- */
-if(!$voter->is_privileged_user && !$election->polls_are_open()){
-    print_error("polls are not open yet");
-}
-
-/**
- * If a voter doesn't have at least part-time enrollment, deny access
- * unless the voter has doanything status.
- */
-if(!$voter->is_privileged_user && !$voter->at_least_parttime()){
-    print_error("You need to be at least a parttime student to vote");
-}
-
-/**
- * Only allow voters with doanything status to use the preview form.
- */
-if(!$voter->is_privileged_user && $preview){
-    print_error("Only the SG Commissioner can preview the ballot.");
-}
-
-/**
- * Don't allow a second vote.
- */
-if($voter->already_voted($election)){
-    print_error('You have already voted in this election');
-}
-
-if(!$voter->is_privileged_user && $voter->is_missing_metadata()){
-    print_error(sprintf('Your user profile is missing required information :%s', $voter->is_missing_metadata()));
-}
-
-if(!$voter->is_privileged_user && !$voter->eligible($election)){
-    print_error("Either your major (curric_code) or your part-time status renders you ineligible to vote in this election");;
-}
-// ----------------- End Security Checks -----------------------//
 
 
 // SG Admin status determines PAGE layout.
@@ -148,13 +111,13 @@ $renderer->set_nav(null, $voter);
 
 // Setup resolutions, based on user courseload.
 $resparams = array('election_id' => $election->id);
-if($preview && $voter->courseload == VOTER::VOTER_PART_TIME){
-   $resparams['restrict_fulltime'] = '';
+if($voter->courseload == VOTER::VOTER_PART_TIME && !$voter->is_privileged_user()){
+   $resparams['restrict_fulltime'] = 0;
 }
 $resolutionsToForm  = resolution::get_all($resparams);
 
 // Get candidates for the election which are appropriate for the voter.
-$candidatesbyoffice = candidate::candidates_by_office($election, $voter);
+$candidatesbyoffice = candidate::candidates_by_office($election, $voter, null, $preview);
 
 $customdata        = array(
     'resolutions' => $resolutionsToForm,
@@ -169,17 +132,20 @@ $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('el
 // Ballot has been reviewed and user has pressed vote!
 if($submitfinalvote == true){
     $voter->id = $voterid;
+    // @TODO perhaps wait to mark as voted until a transaction has completed.
+    $voter->mark_as_voted($election);
     $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voter->id));
     foreach($collectionofvotes as $indvote){
         $vote = new vote($indvote);
         $vote->finalvote = 1;
         $vote->save();
-        $voter->mark_as_voted($election);
     }
 
     echo $OUTPUT->header();
+    echo html_writer::start_div('final_page_content');
     echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
     echo $renderer->print_thank_you_message($election);
+    echo html_writer::end_div();
     echo $OUTPUT->footer();
 
 }
