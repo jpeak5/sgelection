@@ -79,7 +79,6 @@ class behat_block_sgelection extends behat_base{
         // Config provider.
         $xml = new ProviderConfigBase();
         $xml->setConfigs();
-        var_dump($xml);
 
         // Configure UES.
         $ues = new UesConfig();
