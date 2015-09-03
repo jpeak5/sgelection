@@ -40,28 +40,31 @@ class sge {
 
     public static function validate_username($data, $fieldname){
         global $DB;
-        $userexists = $DB->record_exists('user', array('username'=>$data[$fieldname]));
+        $userexists = $DB->record_exists('user', array('username'=>trim($data[$fieldname])));
         if($userexists){
             return array();
         }else{
-            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
+            return array($fieldname => sge::_str('err_user_nonexist',  $data[$fieldname]));
         }
     }
 
-    public static function validate_commisioner($data, $fieldname){
-        global $DB;
-        $user = $DB->get_record('user', array('username'=>$data[$fieldname]));
-        $voter = new voter($user->id);
-        if($user){
-            if($voter->courseload == 'F'){
-                return array();
-            }
-            else{
-                return array($fieldname => get_string('err_user_notfulltime', 'block_sgelection',  $data[$fieldname]));
-            }
-        }else{
-            return array($fieldname => get_string('err_user_nonexist', 'block_sgelection',  $data[$fieldname]));
+    public static function validate_csv_usernames($data, $fieldname){
+        $errors = array();
+        if(empty($data[$fieldname])){
+            return $errors;
         }
+
+        foreach(explode(',', $data[$fieldname]) as $name){
+            $username_check = self::validate_username(array($fieldname => $name), $fieldname);
+            if(!empty($username_check)){
+                $errors[] = $username_check[$fieldname];
+            }
+        }
+
+        if(!empty($errors)){
+            $errors = array($fieldname => implode(' ', $errors));
+        }
+        return $errors;
     }
 
     /**
@@ -181,14 +184,41 @@ class sge {
      */
     public static function get_college_selection_box($mform, $selected = false){
         global $DB;
-        $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
-        $colleges = $DB->get_records_sql($sql);
+        $colleges = self::get_distinct_colleges();
         $attributes = array(''=>'none');
         $attributes += array_combine(array_keys($colleges), array_keys($colleges));
-        $collegeselector = $mform->addElement('select', 'college', get_string('limit_to_college', 'block_sgelection'), $attributes);
+        $collegeselector = $mform->addElement('select', 'college', sge::_str('limit_to_college'), $attributes);
+        //$mform->getElement('college')->setMultiple(true);
+        
         if($selected && in_array($selected, array_keys($colleges))){
             $collegeselector->setSelected($selected);
         }
+
+    }
+    
+        public static function get_college_selection_box_to_set_restrictions($mform, $selected = false){
+        global $DB;
+        $colleges = self::get_distinct_colleges();
+        $attributes = array(''=>'none');
+        $attributes += array_combine(array_keys($colleges), array_keys($colleges));
+        $collegeselector = $mform->addElement('select', 'college', sge::_str('limit_to_college'), $attributes);
+        
+        //$collegeselector2 = $mform->addElement('select', 'college2', 'college', sge::_str('limit_to_college'), $attributes);
+        $mform->getElement('college')->setMultiple(true);
+        
+        if($selected && in_array($selected, array_keys($colleges))){
+            $collegeselector->setSelected($selected);
+        }
+
+        //if($selected && in_array($selected, array_keys($colleges))){
+        //    $collegeselector2->setSelected($selected);
+        //}
+    }
+
+    public static function get_distinct_colleges(){
+        global $DB;
+        $sql = "SELECT DISTINCT value from {enrol_ues_usermeta} where name = 'user_college'";
+        return $DB->get_records_sql($sql);
     }
 
     /**
@@ -221,7 +251,12 @@ class sge {
     public static function get_list_of_usernames(){
         global $DB;
         $listofusers = array();
-        $users = $DB->get_records('user');
+        $sql = "select u.username "
+                . "from {user} u "
+                . "RIGHT JOIN {enrol_ues_usermeta} um "
+                .     "ON u.id = um.userid WHERE um.name = 'user_ferpa' and value = 0;";
+
+        $users = $DB->get_records_sql($sql);
         foreach ($users as $user) {
             $listofusers[] = $user->username;
         }
@@ -274,12 +309,15 @@ class sge {
     public static function semesters_eligible_for_census(){
         global $DB;
         $result = array();
-        $where  = "hours_census_start < :now AND hours_census_complete IS NULL AND start_date > :then";
-        $raw    = $DB->get_fieldset_select(Election::$tablename, 'semesterid', $where, array('now'=>time(), 'then'=>time()));
+        $where  = "hours_census_start < :now "
+                . "AND (hours_census_complete IS NULL "
+                .    "OR hours_census_complete = 0) " // May never actually be null (@see commissioner_form).
+                . "AND start_date > :then";
+        $raw    = $DB->get_records_select(Election::$tablename, $where, array('now'=>time(), 'then'=>time()));
         foreach($raw as $r){
-            $s = ues_semester::by_id($r);
+            $s = ues_semester::by_id($r->semesterid);
             if($s){
-                $result[$s->id] = $s;
+                $result[$r->id] = $s;
             }
         }
         return $result;
@@ -297,5 +335,9 @@ class sge {
                 . " GROUP BY ustu.userid;";
 
         return $DB->get_records_sql($sql, array('semid'=>$s->id));
+    }
+
+    public static function _str($key, $a=null){
+       return get_string($key, 'block_sgelection', $a);
     }
 }

@@ -30,12 +30,12 @@ global $DB, $OUTPUT, $PAGE;
 sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
 
 // Only required to return the user to the correct ballot page.
-$election_id = required_param('election_id', PARAM_INT);
+$election_id = optional_param('election_id', false, PARAM_INT);
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/blocks/sgelection/officelist.php');
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('office_page_header', 'block_sgelection'));
+$PAGE->set_heading(sge::_str('office_page_header'));
 
 require_login();
 
@@ -44,7 +44,13 @@ $voter    = new voter($USER->id);
 $renderer = $PAGE->get_renderer('block_sgelection');
 $renderer->set_nav(null, $voter);
 
-$form = new office_form(new moodle_url('offices.php',array('election_id'=>$election_id)), array('election_id'=>$election_id, 'rtn'=>'officelist'));
+$formactnprms = $election_id ? array('election_id'=>$election_id) : null;
+$returnparams = array('rtn'=>'officelist');
+if($election_id){
+    $returnparams['election_id'] = $election_id;
+}
+
+$form = new office_form(new moodle_url('offices.php',$formactnprms), $returnparams);
 echo $OUTPUT->header();
 $form->display();
 
@@ -54,8 +60,17 @@ $table->head = array('Office', 'College', '# seats', 'Weight', 'Edit', 'Delete')
 
 foreach($offices as $o){
     $name = $o->name;
-    $link = html_writer::link(new moodle_url('offices.php', array('id'=>$o->id, 'election_id'=>$election_id, 'rtn'=>'officelist')), 'edit');
-    $dlet = html_writer::link(new moodle_url('delete.php',  array('id'=>$o->id, 'election_id'=>$election_id, 'class' => 'office', 'rtn'=>'officelist')), 'delete');
+
+    $commonparams = array('id'=>$o->id);
+    if ($election_id) {
+        $commonparams += array('election_id' => $election_id);
+    }
+
+    $linkparams   = array_merge($commonparams, array('rtn'=>'officelist'));
+    $dletparams   = array_merge($commonparams, array('class' => 'office', 'rtn'=>'officelist'));
+
+    $link = html_writer::link(new moodle_url('offices.php', $linkparams), 'edit');
+    $dlet = html_writer::link(new moodle_url('delete.php',  $dletparams), 'delete');
     $table->data[] = new html_table_row(array($name, $o->college, $o->number, $o->weight, $link, $dlet));
 }
 

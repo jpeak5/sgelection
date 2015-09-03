@@ -40,6 +40,13 @@ abstract class sge_database_object extends sge_object{
                 $this->id = $id;
             }
         }else{
+//            var_dump($this);
+//            if($this->college){
+//                if(is_array($this->college)){
+//                    $this->college = implode(",",$this->college);
+//                    var_dump($this->college);
+//                }
+//            }
             $DB->update_record(static::$tablename, $this);
         }
         return $this;
@@ -49,6 +56,7 @@ abstract class sge_database_object extends sge_object{
         global $DB;
         $fields = array_keys($DB->get_columns(static::$tablename));
         $sql = sprintf("SELECT %s FROM {%s} WHERE id = %s", implode(',', $fields), static::$tablename, $id);
+        var_dump($sql);
         $row = $DB->get_record_sql($sql);
 
         if(false === $row){
@@ -76,5 +84,21 @@ abstract class sge_database_object extends sge_object{
         global $DB;
         $DB->delete_records(static::$tablename, array('id'=>$this->id));
         unset($this);
+    }
+
+    public function logaction($action, $context = null, $additionalparams = array()){
+        if(empty($this->id)){
+            throw new coding_exception("Cannot log database object actions until it has an id.");
+        }
+        $context = $context == null ? context_system::instance() : $context;
+        $eventparams = array_merge(array(
+                'objectid' => $this->id,
+                'context'  => $context
+            ), $additionalparams);
+        $class = get_class($this);
+        $classaction = $class.'_'.$action;
+        $eventname = '\block_sgelection\event\\'.$classaction;
+        $event = $eventname::create($eventparams);
+        $event->trigger();
     }
 }

@@ -5,6 +5,7 @@ require_once('resolutions_form.php');
 require_once('classes/resolution.php');
 require_once('classes/election.php');
 require_once 'lib.php';
+require_once('renderer.php');
 
 global $DB, $OUTPUT, $PAGE;
 sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
@@ -22,7 +23,7 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/resolutions.php', array('election_id' => $election_id));
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('resolution_page_header', 'block_sgelection'));
+$PAGE->set_heading(sge::_str('resolution_page_header'));
 
 require_login();
 
@@ -36,6 +37,9 @@ $form = new resolution_form(new moodle_url('resolutions.php', array('election_id
 if($form->is_cancelled()) {
     redirect(sge::ballot_url($election_id));
 } else if($fromform = $form->get_data()){
+        if($election->readonly()){
+            block_sgelection_renderer::print_readonly();
+        }
         $resolution      = new resolution($fromform);
         $resolution->text = $fromform->text_editor['text'];
         $resolution->link = $fromform->link;
@@ -46,6 +50,11 @@ if($form->is_cancelled()) {
         }
 
         $resolution->save();
+
+        //logging
+        $action = $id ? 'updated' : 'created';
+        $resolution->logaction($action);
+
         $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
         redirect($thisurl);
 } else {

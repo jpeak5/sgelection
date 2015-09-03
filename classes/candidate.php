@@ -38,20 +38,26 @@ class candidate extends sge_database_object{
             $affiliation;
 
     static $tablename = "block_sgelection_candidate";
+    static $type = 'C';
 
     public static function get_full_candidates(election $election=null, voter $voter = null, $candid = null){
         global $DB;
 
         $eid      = $election ? 'e.id = ' . $election->id : '';
         $candid   = $candid   ? 'u.id = ' . $candid : '';
+        echo '<h1>inside get_full_candidates</h1>';
+        var_dump($voter);
         $col      = $voter  ? sprintf('(o.college = \'%s\' OR o.college = \'\')', $voter->college) : '';
-
+        var_dump($col);
         $clauses = array();
+        var_dump(array($eid, $candid, $col));
         foreach(array($eid, $candid, $col) as $clause){
             if($clause != ''){
                 $clauses[] = $clause;
             }
         }
+        
+        var_dump($clauses);
 
         $wheres = count($clauses) > 0 ? "WHERE ".implode(' AND ', $clauses) : '';
 
@@ -63,14 +69,19 @@ class candidate extends sge_database_object{
                . ' JOIN'
                . ' {block_sgelection_office} o on o.id = c.office'
                . ' JOIN'
-               . ' {user} u on c.userid = u.id '. $wheres . 'ORDER BY o.weight DESC';
-
-        return $DB->get_records_sql($query);
+               . ' {user} u on c.userid = u.id '. $wheres . ' ORDER BY o.college, o.weight ASC';
+        var_dump($query);
+        $records =  $DB->get_records_sql($query);
+        var_dump($records);
+        //return $DB->get_records_sql($query);
+        return $records;
     }
 
-    public static function candidates_by_office(election $election = null, voter $voter = null){
-
-        $candidates = self::get_full_candidates($election, $voter);
+    public static function candidates_by_office(election $election = null, voter $voter = null, $candidates = array(), $preview = false){
+        if(empty($candidates)){
+            $voter = $voter->is_privileged_user() && !$preview ? null : $voter;
+            $candidates = self::get_full_candidates($election, $voter);
+        }
 
         $officetocandidates = array();
         foreach($candidates as $c){
@@ -106,14 +117,27 @@ class candidate extends sge_database_object{
             $a->semestername = $election->fullname();
             $offices = array();
             foreach($candidates as $c){
-                $offices[] = office::get_by_id($c->oid)->name . sprintf(" [id: %d] ", $c->oid);
+                $office = office::get_by_id($c->oid);
+                $offices[] = $office->name . sprintf(" %s [id: %d] ", $office->college, $c->oid);
             }
             // @todo There should never be more than one office in the db per cand/election.
             $a->office = implode(' and ', $offices);
-            $errmsg = get_string('err_user_nonunique', 'block_sgelection', $a);
+            $errmsg = sge::_str('err_user_nonunique', $a);
 
             return array($fieldname => $errmsg);
         }
         return array();
+    }
+
+    /**
+     * @override
+     */
+    public function delete(){
+        global $DB;
+        if($DB->record_exists(vote::$tablename, array('type'=>candidate::$type, 'typeid'=>$this->id))){
+            print_error('Votes have been cast for this candidate, cannot delete.');
+        }else{
+            parent::delete();
+        }
     }
 }

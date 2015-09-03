@@ -5,6 +5,7 @@ require_once('candidates_form.php');
 require_once('classes/candidate.php');
 require_once('classes/election.php');
 require_once 'lib.php';
+require_once('renderer.php');
 
 global $DB, $OUTPUT, $PAGE;
 sge::allow_only(sge::FACADVISOR, sge::COMMISSIONER);
@@ -18,7 +19,7 @@ $PAGE->set_context($context);
 $PAGE->set_url('/blocks/sgelection/candidates.php');
 $PAGE->set_pagelayout('standard');
 $semester = $election->fullname();
-$PAGE->set_heading(get_string('ballot_page_header', 'block_sgelection', $semester));
+$PAGE->set_heading(sge::_str('ballot_page_header', $semester));
 
 require_login();
 
@@ -31,11 +32,19 @@ $form = new candidate_form(new moodle_url('candidates.php', array('election_id' 
 
 if($form->is_cancelled()) {
     redirect(sge::ballot_url($election_id));
-} else if($candidate = $form->get_data()){
-    $userid = $DB->get_field('user', 'id', array('username' => $candidate->username));
-    $candidate->userid = $userid;
-    $formData      = new candidate($candidate);
-    $formData->save();
+} else if($fromform = $form->get_data()){
+    if($election->readonly()){
+        block_sgelection_renderer::print_readonly();
+    }
+    $userid = $DB->get_field('user', 'id', array('username' => $fromform->username));
+    $fromform->userid = $userid;
+    $candidate      = new candidate($fromform);
+    $candidate->save();
+
+    //logging
+    $action = $id ? 'updated' : 'created';
+    $candidate->logaction($action, null, array('relateduserid' => $candidate->userid));
+
     unset($username);
     $thisurl = new moodle_url('ballot.php', array('election_id' => $election_id));
     redirect($thisurl);

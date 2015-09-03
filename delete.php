@@ -22,15 +22,23 @@
  */
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once 'lib.php';
-
 sge::require_db_classes();
+
+global $OUTPUT, $PAGE;
+
+// Don't allow anyone to use this who shouldn't.
+require_login();
+sge::allow_only(sge::COMMISSIONER, sge::FACADVISOR);
 
 $id    = required_param('id', PARAM_INT);
 $class = required_param('class', PARAM_ALPHANUMEXT);
-$eid   = required_param('election_id', PARAM_INT);
+$eid   = optional_param('election_id', false, PARAM_INT);
 $rtn   = required_param('rtn', PARAM_ALPHAEXT);
 
-//require_capability
 $object = $class::get_by_id($id);
-$object->delete();
-redirect(new moodle_url(sprintf('/blocks/sgelection/%s.php',$rtn), array('election_id'=>$eid)));
+if($object){
+    $object->delete();
+    $object->logaction('deleted');
+}
+$rtnparams = $eid ? array('election_id'=>$eid) : array();
+redirect(new moodle_url(sprintf('/blocks/sgelection/%s.php',$rtn), $rtnparams), '', 5);

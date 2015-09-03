@@ -34,7 +34,8 @@ class election extends sge_database_object {
             $end_date,
             $id,
             $ballot,
-            $thanksforvoting;
+            $thanksforvoting,
+            $test_users;
 
     public static $tablename = 'block_sgelection_election';
 
@@ -90,7 +91,7 @@ class election extends sge_database_object {
             }
         }
         if(count($found) > 0 && !$update){
-            return array('sem_code' => get_string('err_election_nonunique', 'block_sgelection', implode(',',$found)));
+            return array('sem_code' => sge::_str('err_election_nonunique', implode(',',$found)));
         }
         return array();
     }
@@ -107,13 +108,21 @@ class election extends sge_database_object {
         $a->start = strftime($fmt, $start);
         $a->end   = strftime($fmt, $end);
 
-        $msg = get_string('err_start_end_disorder', 'block_sgelection', $a);
+        $msg = sge::_str('err_start_end_disorder', $a);
         return array('start_date' => $msg);
     }
 
     public static function validate_census_start($data, $files){
         $start  = $data['start_date'];
         $cstart = $data['hours_census_start'];
+
+        // If the census has already run, we're good.
+        if(!empty($data['id'])){
+            $e = election::get_by_id($data['id']);
+            if(!empty($e->hours_census_complete)){
+                return array();
+            }
+        }
 
         $semester = ues_semester::by_id($data['semesterid']);
         $earliest = sge::config('earliest_start') * 86400 + $semester->classes_start;
@@ -129,7 +138,7 @@ class election extends sge_database_object {
         $a->earliest = strftime('%F %T', $earliest);
         $a->window = $window;
 
-        $msg = get_string('err_census_start_too_soon', 'block_sgelection', $a);
+        $msg = sge::_str('err_census_start_too_soon', $a);
         return array('hours_census_start' => $msg);
     }
 
@@ -142,14 +151,14 @@ class election extends sge_database_object {
             $a->earliest = strftime('%F %T', $earliest);
             $a->latest   = strftime('%F %T', $latest);
 
-            $msg = get_string('err_start_end_outofbounds', 'block_sgelection', $a);
+            $msg = sge::_str('err_start_end_outofbounds', $a);
             return array('start_date' => $msg);
         }elseif($data['end_date'] > $latest){
             $a = new stdClass();
             $a->earliest = strftime('%F %T', $earliest);
             $a->latest   = strftime('%F %T', $latest);
 
-            $msg = get_string('err_start_end_outofbounds', 'block_sgelection', $a);
+            $msg = sge::_str('err_start_end_outofbounds', $a);
             return array('end_date' => $msg);
         }else{
             return array();
@@ -158,9 +167,9 @@ class election extends sge_database_object {
     }
 
     public static function validate_future_start($data, $files) {
-        $soonest = sge::config('census_window') * 3600 + time();
+        $soonest = sge::config('census_window') * 3600 + $data['hours_census_start'];
         if($data['start_date'] <= $soonest){
-            $msg = get_string('err_election_future_start', 'block_sgelection', strftime('%F %T', $soonest));
+            $msg = sge::_str('err_election_future_start', strftime('%F %T', $soonest));
             return array('start_date' => $msg);
         }elseif($data['hours_census_start'] < time()){
             if(!empty($data['id'])){
@@ -169,7 +178,7 @@ class election extends sge_database_object {
                     return array();
                 }
             }
-            $msg = get_string('err_census_future_start', 'block_sgelection');
+            $msg = sge::_str('err_census_future_start');
             return array('hours_census_start' => $msg);
         }else{
             return array();
@@ -197,7 +206,7 @@ class election extends sge_database_object {
         $a = new stdClass();
         $a->sem  = (string)$semester;
         $a->name = $this->name;
-        return get_string('election_fullname', 'block_sgelection', $a);
+        return sge::_str('election_fullname', $a);
     }
 
     /**
@@ -211,7 +220,7 @@ class election extends sge_database_object {
         $a = new stdClass();
         $a->sem  = $semester->name;
         $a->name = $this->name;
-        return get_string('election_shortname', 'block_sgelection', $a);
+        return sge::_str('election_shortname', $a);
     }
 
     public function get_candidate_votes(office $office){
@@ -220,9 +229,10 @@ class election extends sge_database_object {
                 . 'AS count FROM {block_sgelection_votes} AS v '
             . 'JOIN {block_sgelection_candidate} AS c on c.id = v.typeid '
             . 'JOIN {block_sgelection_office} AS o on o.id = c.office '
-            . 'WHERE type = "candidate" '
+            . 'WHERE type = "'.candidate::$type.'" '
                 . 'AND o.id = :oid '
-                . 'AND c.election_id = :eid'
+                . 'AND c.election_id = :eid '
+                . 'AND v.finalvote = 1 '
             . 'GROUP BY typeid;';
         $params = array('oid'=>$office->id, 'eid'=>$this->id);
 
@@ -232,9 +242,9 @@ class election extends sge_database_object {
     public function get_resolution_votes(){
         global $DB;
         $sql = 'SELECT res.title, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 2) AS yes, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 1) AS against, '
-        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.type = "resolution" AND vote = 0) AS abstain '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.finalvote = 1 AND v.type = "'.resolution::$type.'" AND vote = 2) AS yes, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.finalvote = 1 AND v.type = "'.resolution::$type.'" AND vote = 1) AS against, '
+        . '(SELECT count(id) FROM {block_sgelection_votes} as v WHERE v.typeid = res.id AND v.finalvote = 1 AND v.type = "'.resolution::$type.'" AND vote = 3) AS abstain '
         . 'FROM {block_sgelection_resolution} AS res WHERE res.election_id = :eid';
         $params = array('eid' => $this->id);
         return $DB->get_records_sql($sql, $params);
@@ -247,13 +257,25 @@ class election extends sge_database_object {
 
     }
 
-    public function message_admins() {
-        global $CFG, $DB;
+    public function email_results() {
+        global $DB;
         $summary = $this->get_summary();
-        foreach(explode(',', $CFG->siteadmins) as $admin){
-            $user = $DB->get_record('user', array('id'=>$admin));
-            email_to_user($user, 'no-reply', "Election Results", $summary, $summary);
+        foreach(explode(',', sge::config('results_recipients')) as $admin){
+            $user = $DB->get_record('user', array('username'=>$admin));
+            email_to_user($user, 'no-reply', get_string("election_summary", 'block_sgelection', $this->shortname()), $summary, $summary);
         }
     }
 
+    public function readonly(){
+        return $this->end_date < time();
+    }
+
+    public function is_test_election(){
+        return !empty($this->test_users);
+    }
+
+    public function is_test_user($username){
+        $usernames = explode(',',$this->test_users);
+        return in_array($username, $usernames);
+    }
 }

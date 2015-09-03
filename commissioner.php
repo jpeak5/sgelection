@@ -3,7 +3,9 @@ require_once('../../config.php');
 require_once('commissioner_form.php');
 require_once('classes/election.php');
 require_once('classes/voter.php');
+require_once('classes/office.php');
 require_once 'lib.php';
+require_once('renderer.php');
 
 global $DB, $OUTPUT, $PAGE, $USER;
 require_login();
@@ -16,7 +18,7 @@ $selfurl = '/blocks/sgelection/commissioner.php';
 $PAGE->set_context($context);
 $PAGE->set_url($selfurl);
 $PAGE->set_pagelayout('standard');
-$PAGE->set_heading(get_string('admin_page_header', 'block_sgelection'));
+$PAGE->set_heading(sge::_str('admin_page_header'));
 
 // Setup nav, depending on voter.
 $voter    = new voter($USER->id);
@@ -41,14 +43,63 @@ if($form->is_cancelled()){
     redirect($url);
 } else if($fromform = $form->get_data()){
     $election = new election($fromform);
-    $election->thanksforvoting = $fromform->thanksforvoting['text'];
+    $election->thanksforvoting = $fromform->thanksforvoting_editor['text'];
+    //@TODO update str_replace to handle newlines too
+    $election->test_users = str_replace(' ', '', $fromform->test_users);
     $election->save();
+
+    $collegemap = array();
+    foreach(office::get_all() as $office){
+        if(empty($collegemap[$office->college])){
+            $collegemap[$office->college] = array();
+        }
+        $exists = in_array($office->name, $collegemap[$office->college]);
+        if(!$exists){
+            $collegemap[$office->college][] = $office->name;
+        }else{
+            throw new Exception(sprintf("Multiple offices found: '%s' for college '%s', id: %d", $office, $college, $id));
+        }
+    }
+
+    // Update offices, if required
+    $offices = $fromform->common_college_offices;
+
+    if(!empty($offices)){
+        global $DB;
+
+        $colleges = sge::get_distinct_colleges(); // {enrol_ues_usermeta} row objects
+        $newconfig = array();
+        foreach(explode(',', $offices) as $office){ //comma-separated strings from user
+            $office = trim($office);
+            foreach($colleges as $college){
+                $found = array_key_exists($college->value, $collegemap) && in_array($office, $collegemap[$college->value]);
+                if(!$found){
+                    $newoffice = new stdClass();
+                    $newoffice->name = $office;
+                    $newoffice->college = $college->value;
+                    $newoffice->number = 1; //Arbitrary default.
+                    $newoffice->weight = 3; //Arbitrary default.
+                    $DB->insert_record('block_sgelection_office', $newoffice);
+                }
+            }
+            $newconfig[] = $office;
+        }
+        sge::config('common_college_offices', implode(',', $newconfig));
+    }
+
+    //logging
+    $action = $id ? 'updated' : 'created';
+    $election->logaction($action);
+
     redirect(new moodle_url('ballot.php', array('election_id' => $election->id)));
 } else {
     echo $OUTPUT->header();
 
     if($id > 0){
         $election = election::get_by_id($id);
+        if($election->readonly()){
+            block_sgelection_renderer::print_readonly();
+        }
         $editor_options = array(
             'trusttext' => true,
             'subdirs' => 1,
@@ -58,6 +109,9 @@ if($form->is_cancelled()){
         );
         $election = file_prepare_standard_editor($election, 'thanksforvoting', $editor_options);
         $form->set_data($election);
+
+        $lookupvoter = new moodle_url('/blocks/sgelection/lookupvoter.php', array('election_id' => $id));
+        echo html_writer::link($lookupvoter, html_writer::tag('h1', sge::_str('check_to_see')));
     }
     if(empty($data['semesters'])){
         // In the extremely rare case that there are no available semesters, redirect to /my.
@@ -68,5 +122,6 @@ if($form->is_cancelled()){
     }else{
         $form->display();
     }
+
     echo $OUTPUT->footer();
 }
