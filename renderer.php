@@ -452,6 +452,12 @@ class block_sgelection_renderer extends plugin_renderer_base {
         $cols = 'time';
         $PAGE->requires->js_init_call('datatable_for_student_data', array($cols, $timedata));
 
+        $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
+
+        $thehtml .= html_writer::tag('h1', sge::_str('did_not_vote') . ': ' . ($numberOfVotesTotal - count($result)));
+
+        $thehtml .= html_writer::tag('h1', sge::_str('total') . ': ' . $numberOfVotesTotal);
+
         return $thehtml;
     }
 

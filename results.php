@@ -56,7 +56,7 @@ $renderer->set_nav(null, $voter);
 echo $OUTPUT->header();
 echo $renderer->get_office_results($election);
 echo $renderer->get_resolution_results($election);
-
 echo $renderer->print_analytics_tables($election);
+// echo $renderer->print_analytics_tables($election);
 
 echo $OUTPUT->footer();

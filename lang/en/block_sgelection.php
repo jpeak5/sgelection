@@ -172,3 +172,7 @@ $string['check_vote_status'] = 'Check vote status for election:   {$a}';
 
 //misc
 $string['savesuccess'] = 'changes saved';
+
+$string['people_voted'] = 'people voted.';
+$string['did_not_vote'] = 'Did not vote';
+$string['total'] = 'Total';
