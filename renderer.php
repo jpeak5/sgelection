@@ -275,6 +275,10 @@ class block_sgelection_renderer extends plugin_renderer_base {
     }
 
     public static function resolution_results(election $election){
+        
+        if ( ! $election->get_resolution_votes())
+            return false;
+
         $resolution_vote_count = $election->get_resolution_votes();
 
         $resolution_table = new html_table();
