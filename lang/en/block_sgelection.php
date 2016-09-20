@@ -66,6 +66,7 @@ $string['number_of_openings'] = 'Number of Openings';
 $string['limit_to_college'] = 'Limit to College';
 $string['select_up_to'] = 'Select no more than {$a}';
 $string['weight'] = 'Weight';
+$string['description_of_office'] = 'Description of Office';
 
 // Candidate Table
 $string['id'] = 'id';

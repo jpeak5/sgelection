@@ -185,7 +185,7 @@ else if($ballot_item_form->is_cancelled()) {
             $formdata->ptft    = $ptft;
         }
     }
-    $defaults = new object();
+    $defaults = new stdClass();
     if(isset($voterid)){
         $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voterid));
         $candidaterecord = $DB->get_records_sql('SELECT c.id cid, o.id oid '

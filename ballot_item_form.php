@@ -38,6 +38,7 @@ class ballot_item_form extends moodleform {
 
             $mform->addElement('static', 'name', NULL);
             $mform->addElement('html', html_writer::tag('h1', $office->name.' '.$office->college, array('class'=>'itemtitle')));
+            $mform->addElement('html', html_writer::tag('h3', $office->description, array('class'=>'itemtitle')));
 
             $number_of_office_votes_allowed[$officeid] = $office->number;
 
@@ -60,7 +61,7 @@ class ballot_item_form extends moodleform {
                 $affiliation = '';
 
                 if(!empty($c->affiliation)){
-                    $affiliation = ' &mdash; ' . $c->affiliation;
+                    $affiliation = ' / ' . $c->affiliation;
                 }
 
                 $mform->addElement('hidden', 'number_of_office_votes_allowed_' . $officeid , $number_of_office_votes_allowed[$officeid]);

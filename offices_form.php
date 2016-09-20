@@ -26,6 +26,10 @@ class office_form extends moodleform {
         $mform->setType('name', PARAM_TEXT);
 
         $attributes = array('size' => '50', 'maxlength' => '100');
+        $mform->addElement('text', 'description', sge::_str('description_of_office'), $attributes);
+        $mform->setType('description', PARAM_TEXT);
+
+        $attributes = array('size' => '50', 'maxlength' => '100');
         $mform->addElement('text', 'number', sge::_str('number_of_openings'), $attributes);
         $mform->addRule('number', null, 'required', null, 'client');
         $mform->setType('number', PARAM_INT);

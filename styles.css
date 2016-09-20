@@ -3,25 +3,18 @@
 }
 
 .block_sgelection.list_block .content {
-  background-color: #461d7c;
-  color: #ffffff;
 }
 
 .block_sgelection.list_block .header, .mobiletheme .block_sgelection.list_block .header {
-  background: #461d7c;
-  color: #ffffff;
-  text-transform: uppercase;
 }
 
 .block_sgelection.list_block .header h2, .mobiletheme .block_sgelection.list_block .header h2 {
   text-shadow: none;
-  color: #ffffff;
   text-align: center;
   font-weight: normal;
 }
 
 .block_sgelection.list_block .content a {
-  color: #fcecae;
 }
 
 .block_sgelection.list_block .header .block_action {
@@ -101,6 +94,24 @@
 }
 
 #page-blocks-sgelection-ballot h1.itemtitle {
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 18px;
+  line-height: 33px;
+  -webkit-margin-before: 0px;
+  -webkit-margin-after: 0px;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  margin-before: 0px;
+  margin-after: 0px;
+  margin-start: 0px;
+  margin-end: 0px;
+  margin-bottom: .5em;
+}
+
+#page-blocks-sgelection-ballot h3.itemtitle {
   font-weight: bold;
   margin: 0;
   padding: 0;

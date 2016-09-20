@@ -28,6 +28,7 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="name" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="college" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="number" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="weight" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" DEFAULT='5' COMMENT="weight"/>

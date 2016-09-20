@@ -77,5 +77,20 @@ function xmldb_block_sgelection_upgrade($oldversion) {
         upgrade_block_savepoint(true, 2014101013, 'sgelection');
     }
 
+    if ($oldversion < 2016091001) {
+
+        // Define field test_users to be added to block_sgelection_election.
+        $table = new xmldb_table('block_sgelection_office');
+        $field = new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null, NULL);
+
+        // Conditionally launch add field test_users.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Sgelection savepoint reached.
+        upgrade_block_savepoint(true, 2016091001, 'sgelection');
+    }
+
     return $result;
 }

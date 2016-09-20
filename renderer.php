@@ -494,6 +494,6 @@ class block_sgelection_renderer extends plugin_renderer_base {
         $numberOfVotesTotal = $DB->count_records('block_sgelection_voted', array('election_id'=>$election->id));
         echo html_writer::tag('p', 'Number of votes cast so far ' . $numberOfVotesTotal);
         echo html_writer::end_div();
-        require_once 'socialmediabuttons.php';
+//        require_once 'socialmediabuttons.php';
     }
 }

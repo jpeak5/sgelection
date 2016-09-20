@@ -26,6 +26,7 @@ require_once($CFG->dirroot.'/blocks/sgelection/classes/sgedatabaseobject.php');
 class office extends sge_database_object {
 
     public  $name,
+            $description,
             $number,
             $college,
             $weight,
