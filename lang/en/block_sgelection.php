@@ -129,9 +129,9 @@ $string['exc_nocourseload'] = 'Courseload must be specified when preview mode is
 $string['exc_invalidid'] = '{$a} is not a valid election id';
 
 //review page
-$string['you_voted_for'] = 'You voted for <strong>{$a->firstname} {$a->lastname}</strong>';
+$string['you_voted_for'] = 'You are about to vote for <strong>{$a->firstname} {$a->lastname}</strong>';
 $string['office_title'] = '<h1> {$a->name} </h1>';
-$string['you_voted_on_res'] = 'You voted <strong>{$a->value}</strong> on resolution: <strong>{$a->name}</strong>';
+$string['you_voted_on_res'] = 'You are about to vote <strong>{$a->value}</strong> on resolution: <strong>{$a->name}</strong>';
 $string['resolution'] = 'Resolution';
 $string['resolutions'] = 'Resolutions';
 //results
