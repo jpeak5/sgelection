@@ -41,6 +41,7 @@ class ballot_item_form extends moodleform {
             $mform->addElement('html', html_writer::tag('h3', $office->description, array('class'=>'itemtitle')));
 
             $number_of_office_votes_allowed[$officeid] = $office->number;
+            $_SESSION['number_of_office_votes_allowed'] = $office->number;
 
             if($office->candidates != null && count($office->candidates) > 0){
                 if($office->number > 1){

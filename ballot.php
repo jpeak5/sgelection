@@ -51,7 +51,12 @@ if(!$election){
 
 $vote     = strlen(optional_param('vote', '', PARAM_ALPHA)) > 0 ? true : false;
 $submitfinalvote = optional_param('submitfinalvote', 0, PARAM_INT);
-$voterid = optional_param('voterid',null, PARAM_INT);
+
+if( isset($_SESSION['voterid']) ) {
+    $voterid = $_SESSION['voterid'];
+} else {
+    $voterid = NULL;
+}
 
 // Preview-related vars
 $ptft     = optional_param('ptft', 0, PARAM_INT);
@@ -136,14 +141,19 @@ $ballot_item_form  = new ballot_item_form(new moodle_url('ballot.php', array('el
 if($submitfinalvote == true){
     $voter->id = $voterid;
     // @TODO perhaps wait to mark as voted until a transaction has completed.
-    $voter->mark_as_voted($election);
     $collectionofvotes = $DB->get_records('block_sgelection_votes', array('voterid'=>$voter->id));
+
+    if ( COUNT($collectionofvotes) > $_SESSION['number_of_office_votes_allowed']) {
+        redirect(sge::ballot_url($election->id));
+    }
+
     foreach($collectionofvotes as $indvote){
         $vote = new vote($indvote);
         $vote->finalvote = 1;
         $vote->save();
     }
 
+    $voter->mark_as_voted($election);
     echo $OUTPUT->header();
     echo html_writer::start_div('final_page_content');
     echo $renderer->get_debug_info($voter->is_privileged_user, $voter, $election);
@@ -155,6 +165,8 @@ if($submitfinalvote == true){
 else if($ballot_item_form->is_cancelled()) {
     redirect(sge::ballot_url($election->id));
 } else if($fromform = $ballot_item_form->get_data()){
+
+    $DB->delete_records('block_sgelection_votes', array('voterid'=>$voter->id, 'finalvote'=>'0'));
     if($preview && $voter->is_privileged_user){
         redirect(new moodle_url('ballot.php', array('election_id'=>$election->id, 'preview' => 'Preview', 'ptft'=>$ptft, 'college'=>$voter->college)));
     }elseif(strlen($vote) > 0){

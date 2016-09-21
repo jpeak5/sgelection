@@ -95,8 +95,9 @@ if($voter->already_voted($election)){
             echo html_writer::end_div();
         }
         echo html_writer::start_div('button_area');
-        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1, 'voterid' => $voter->id));
-        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0, 'voterid' => $voter->id));
+        $_SESSION['voterid'] = $voter->id;
+        $submitballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 1));
+        $editballotlink = new moodle_url('ballot.php', array('election_id'=>$election->id, 'submitfinalvote' => 0));
         echo html_writer::start_span('votebuttonlink') . '<a href = "' . $submitballotlink . '">Vote</a>' .  html_writer::end_span() . html_writer::start_span() . '<a href = "' . $editballotlink . '">click here to edit ballot </a>' . html_writer::end_span();
         echo html_writer::end_div();
         echo html_writer::end_div();
